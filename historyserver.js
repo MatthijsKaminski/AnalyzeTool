@@ -159,8 +159,6 @@ class HistoryServer {
     xhttp.send();
   }
 }
-
-
 var historyserver = new HistoryServer("localhost:8082");
 historyserver.fetchServerInfo();
 historyserver.fetchJobsOnServer();
