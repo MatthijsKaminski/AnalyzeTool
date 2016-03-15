@@ -20,12 +20,7 @@
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+
 
 </head>
 
@@ -41,12 +36,12 @@
           <a class="navbar-brand" rel="home" href="#">
             <img style="max-width:65px; margin-top: -10px;" src="img/hadoop-logo.png" alt="Watermark" />
           </a>
-          <a class="navbar-brand page-scroll" href="admin.html"> Hadoop Analyser</a>
+          <a class="navbar-brand page-scroll" href="index.html"> Hadoop Analyser</a>
         </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav top-nav-elmnt">
                 <li >
-                    <a href="index.html" ><i class="fa fa-refresh"></i> </a
+                    <a href="#" onClick="joboverview.refreshjoboverview();" ><i class="fa fa-refresh"></i> </a
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -74,19 +69,9 @@
 
         <div id="page-wrapper">
 
-            <div class="container-fluid" onclick="toggle()">
+            <div class="container-fluid" onclick="toggle()" id="jobcontainer">
 
-              <div id="output"></div>
-              <div id="output2"></div>
-              <div id="output3"></div>
-              <div id="output4"></div>
-              <div id="output5"></div>
-              <div id="output6"></div>
-              <div id="output7"></div>
-              <div id="output8"></div>
-              <div id="output9"></div>
-              <div id="output10"></div>
-              <div id="output11"></div>
+
 
             </div>
             <!-- /.container-fluid -->
@@ -105,9 +90,11 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/sidebar.js"></script>
-    <script>require('./historyserver.js')</script>
+    <script src="./server.js"></script>
+    <script src="./historyserverAPI.js"></script>
+    <script>require('./joboverview.js')</script>
     <script>
-  
+
     </script>
 
 

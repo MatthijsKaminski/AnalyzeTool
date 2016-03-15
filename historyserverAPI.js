@@ -26,12 +26,14 @@ class HistoryServer {
   /**
   * FETCH JOBS
   **/
-  fetchJobsOnServer(){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs", this.fetchJobsOnServerReady);
+  fetchJobsOnServer(func){
+    console.log("fetch jobs on server");
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs", func);
   }
 
   fetchJobsOnServerReady(info, that){
     document.getElementById('output2').innerHTML = "<h5>JobsOnServer</h5>" + info;
+
   }
 
 
@@ -74,8 +76,8 @@ class HistoryServer {
   * FETCH TASKS OF A SPECIFIC JOB
   **/
 
-  fetchJobTasks(jobID){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks" , this.fetchJobTasksReady);
+  fetchJobTasks(jobID, func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks" , func);
   }
 
   fetchJobTasksReady(info,that){
@@ -148,10 +150,10 @@ class HistoryServer {
   **/
   doAjaxRequest(path, func){
     var xhttp = new XMLHttpRequest();
-    var that = this;
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
-        func(xhttp.responseText, that);
+        console.log("ajax responseText " + xhttp.responseText);
+        func(xhttp.responseText);
       }
     };
     xhttp.open("GET", this.url + path, true);
@@ -159,15 +161,3 @@ class HistoryServer {
     xhttp.send();
   }
 }
-var historyserver = new HistoryServer("localhost:8082");
-historyserver.fetchServerInfo();
-historyserver.fetchJobsOnServer();
-historyserver.fetchJobInfo("job_1456240498516_0007");
-historyserver.fetchJobCounters("job_1456240498516_0007");
-historyserver.fetchJobAttempts("job_1456240498516_0007");
-historyserver.fetchJobTasks("job_1456240498516_0007");
-historyserver.fetchTaskInfo("job_1456240498516_0007","task_1456240498516_0007_m_000000");
-historyserver.fetchTaskCounters("job_1456240498516_0007","task_1456240498516_0007_m_000000");
-historyserver.fetchTaskAttempts("job_1456240498516_0007","task_1456240498516_0007_m_000000");
-historyserver.fetchTaskAttemptInfo("job_1456240498516_0007","task_1456240498516_0007_m_000000","attempt_1456240498516_0007_m_000000_0");
-historyserver.fetchTaskAttemptCounters("job_1456240498516_0007","task_1456240498516_0007_m_000000","attempt_1456240498516_0007_m_000000_0");
