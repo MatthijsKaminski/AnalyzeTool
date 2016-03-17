@@ -88,8 +88,8 @@ class HistoryServer {
   * FETCH TASKINFO OF A SPECIFIC JOB AND TASK
   **/
 
-  fetchTaskInfo(jobID, taskID){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks/" + taskID , this.fetchTaskInfoReady);
+  fetchTaskInfo(jobID, taskID, func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks/" + taskID , func);
   }
 
   fetchTaskInfoReady(info,that){
@@ -100,8 +100,8 @@ class HistoryServer {
   * FETCH TASK COUNTERS OF A SPECIFIC JOB AND TASK
   **/
 
-  fetchTaskCounters(jobID, taskID){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks/" + taskID + "/counters" , this.fetchTaskCountersReady);
+  fetchTaskCounters(jobID, taskID,func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks/" + taskID + "/counters" , func);
   }
 
   fetchTaskCountersReady(info,that){

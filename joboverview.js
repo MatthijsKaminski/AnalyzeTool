@@ -61,7 +61,6 @@ class Joboverview{
     for(index = 0; index < this.heads.length ; index++){
       var value = json[this.heads[index]];
       if(this.heads[index].indexOf("Time") > -1 ){
-        console.log("jajaj");
         var date = new Date(value);
         value = date.toUTCString();
       }
@@ -87,7 +86,8 @@ class Joboverview{
 
 
 }
-
+/*
 var joboverview = new Joboverview(document.getElementById("jobcontainer"), new Server("localhost:8082",null));
 joboverview.createtable();
 joboverview.refreshjoboverview();
+*/
