@@ -15,8 +15,8 @@ class HistoryServer {
   /**
   * FETCH SERVER INFO
   **/
-  fetchServerInfo(){
-    this.doAjaxRequest("/ws/v1/history/info", this.fetchServerInfoReady);
+  fetchServerInfo(func){
+    this.doAjaxRequest("/ws/v1/history/info", func);
   }
 
   fetchServerInfoReady(info, that){
@@ -40,8 +40,8 @@ class HistoryServer {
   /**
   * FETCH INFO OF A SPECIFIC JOB
   **/
-  fetchJobInfo(jobID){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/" + jobID, this.fetchJobInfoReady);
+  fetchJobInfo(jobID, func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/" + jobID, func);
   }
 
   fetchJobInfoReady(info,that){
@@ -64,8 +64,8 @@ class HistoryServer {
   * FETCH COUNTERS OF A SPECIFIC JOB
   **/
 
-  fetchJobCounters(jobID){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/counters" , this.fetchJobCountersReady);
+  fetchJobCounters(jobID, func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/counters" , func);
   }
 
   fetchJobCountersReady(info,that){
@@ -112,8 +112,8 @@ class HistoryServer {
   * FETCH TASK ATTEMPTS OF A SPECIFIC JOB AND TASK
   **/
 
-  fetchTaskAttempts(jobID, taskID){
-    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks/" + taskID + "/attempts" , this.fetchTaskAttemptsReady);
+  fetchTaskAttempts(jobID, taskID, func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/"+ jobID +"/tasks/" + taskID + "/attempts" , func);
   }
 
   fetchTaskAttemptsReady(info,that){
@@ -152,7 +152,7 @@ class HistoryServer {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
-        console.log("ajax responseText " + xhttp.responseText);
+        //console.log("ajax responseText " + xhttp.responseText);
         func(xhttp.responseText);
       }
     };

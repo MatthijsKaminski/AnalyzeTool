@@ -27,12 +27,36 @@ class Server{
     }
   }
 
-  getTaskCounters(jobID,taskid, func){
+  getTaskCounters(jobID, taskID, func){
     if(this.historyserver){
-      this.historyserver.fetchTaskCounters(jobID, taskid, func);
+      this.historyserver.fetchTaskCounters(jobID, taskID, func);
     }else{
       ;
     }
+  }
+  
+  getTaskAttempts(jobID, taskID,func){
+      if(this.historyserver){
+          this.historyserver.fetchTaskAttempts(jobID, taskID, func);
+      }else{
+          ;
+      }
+  }
+  
+  getJobCounters(jobID, func){
+      if(this.historyserver){
+          this.historyserver.fetchJobCounters(jobID, func);
+      }else{
+          ;
+      }
+  }
+  
+  getJobInfo(jobID, func){
+      if(this.historyserver){
+          this.historyserver.fetchJobInfo(jobID, func);
+      }else{
+          ;
+      }
   }
 
   getDatabaseConnection(func){
@@ -54,7 +78,6 @@ class Server{
       var collection = db.collection(that.hist);
       collection.remove({});
       that.saveJobs(db,null);
-      //that.saveTasks(db);
     });
   }
 
@@ -65,14 +88,45 @@ class Server{
       this.insertOneToCollection(db,tosave);
       var jobs = tosave.jobs.job;
       var index;
+      console.log("jobs: " + jobs.length);
       for (index = 0 ; index < jobs.length; index++){
-        this.saveTasks(db,null, jobs[index]["id"]);
+        var jobID = jobs[index]["id"];
+        this.saveJobInfo(db, null, jobID);
+        //this.saveJobCounters(db, null, jobID);
+        //this.saveTasks(db, null, jobID);
       }
-      that.getJobsFromDatabase();
-      //that.readFromMongoDb();
+      this.getJobsFromDatabase();
     }else{
       this.getAllJobs(function(respons){
         that.saveJobs(db, respons);
+      })
+    }
+  }
+  
+  saveJobInfo(db, jobInfo, jobID){
+    var that = this;
+    if(jobInfo){
+      var tosave = JSON.parse(jobInfo, function(k,v){return v;});
+      console.log(tosave);
+      this.insertOneToCollection(db,tosave);
+      this.getJobInfoFromDatabase(null, null, jobID )
+    }else{
+      this.getJobInfo(jobID,function(respons){
+        that.saveJobInfo(db, respons, jobID);
+      })
+    }
+  }
+  
+  
+  saveJobCounters(db, jobCounters, jobID ){
+    var that = this;
+    if(jobCounters){
+      var tosave = JSON.parse(jobCounters, function(k,v){return v;});
+      this.insertOneToCollection(db,tosave);
+      this.getJobCountersFromDatabase(null, null, jobID);
+    }else{
+      this.getJobCounters(jobID, function(respons){
+        that.saveJobCounters(db, respons, jobID);
       })
     }
   }
@@ -87,8 +141,11 @@ class Server{
       var tasks = tosave.tasks.task;
       var index;
       for(index=0; index < tasks.length ; index++ ){
-        this.saveTaskCounters(db,null, tasks[index]["id"],jobID);
-        this.getTaskCountersFromDatabase(null,null, tasks[index]["id"], jobID);
+        var taskid = tasks[index]["id"];
+        this.saveTaskCounters(db,null, taskid ,jobID);
+        this.getTaskCountersFromDatabase(null,null, taskid, jobID);
+        this.saveTaskAttempts(db,null,taskid, jobID);
+        this.getTaskAttemptsFromDatabase(null,null,taskid, jobID);
       }
 
     }else{
@@ -103,12 +160,26 @@ class Server{
     if(taskcounters){
       var tosave = JSON.parse(taskcounters, function(k,v){return v;});
       tosave.jobid = jobID;
-      console.log(tosave);
       this.insertOneToCollection(db,tosave);
 
     }else{
       this.getTaskCounters(jobID, taskID, function(respons){
         that.saveTaskCounters(db, respons, taskID, jobID);
+      })
+    }
+  }
+  
+  saveTaskAttempts(db, taskAttempts , taskID, jobID ){
+    var that = this;
+    if(taskAttempts){
+      var tosave = JSON.parse(taskAttempts, function(k,v){return v;});
+      tosave.jobid = jobID;
+      tosave.taskid = taskID;
+      this.insertOneToCollection(db,tosave);
+
+    }else{
+      this.getTaskAttempts(jobID, taskID, function(respons){
+        that.saveTaskAttempts(db, respons, taskID, jobID);
       })
     }
   }
@@ -150,8 +221,55 @@ class Server{
       })
     }
   }
+  
+  getJobInfoFromDatabase(db, func, jobID){
+    if(db){
+      console.log("getJobInfoFromDatabase");
+      var cursor = db.collection(this.hist).find({job:{$exists: true}, 'job.id' : jobID });
+      cursor.each(function(err, doc) {
+        if(err){;}
+        else{
+          if (doc != null) {
+             console.dir(doc);
+          } else {
+             //callback();
+             console.log("end of cursor or no JobInfo found");
+          }
+        }
+      });
+    }else{
+      var that = this;
+      this.getDatabaseConnection(function(dbconn){
+        that.getJobInfoFromDatabase(dbconn, func, jobID);
+      })
+    }
+  }
+  
+  
+  getJobCountersFromDatabase(db, func, jobID){
+    if(db){
+      console.log("getJobCountersFromDatabase");
+      var cursor = db.collection(this.hist).find({jobCounters:{$exists: true}, 'jobCounters.id' : jobID });
+      cursor.each(function(err, doc) {
+        if(err){;}
+        else{
+          if (doc != null) {
+             console.dir(doc);
+          } else {
+             //callback();
+             console.log("end of cursor or no Jobs found");
+          }
+        }
+      });
+    }else{
+      var that = this;
+      this.getDatabaseConnection(function(dbconn){
+        that.getJobCountersFromDatabase(dbconn, jobID,func);
+      })
+    }
+  }
 
-  getJobTasksFromDatabase(db,func, jobID){
+  getJobTasksFromDatabase(db, func, jobID){
     if(db){
       console.log("getJobsTaskFromDatabase");
       var cursor = db.collection(this.hist).find({tasks:{$exists: true}, 'jobid': jobID});
@@ -162,7 +280,7 @@ class Server{
              console.dir(doc);
           } else {
              //callback();
-             console.log("end of cursor or no tasks found");
+             console.log("end of cursor or no job tasks found");
           }
         }
       });
@@ -174,7 +292,7 @@ class Server{
     }
   }
 
-  getTaskCountersFromDatabase(db,func, taskID,jobID){
+  getTaskCountersFromDatabase(db,func, taskID, jobID){
     if(db){
       console.log("getTaskCountersFromDatabase");
       var cursor = db.collection(this.hist).find({jobTaskCounters:{$exists: true}, 'jobTaskCounters.id': taskID, 'jobid': jobID});
@@ -196,6 +314,32 @@ class Server{
       })
     }
   }
+  
+  
+  getTaskAttemptsFromDatabase(db,func, taskID, jobID){
+    if(db){
+      console.log("getTaskAttemptsFromDatabase");
+      var cursor = db.collection(this.hist).find({taskAttempts:{$exists: true}, 'taskid': taskID, 'jobid': jobID});
+      cursor.each(function(err, doc) {
+        if(err){console.log("error in query task attempts" + err);}
+        else{
+          if (doc != null) {
+             console.dir(doc);
+          } else {
+             //callback();
+             console.log("end of cursor or no task attempts found");
+          }
+        }
+      });
+    }else{
+      var that = this;
+      this.getDatabaseConnection(function(dbconn){
+        that.getTaskAttemptsFromDatabase(dbconn,func, taskID, jobID);
+      })
+    }
+  }
+  
+  
 
 
 }
