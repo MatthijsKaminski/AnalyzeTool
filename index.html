@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>At==</title>
+    <title>Tool</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -53,15 +53,9 @@
                       <a href="#" ><i  class="fa fa-fw fa-bars"></i> </a>
                     </li>
 
-                    <li class="active">
-                        <a href="index.html"><i class="fa fa-fw fa-cloud sidebarlogo"></i> Home</a>
-                    </li>
 
                     <li>
-                        <a href="#"><i class="fa fa-fw fa-file sidebarlogo"></i> item2</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-plus sidebarlogo" data-toggle="modal" data-target="#myModal"></i></a>
+                        <a href="#" id="addServerButton"><i class="fa fa-fw fa-plus sidebarlogo" ></i>Add server</a>
                     </li>
                 </ul>
             </div>
@@ -70,25 +64,24 @@
 
         <div id="page-wrapper">
 
-            <div class="container-fluid" onclick="toggle()" id="jobcontainer">
-              <!-- add server Modal -->
-              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="myModalLabel">Add a new historyserver</h4>
-                    </div>
-                    <div class="modal-body">
-                      ...
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                  </div>
+            <div class="container-fluid"  id="serverTabs">
+              <div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#jobOverviewTab" aria-controls="jobOverviewTab" role="tab" data-toggle="tab">Jobs</a></li>
+                  <li role="presentation" ><a href="#TaskTimelineTab" aria-controls="TaskTimelineTab" role="tab" data-toggle="tab">Task timeline</a></li>
+                  <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="jobOverviewTab"></div>
+                  <div role="tabpanel" class="tab-pane" id="TaskTimelineTab"></div>
+                  <div role="tabpanel" class="tab-pane" id="settings"></div>
                 </div>
-              </div>
+
+            </div>
 
 
             </div>
@@ -100,31 +93,65 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- jQuery -->
-    <script>window.$ = window.jQuery = require('./js/jquery.js');
-            //$("#sidebar").hover(function(){toggle();});
-    </script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script src="./server.js"></script>
-    <script src="./historyserverAPI.js"></script>
-    <script src="./database.js"></script>
-    <script>require('./joboverview.js')</script>
-    <script>require('./taskstimeline.js')</script>
-    <script>
 
-    </script>
 
-    <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Launch demo modal
-</button>
+
+<!-- add server Modal -->
+<div class="modal fade" id="addServerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a new historyserver</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="nameInput">Name</label>
+            <input type="text" class="form-control" id="nameInput" placeholder="Name">
+          </div>
+          <div class="form-group">
+            <label for="historyInput">History server</label>
+            <input type="text" class="form-control" id="historyInput" placeholder="History server">
+          </div>
+          <div class="form-group">
+            <label for="mongodbInput">Mongodb</label>
+            <input type="text" class="form-control" id="mongodbInput" placeholder="Mongodb server">
+          </div>
+          <div class="form-group">
+            <label for="mongodbCollectionInput">Mongodb collection</label>
+            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="addServerButtonModal" type="button" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
 
 </body>
+
+<!-- jQuery -->
+<script>window.$ = window.jQuery = require('./js/jquery.js');
+        //$("#sidebar").hover(function(){toggle();});
+</script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="./server.js"></script>
+<script src="./servers.js"></script>
+<script src="./historyserverAPI.js"></script>
+<script src="./database.js"></script>
+<script src="./joboverview.js"></script>
+<script src="./taskstimeline.js"></script>
+<script src="./controller.js"></script>
 
 </html>

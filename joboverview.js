@@ -3,10 +3,12 @@ require('./server.js');
 require('./historyserverAPI.js');
 class Joboverview{
 
-  constructor(element,server){
+  constructor(element,server , controller ){
     this.element = element;
     this.server = server;
     this.heads = ["name", "state", "submitTime", "startTime", "finishTime", "mapsCompleted", "reducesCompleted"];
+    this.controller = controller;
+    this.activeRow = null;
   }
 
   createtable(){
@@ -57,6 +59,11 @@ class Joboverview{
 
   addJobRow(json){
     var tr = document.createElement("tr");
+    var jobid = json["id"];
+    var that = this;
+    tr.addEventListener("click",function(event){
+      that.jobSelected(event,jobid);
+    });
     var index;
     for(index = 0; index < this.heads.length ; index++){
       var value = json[this.heads[index]];
@@ -84,8 +91,19 @@ class Joboverview{
     }
   }
 
+  jobSelected(event,jobid){
+    var row = event.target;
+    if(this.activeRow){
+      $(this.activeRow).parent().removeClass("active");
+    }
+    this.activeRow = row;
+    $(this.activeRow).parent().addClass("active");
+    this.controller.setActiveJob(jobid);
+  }
+
 
 }
+console.log("joboverview loaded");
 /*
 var joboverview = new Joboverview(document.getElementById("jobcontainer"), new Server("localhost:8082",null));
 joboverview.createtable();

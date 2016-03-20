@@ -2,10 +2,12 @@
 
 class Server{
 
-  constructor(hist,db){
+  constructor(hist,db, collection){
     //create historyAPI interface instance
     this.hist = hist;
     this.historyserver = new HistoryServer(hist);
+    //save collecton name;
+    this.collection = collection;
     //create mongodb interace instance
     this.database = new Database(db);
   }

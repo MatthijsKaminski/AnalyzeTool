@@ -5,9 +5,15 @@ class TaskTimeLine{
     this.element = element;
     this.server = server;
     this.jobid = jobid;
+    
+  }
+
+  setJobID(jobid){
+    this.jobid = jobid;
   }
 
   createTimeLine(){
+    $(this.element).empty();
     this.dataset = [];
     var that = this;
     this.server.getAllTasks(this.jobid, function(tasks){
@@ -36,8 +42,10 @@ class TaskTimeLine{
 
 
 }
+/*
 var element = document.getElementById("jobcontainer")
 var server = new Server("localhost:8082","matthijskaminski.me/27017");
 server.saveServerToDatabase();
 var timeline = new TaskTimeLine(element, server, "job_1456240498516_0008");
 timeline.createTimeLine();
+*/
