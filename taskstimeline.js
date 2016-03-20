@@ -63,7 +63,8 @@ class TaskTimeLine{
     if(task["type"] == "REDUCE"){
       classNameValue = "reduce";
     }
-    var elem = {id: index, start: task["startTime"], end: task["finishTime"], className: classNameValue};
+    var titleValue = "elapsed time: " + task["elapsedTime"] + "ms";
+    var elem = {id: index, start: task["startTime"], end: task["finishTime"], className: classNameValue, title: titleValue};
     this.dataset.push(elem);
   }
 
