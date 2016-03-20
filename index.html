@@ -13,6 +13,8 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <!-- Bootstrap switch CSS -->
+    <link href="css/bootstrap-switch.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/dashboard.css" rel="stylesheet" type="text/css">
@@ -78,7 +80,9 @@
                 <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="jobOverviewTab"></div>
                   <div role="tabpanel" class="tab-pane" id="TaskTimelineTab"></div>
-                  <div role="tabpanel" class="tab-pane" id="settings"></div>
+                  <div role="tabpanel" class="tab-pane" id="settings">
+                    <input name="use-server-db-switch" type="checkbox" checked="" data-switch-no-init="">
+                  </div>
                 </div>
 
             </div>
@@ -123,6 +127,10 @@
             <label for="mongodbCollectionInput">Mongodb collection</label>
             <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)">
           </div>
+          <div class="form-group">
+            <label for="use-server-db-switch-modal">Use:</label>
+            <input id="use-server-db-switch-modal" name="use-server-db-switch-modal" type="checkbox" checked="" data-switch-no-init="">
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -145,6 +153,7 @@
 
 <!-- Bootstrap Core JavaScript -->
 <script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-switch.min.js"></script>
 <script src="js/sidebar.js"></script>
 <script src="./server.js"></script>
 <script src="./servers.js"></script>

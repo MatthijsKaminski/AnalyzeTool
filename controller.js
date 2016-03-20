@@ -27,6 +27,11 @@ class Controller{
     var that = this;
     addButton.addEventListener("click", function(event){
       event.preventDefault();
+      var useMongodb = true;
+      if ($('#use-server-db-switch-modal').is(":checked"))
+      {
+        useMongodb = false;
+      }
       var name = document.getElementById("nameInput").value;
       var historyserverURL = document.getElementById("historyInput").value;
       var mongodbURL = document.getElementById("mongodbInput").value;
@@ -34,6 +39,13 @@ class Controller{
       that.addServer(name,historyserverURL, mongodbURL, mongodbCollection);
       $('#addServerModal').modal('hide');
     });
+    var options = {
+      onText: "History",
+      offColor: 'primary',
+      offText: "Mongodb"
+    };
+    $("[name='use-server-db-switch-modal']").bootstrapSwitch(options);
+
   }
 
   addServer(name, hist, mongo, collection){
@@ -89,6 +101,16 @@ class Controller{
     this.joboverview.createtable();
     this.joboverview.refreshjoboverview();
     this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineTab"), server);
+    this.setupSettings();
+  }
+
+  setupSettings(){
+    var options = {
+      onText: "History",
+      offColor: 'primary',
+      offText: "Mongodb"
+    };
+    $("[name='use-server-db-switch']").bootstrapSwitch(options);
   }
 
   setActiveJob(jobid){
