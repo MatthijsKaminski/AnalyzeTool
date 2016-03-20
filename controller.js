@@ -100,7 +100,7 @@ class Controller{
     this.joboverview = new Joboverview(document.getElementById("jobOverviewTab"), server,this);
     this.joboverview.createtable();
     this.joboverview.refreshjoboverview();
-    this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineTab"), server);
+    this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineContainer"), server);
     this.setupSettings();
   }
 

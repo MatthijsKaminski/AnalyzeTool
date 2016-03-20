@@ -1,0 +1,11 @@
+.vis-item.map {
+  color: white;
+  background-color: red;
+  border-color: darkred;
+}
+
+.vis-item.reduce {
+  color: white;
+  background-color: blue;
+  border-color: darkblue;
+}

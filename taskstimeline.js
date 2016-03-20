@@ -5,7 +5,7 @@ class TaskTimeLine{
     this.element = element;
     this.server = server;
     this.jobid = jobid;
-    
+
   }
 
   setJobID(jobid){
@@ -24,19 +24,46 @@ class TaskTimeLine{
   createTimeLineFromTasks(jsontasks){
     console.log(jsontasks);
     var tasks = JSON.parse(jsontasks, function(k,v){return v;});
-    var tasks = tasks.tasks.task;
+    this.tasks = tasks.tasks.task;
     var index;
-    for(index=0; index < tasks.length ; index++ ){
-      this.createElementInDataSetFormTask(index,tasks[index]);
+    for(index=0; index < this.tasks.length ; index++ ){
+      this.createElementInDataSetFormTask(index,this.tasks[index]);
     }
     console.log(this.dataset);
     var visdataset = new vis.DataSet(this.dataset);
     var options = {};
     var timeline = new vis.Timeline(this.element, visdataset, options);
+    var that = this;
+    timeline.on('select', function (properties) {
+      console.log(properties);
+      that.taskClicked(properties.items[0]);
+    });
+  }
+
+  taskClicked(taskIndex){
+    var that = this;
+    var task = this.tasks[taskIndex];
+    console.log(this.tasks[taskIndex]);
+    if(this.tasks[taskIndex]){
+      document.getElementById("taskInfoJson").innerHTML = JSON.stringify(task,undefined,2);
+      this.server.getTaskCounters(this.jobid, task["id"], function(counters){
+        that.showTaskCounters(counters);
+      });
+    }
+  }
+
+  showTaskCounters(counters){
+    console.log(counters);
+    var json = JSON.parse(counters, function(k,v){return v;});
+    document.getElementById("taskCountersJson").innerHTML = JSON.stringify(json,undefined,2);
   }
 
   createElementInDataSetFormTask(index, task){
-    var elem = {id: index, start: task["startTime"], end: task["finishTime"] };
+    var classNameValue = "map";
+    if(task["type"] == "REDUCE"){
+      classNameValue = "reduce";
+    }
+    var elem = {id: index, start: task["startTime"], end: task["finishTime"], className: classNameValue};
     this.dataset.push(elem);
   }
 

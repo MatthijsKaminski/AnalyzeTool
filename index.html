@@ -18,7 +18,7 @@
 
     <!-- Custom CSS -->
     <link href="css/dashboard.css" rel="stylesheet" type="text/css">
-
+    <link href="css/timeline.css" rel="stylesheet" type="text/css">
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
@@ -79,7 +79,12 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="jobOverviewTab"></div>
-                  <div role="tabpanel" class="tab-pane" id="TaskTimelineTab"></div>
+                  <div role="tabpanel" class="tab-pane" id="TaskTimelineTab">
+                    <div id="TaskTimelineContainer">
+                    </div>
+                    <pre id="taskInfoJson"></pre>
+                    <pre id="taskCountersJson"></pre>
+                  </div>
                   <div role="tabpanel" class="tab-pane" id="settings">
                     <input name="use-server-db-switch" type="checkbox" checked="" data-switch-no-init="">
                   </div>
