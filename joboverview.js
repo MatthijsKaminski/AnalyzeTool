@@ -15,6 +15,12 @@ class Joboverview{
     this.table = document.createElement("table");
     this.table.className = "table";
     this.element.appendChild(this.table);
+    this.jobInfo = document.createElement("pre");
+    this.jobCounters = document.createElement("pre");
+    this.jobInfo.innerHTML = "No job selected";
+    this.jobCounters.innerHTML = "No job selected";
+    this.element.appendChild(this.jobInfo);
+    this.element.appendChild(this.jobCounters);
     this.createtablehead();
 
   }
@@ -92,6 +98,7 @@ class Joboverview{
   }
 
   jobSelected(event,jobid){
+    var that = this;
     var row = event.target;
     if(this.activeRow){
       $(this.activeRow).parent().removeClass("active");
@@ -99,7 +106,27 @@ class Joboverview{
     this.activeRow = row;
     $(this.activeRow).parent().addClass("active");
     this.controller.setActiveJob(jobid);
+    this.server.getJobInfo(jobid, function(json){
+      that.showJobInfo(json);
+    });
+    this.server.getJobInfo(jobid, function(json){
+      that.showJobInfo(json);
+    });
+    this.server.getJobCounters(jobid, function(json){
+      that.showJobCounters(json);
+    });
   }
+
+  showJobInfo(json){
+    json = JSON.parse(json, function(k,v){return v;});
+    this.jobInfo.innerHTML = JSON.stringify(json,undefined,2);
+  }
+
+  showJobCounters(json){
+    json = JSON.parse(json, function(k,v){return v;});
+    this.jobCounters.innerHTML = JSON.stringify(json,undefined,2);
+  }
+
 
 
 }
