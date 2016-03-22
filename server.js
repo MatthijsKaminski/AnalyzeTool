@@ -53,6 +53,14 @@ class Server{
       }
   }
 
+  getTaskAttemptCounters(jobID, taskID, attemptID, func){
+    if(this.historyserver){
+        this.historyserver.fetchTaskAttemptInfo(jobID, taskID,attemptID, func);
+    }else{
+        ;
+    }
+  }
+
   getJobCounters(jobID, func){
       if(this.historyserver){
           this.historyserver.fetchJobCounters(jobID, func);
@@ -155,7 +163,6 @@ class Server{
       var tosave = JSON.parse(tasks, function(k,v){return v;});
       tosave.jobid = jobID;
       this.insertOneToCollection(db,tosave);
-      this.getJobTasksFromDatabase(null,null,"job_1456240498516_0008");
       var tasks = tosave.tasks.task;
       var index;
       for(index=0; index < tasks.length ; index++ ){
@@ -304,7 +311,7 @@ class Server{
   }
 
 
-  getTaskAttemptsFromDatabase(db,func, taskID, jobID){
+  getTaskAttemptsFromDatabase(db, func, taskID, jobID){
     var that = this;
     if(db){
       console.log("getTaskAttemptsFromDatabase");
@@ -314,7 +321,7 @@ class Server{
       });
     }else{
       this.getDatabaseConnection(function(dbconn){
-        that.getTaskAttemptsFromDatabase(dbconn,func, taskID, jobID);
+        that.getTaskAttemptsFromDatabase(dbconn, func, taskID, jobID);
       })
     }
   }

@@ -48,7 +48,7 @@ class TaskTimeLine{
       });
 
       this.server.getTaskAttempts(this.jobid, task["id"], function(counters){
-        that.showTaskAttempts(counters);
+        that.showTaskAttempts(counters,task["id"]);
       });
     }else{
       document.getElementById("taskInfoJson").innerHTML = "No task selected";
@@ -57,9 +57,21 @@ class TaskTimeLine{
     }
   }
 
-  showTaskAttempts(counters){
+  showTaskAttempts(counters, taskid){
+    var that = this;
     var json = JSON.parse(counters, function(k,v){return v;});
+    var index;
     document.getElementById("taskAttemptsJson").innerHTML = JSON.stringify(json,undefined,2);
+    for(index = 0; index < json.taskAttempts.taskAttempt.length; index++ ){
+      this.server.getTaskAttemptCounters(this.jobid, taskid,json.taskAttempts.taskAttempt[index]['id'], function(counters){
+        that.showTaskAttemptCounters(taskid, counters);
+      });
+    }
+  }
+
+  showTaskAttemptCounters(taskid, counters){
+    var json = JSON.parse(counters, function(k,v){return v;});
+    document.getElementById("taskAttemptCounters").innerHTML = JSON.stringify(json,undefined,2);
   }
 
   showTaskCounters(counters){
