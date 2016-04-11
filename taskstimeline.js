@@ -91,10 +91,11 @@ class TaskTimeLine{
 
 
 }
-/*
-var element = document.getElementById("jobcontainer")
+
+//var element = document.getElementById("jobcontainer")
 var server = new Server("localhost:8082","matthijskaminski.me/27017");
 server.saveServerToDatabase();
+/*
 var timeline = new TaskTimeLine(element, server, "job_1456240498516_0008");
 timeline.createTimeLine();
 */

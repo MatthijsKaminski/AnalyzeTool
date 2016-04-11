@@ -52,7 +52,7 @@ class Controller{
     var index = this.servers.addServer(hist, mongo, collection);
     console.log("added server index: "+ index);
     var elem = this.createServerLabel(name, index);
-    if(this.activeElem == null){
+    if(this.activeElem === null){
       this.activeElem = elem;
       this.selectServer(null,name,index);
       this.setupTabs();
@@ -81,7 +81,7 @@ class Controller{
           $(this.activeElem).parent().removeClass("active");
         }
       }
-      if(event != null){
+      if(event !== null){
         this.activeElem = event.target;
       }
       this.activeIndex = index;
@@ -97,10 +97,12 @@ class Controller{
 
   setupTabs(){
     var server = this.servers.getServer(this.activeIndex);
-    this.joboverview = new Joboverview(document.getElementById("jobOverviewTab"), server,this);
+    this.joboverview = new Joboverview(document.getElementById("joboverview"), server,this);
     this.joboverview.createtable();
     this.joboverview.refreshjoboverview();
     this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineContainer"), server);
+    this.timeDivision = new TimeDivision(document.getElementById("jobOverviewTab"));
+    this.timeDivision.updateView();
     this.setupSettings();
   }
 

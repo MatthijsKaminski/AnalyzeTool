@@ -91,6 +91,7 @@ class Server{
   ***/
 
   saveServerToDatabase(){
+    console.log("test");
     var that = this;
     this.getDatabaseConnection(function(db){
       var collection = db.collection(that.hist);

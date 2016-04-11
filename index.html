@@ -23,6 +23,16 @@
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 
+
+
+    <!-- Load d3.js and c3.js -->
+    <script src="c3/c3-0.4.10/d3.v3.min.js" charset="utf-8"></script>
+    <script src="c3/c3-0.4.10/c3.min.js"></script>
+
+    <!-- Load c3.css -->
+    <link href="c3/c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
+
+    <!-- Load vis -->
     <script src="vis/dist/vis.js"></script>
     <link href="vis/dist/vis.css" rel="stylesheet" type="text/css" />
 </head>
@@ -78,7 +88,10 @@
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                  <div role="tabpanel" class="tab-pane active" id="jobOverviewTab"></div>
+                  <div role="tabpanel" class="tab-pane active" id="jobOverviewTab">
+                    <div id="joboverview"></div>
+                    <div id="timeDivision"></div>
+                  </div>
                   <div role="tabpanel" class="tab-pane" id="TaskTimelineTab">
                     <div id="TaskTimelineContainer">
                     </div>
@@ -163,6 +176,7 @@
 <script src="js/bootstrap-switch.min.js"></script>
 <script src="js/sidebar.js"></script>
 <script src="./server.js"></script>
+<script src="./timedivision-view.js"></script>
 <script src="./servers.js"></script>
 <script src="./historyserverAPI.js"></script>
 <script src="./database.js"></script>
