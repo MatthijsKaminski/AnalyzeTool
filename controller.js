@@ -101,8 +101,9 @@ class Controller{
     this.joboverview.createtable();
     this.joboverview.refreshjoboverview();
     this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineContainer"), server);
-    this.timeDivision = new TimeDivision(document.getElementById("jobOverviewTab"));
-    this.timeDivision.updateView();
+    this.timeDivision = new TimeDivision(document.getElementById("timeDivision"), server);
+    this.dataTime = new DataTime(document.getElementById("timeData"), server);
+    this.nodeTask = new NodeTask(document.getElementById("nodeTask"), server);
     this.setupSettings();
   }
 
@@ -118,6 +119,12 @@ class Controller{
   setActiveJob(jobid){
     this.tasktimeline.setJobID(jobid);
     this.tasktimeline.createTimeLine();
+    this.timeDivision.setJobID(jobid);
+    this.timeDivision.update();
+    this.dataTime.setJobID(jobid);
+    this.dataTime.update();
+    this.nodeTask.setJobID(jobid);
+    this.nodeTask.update();
   }
 
 

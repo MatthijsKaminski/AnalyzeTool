@@ -5,7 +5,6 @@ class TaskTimeLine{
     this.element = element;
     this.server = server;
     this.jobid = jobid;
-
   }
 
   setJobID(jobid){
@@ -17,32 +16,94 @@ class TaskTimeLine{
     this.dataset = [];
     var that = this;
     this.server.getAllTasks(this.jobid, function(tasks){
-      that.createTimeLineFromTasks(tasks);
+      that.getAllTaskAttempts(tasks);
     })
   }
 
-  createTimeLineFromTasks(jsontasks){
-    var tasks = JSON.parse(jsontasks, function(k,v){return v;});
-    this.tasks = tasks.tasks.task;
-    var index;
-    for(index=0; index < this.tasks.length ; index++ ){
-      this.createElementInDataSetFormTask(index,this.tasks[index]);
+  createGroups(){
+    this.groups = [];
+    var index = 0;
+    for(var node in this.nodes){
+      this.groups.push({id: index, content: node});
+      var nodeObj = this.nodes[node];
+      nodeObj.index = index;
+      index++;
+    }
+    this.groups = new vis.DataSet(this.groups);
+  }
+
+  createTimeLineFromTasks(){
+    console.log(this.nodes);
+    this.createGroups();
+    this.attempts = [];
+    var taskindex = 0;
+    for(var node in this.nodes){
+      var nodeObj = this.nodes[node];
+      var nodeAttemptsIndex = 0;
+      for(nodeAttemptsIndex = 0; nodeAttemptsIndex < nodeObj.attempts.length ; nodeAttemptsIndex++){
+        var attempt = nodeObj.attempts[nodeAttemptsIndex]
+        this.createElementInDataSetFormTask(taskindex,nodeObj.index, attempt);
+        this.attempts.push(attempt);
+        taskindex++;
+      }
+
     }
     var visdataset = new vis.DataSet(this.dataset);
     var options = {};
     var timeline = new vis.Timeline(this.element, visdataset, options);
+    timeline.setGroups(this.groups);
     var that = this;
     timeline.on('select', function (properties) {
       console.log(properties);
       that.taskClicked(properties.items[0]);
     });
+
+  }
+
+  getAllTaskAttempts(tasks){
+    this.nodes = {};
+    var that = this;
+    tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
+    this.amountOftasks = tasks.length;
+    var index = 0;
+    for(index = 0; index < tasks.length; index++){
+      var taskid = tasks[index].id
+      this.server.getTaskAttempts(this.jobid, tasks[index].id, function(attempts){
+        that.handleAttempts(attempts, taskid);
+      });
+    }
+  }
+
+  handleAttempts(attempts, taskid){
+    attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
+    var index = 0;
+    for(index = 0; index < attempts.length ; index++){
+      this.handleAttempt(attempts[index], taskid);
+    }
+    this.amountOftasks--;
+    if(this.amountOftasks == 0){
+      this.createTimeLineFromTasks();
+    }
+  }
+
+  handleAttempt(attempt, taskid){
+    attempt.taskid = taskid;
+    var node = this.nodes[attempt.nodeHttpAddress];
+    if( node === undefined ){
+      node = {
+        attempts: []
+      };
+      this.nodes[attempt.nodeHttpAddress] = node;
+    }
+    node.attempts.push(attempt);
   }
 
   taskClicked(taskIndex){
     var that = this;
-    var task = this.tasks[taskIndex];
-    if(this.tasks[taskIndex]){
-      document.getElementById("taskInfoJson").innerHTML = JSON.stringify(task,undefined,2);
+    var attempt = this.attempts[taskIndex];
+    if(attempt){
+      document.getElementById("taskInfoJson").innerHTML = JSON.stringify(attempt,undefined,2);
+      /*
       this.server.getTaskCounters(this.jobid, task["id"], function(counters){
         that.showTaskCounters(counters);
       });
@@ -50,6 +111,7 @@ class TaskTimeLine{
       this.server.getTaskAttempts(this.jobid, task["id"], function(counters){
         that.showTaskAttempts(counters,task["id"]);
       });
+      */
     }else{
       document.getElementById("taskInfoJson").innerHTML = "No task selected";
       document.getElementById("taskAttemptsJson").innerHTML = "No task selected";
@@ -79,22 +141,25 @@ class TaskTimeLine{
     document.getElementById("taskCountersJson").innerHTML = JSON.stringify(json,undefined,2);
   }
 
-  createElementInDataSetFormTask(index, task){
+  createElementInDataSetFormTask(taskIndex, groupindex, taskAttempt){
     var classNameValue = "map";
-    if(task["type"] == "REDUCE"){
+    if(taskAttempt["type"] == "REDUCE"){
       classNameValue = "reduce";
     }
-    var titleValue = "elapsed time: " + task["elapsedTime"] + "ms";
-    var elem = {id: index, start: task["startTime"], end: task["finishTime"], className: classNameValue, title: titleValue};
+    var titleValue = "elapsed time: " + taskAttempt["elapsedTime"] + "ms";
+    var elem = {id: taskIndex,
+                group: groupindex,
+                start: taskAttempt["startTime"],
+                end: taskAttempt["finishTime"],
+                className: classNameValue,
+                title: titleValue};
     this.dataset.push(elem);
   }
 
 
 }
 
-//var element = document.getElementById("jobcontainer")
-var server = new Server("localhost:8082","matthijskaminski.me/27017");
-server.saveServerToDatabase();
+
 /*
 var timeline = new TaskTimeLine(element, server, "job_1456240498516_0008");
 timeline.createTimeLine();

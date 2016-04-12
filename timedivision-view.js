@@ -1,27 +1,42 @@
 "use strict";
 class TimeDivision{
 
-  constructor(element){
+  constructor(element, server){
     this.element = element;
+    this.server = server;
+    this.jobid = null;
   }
 
-  setJob(jsonjob){
-    this.jsonjob = jsonjob;
+  setJobID(jobid){
+    this.jobid = jobid;
   }
 
-  updateView(){
+  update(){
+    if(this.jobid === null){
+      return;
+    }
+    var that = this;
+    this.server.getJobInfo(this.jobid, function(json){
+      that.updateView(json);
+    });
+  }
 
-      var chart = c3.generate({
-          bindto: '#timeDivision',
+  updateView(json){
+    this.job = JSON.parse(json, function(k,v){return v;});
+    this.job = this.job.job;
+    console.log(this.job);
+    var chart = c3.generate({
+          bindto: '#' + this.element.id,
           data: {
               columns: [
-                  ['Map',  200],
-                  ['Shuffle', 130],
-                  ['Merge', 230]
+                  ['Map',  this.job["avgMapTime"]],
+                  ['Shuffle', this.job["avgShuffleTime"]],
+                  ['Merge', this.job["avgMergeTime"]],
+                  ['Reduce', this.job["avgReduceTime"]]
               ],
               type: 'bar',
               groups: [
-                  ['Map', 'Shuffle']
+
               ],
               order: null
           },
@@ -31,24 +46,40 @@ class TimeDivision{
               }
           },
           axis: {
-            rotated: true
+            rotated: true,
+            y:{
+              label:{
+                text: 'ms',
+                position: 'outer-middle'
+              }
+            },
+            x:{
+              show: false
+            }
           },
+          tooltip: {
+            format: {
+                title: function (d) { return "Details";},
+                value: function (value, ratio, id) {
+                  return value;
+                }
+
+            }
+        },
+        padding: {
+           top: 40,
+           right: 20,
+           bottom: 40,
+           left: 20,
+       },
 
       });
 
       setTimeout(function () {
-          chart.groups([['Map', 'Shuffle', 'Merge']])
+          chart.groups([['Map', 'Shuffle', 'Merge', 'Reduce']])
       }, 1000);
 
-      setTimeout(function () {
-          chart.load({
-              columns: [['Reduce', 100]]
-          });
-      }, 1500);
 
-      setTimeout(function () {
-          chart.groups([['Map', 'Shuffle', 'Merge', 'Reduce']])
-      }, 2000);
 
 
   }

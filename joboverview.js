@@ -54,12 +54,11 @@ class Joboverview{
   }
 
   filltable(jsonjobs){
-    var jobs = JSON.parse(jsonjobs, function(k,v){return v;});
-    var jobs = jobs.jobs.job;
-    console.log(jobs);
+    this.jobs = JSON.parse(jsonjobs, function(k,v){return v;});
+    this.jobs = this.jobs.jobs.job;
     var index;
-    for (index = 0 ; index < jobs.length; index++){
-      this.addJobRow(jobs[index]);
+    for (index = 0 ; index < this.jobs.length; index++){
+      this.addJobRow(this.jobs[index]);
     }
   }
 
@@ -84,9 +83,6 @@ class Joboverview{
 
   addJobProp(tr, value){
     var td = document.createElement("td");
-    console.log(String(value) + " " + String(value).indexOf("Time"));
-
-
     td.appendChild(document.createTextNode(value));
     tr.appendChild(td);
   }
@@ -106,15 +102,15 @@ class Joboverview{
     this.activeRow = row;
     $(this.activeRow).parent().addClass("active");
     this.controller.setActiveJob(jobid);
-    this.server.getJobInfo(jobid, function(json){
-      that.showJobInfo(json);
-    });
+    /*
     this.server.getJobInfo(jobid, function(json){
       that.showJobInfo(json);
     });
     this.server.getJobCounters(jobid, function(json){
       that.showJobCounters(json);
     });
+    */
+
   }
 
   showJobInfo(json){
