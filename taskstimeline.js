@@ -75,6 +75,7 @@ class TaskTimeLine{
   }
 
   handleAttempts(attempts, taskid){
+    console.log("taskid " + taskid);
     attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
     var index = 0;
     for(index = 0; index < attempts.length ; index++){

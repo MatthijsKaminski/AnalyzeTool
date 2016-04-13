@@ -109,8 +109,8 @@ class Joboverview{
     this.server.getJobCounters(jobid, function(json){
       that.showJobCounters(json);
     });
-    */
 
+    */
   }
 
   showJobInfo(json){

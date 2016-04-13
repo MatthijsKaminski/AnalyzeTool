@@ -105,7 +105,6 @@ class  NodeTask{
       this.reducers.push(nodeObj.reducers);
     }
 
-
   }
 
 

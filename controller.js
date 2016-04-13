@@ -104,6 +104,8 @@ class Controller{
     this.timeDivision = new TimeDivision(document.getElementById("timeDivision"), server);
     this.dataTime = new DataTime(document.getElementById("timeData"), server);
     this.nodeTask = new NodeTask(document.getElementById("nodeTask"), server);
+    this.replicationView = new ReplicationView(document.getElementById("ReplicationView"), server);
+    this.spillingView = new SpillingView(document.getElementById("SpillingView"), server);
     this.setupSettings();
   }
 
@@ -125,6 +127,10 @@ class Controller{
     this.dataTime.update();
     this.nodeTask.setJobID(jobid);
     this.nodeTask.update();
+    this.replicationView.setJobID(jobid);
+    this.replicationView.update();
+    this.spillingView.setJobID(jobid);
+    this.spillingView.update();
   }
 
 
