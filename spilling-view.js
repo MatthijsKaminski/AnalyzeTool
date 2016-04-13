@@ -11,6 +11,17 @@ class SpillingView{
     this.jobid = jobid;
   }
 
+  setTask(taskid){
+    this.taskid = taskid;
+    this.task = this.tasksMap[taskid];
+    if(this.task !== undefined && this.task.spillingRate !== undefined){
+      this.selectedTaskIndex = this.getIndexOfCat(this.task.spillingRate.spilling);
+    }else{
+      this.selectedTaskIndex = undefined;
+    }
+    this.updateView();
+  }
+
   update(){
     if(this.jobid === null){
       return;
@@ -65,7 +76,7 @@ class SpillingView{
       var mapOutputRecords = this.getTaskCounter(counters, "org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_RECORDS" ).value;
       var spillingRate = spilledRecords - mapOutputRecords;
       var rep = this.spillingRates[spillingRate];
-      task.spillingRate = rep;
+
       if( rep === undefined ){
         rep = {
           spilling: spillingRate,
@@ -74,12 +85,24 @@ class SpillingView{
         this.spillingRates[spillingRate] = rep;
 
       }
+      task.spillingRate = rep;
       rep.amount++;
     }
       this.amountOftasks--;
       if(this.amountOftasks === 0){
+        this.createArrays();
         this.updateView();
       }
+  }
+
+  getIndexOfCat(spillingAmount){
+    var index = 0;
+    for(index = 0; index < this.cats.length; index++){
+      if(this.cats[index] == spillingAmount){
+        return index;
+      }
+    }
+    return -1;
   }
 
   createArrays(){
@@ -92,10 +115,19 @@ class SpillingView{
 
   }
 
+  colorFunction(color, d){
+    if(color !== undefined && this.selectedTaskIndex !== undefined){
+      if(color.index == this.selectedTaskIndex  ){
+        return '#ffff00';
+      }else{
+        return '#FF7F0E';
+      }
+    }
+    return '#FF7F0E';
+  }
+
   updateView(){
-
-    this.createArrays();
-
+    var that = this;
     var chart = c3.generate({
           bindto: '#' + this.element.id,
           data: {
@@ -106,7 +138,9 @@ class SpillingView{
               groups: [
 
               ],
-              order: null
+              colors: {
+                tasks: function(color,d){ return that.colorFunction(color,d,that)}
+              }
           },
           grid: {
               y: {
@@ -143,7 +177,7 @@ class SpillingView{
 
       });
 
-    
+
 
 }
 }

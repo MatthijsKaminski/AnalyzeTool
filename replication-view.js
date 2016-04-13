@@ -10,6 +10,29 @@ class ReplicationView{
     this.jobid = jobid;
   }
 
+  setTask(taskid){
+    this.taskid = taskid;
+    this.task = this.tasksMap[taskid];
+    if(this.task !== undefined && this.task.replicationRate !== undefined){
+
+      this.selectedTaskIndex = this.getIndexOfCat(this.task.replicationRate.replication) ;
+    }else{
+
+      this.selectedTaskIndex = undefined;
+    }
+    this.updateView();
+  }
+
+  getIndexOfCat(repRate){
+    var index = 0;
+    for(index = 0; index < this.cats.length; index++){
+      if(this.cats[index] == repRate){
+        return index;
+      }
+    }
+    return -1;
+  }
+
   update(){
     if(this.jobid === null){
       return;
@@ -64,7 +87,7 @@ class ReplicationView{
       var mapOutputRecords = this.getTaskCounter(counters, "org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_RECORDS" ).value;
       var replicationRate = mapOutputRecords/mapInputRecords;
       var rep = this.replicationRates[replicationRate];
-      task.replicationRate = rep;
+
       if( rep === undefined ){
         rep = {
           replication: replicationRate,
@@ -73,6 +96,7 @@ class ReplicationView{
         this.replicationRates[replicationRate] = rep;
 
       }
+      task.replicationRate = rep;
       rep.amount++;
     }
       this.amountOftasks--;
@@ -87,6 +111,7 @@ class ReplicationView{
           amount: 4
         };
         this.replicationRates[3] = rep;
+        this.createArrays();
         this.updateView();
       }
   }
@@ -102,8 +127,8 @@ class ReplicationView{
   }
 
   colorFunction(color, d){
-    if(color !== undefined){
-      if(color.index === 1 ){
+    if(color !== undefined && this.selectedTaskIndex !== undefined){
+      if(color.index == this.selectedTaskIndex  ){
         return '#ffff00';
       }else{
         return '#FF7F0E';
@@ -113,9 +138,7 @@ class ReplicationView{
   }
 
   updateView(){
-
-    this.createArrays();
-
+    var that = this;
     var chart = c3.generate({
           bindto: '#' + this.element.id,
           data: {
@@ -128,7 +151,7 @@ class ReplicationView{
               ],
               order: null,
               colors: {
-                tasks: this.colorFunction
+                tasks: function(color,d){ return that.colorFunction(color,d,that)}
               }
           },
           grid: {

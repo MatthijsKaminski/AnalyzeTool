@@ -100,7 +100,7 @@ class Controller{
     this.joboverview = new Joboverview(document.getElementById("joboverview"), server,this);
     this.joboverview.createtable();
     this.joboverview.refreshjoboverview();
-    this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineContainer"), server);
+    this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineContainer"), server, this);
     this.timeDivision = new TimeDivision(document.getElementById("timeDivision"), server);
     this.dataTime = new DataTime(document.getElementById("timeData"), server);
     this.nodeTask = new NodeTask(document.getElementById("nodeTask"), server);
@@ -131,6 +131,11 @@ class Controller{
     this.replicationView.update();
     this.spillingView.setJobID(jobid);
     this.spillingView.update();
+  }
+
+  setActiveTask(taskid){
+    this.spillingView.setTask(taskid);
+    this.replicationView.setTask(taskid);
   }
 
 

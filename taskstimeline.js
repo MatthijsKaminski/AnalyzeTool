@@ -1,10 +1,10 @@
 "use strict";
 class TaskTimeLine{
 
-  constructor(element, server, jobid){
+  constructor(element, server, controller){
     this.element = element;
     this.server = server;
-    this.jobid = jobid;
+    this.controller = controller;
   }
 
   setJobID(jobid){
@@ -33,7 +33,6 @@ class TaskTimeLine{
   }
 
   createTimeLineFromTasks(){
-    console.log(this.nodes);
     this.createGroups();
     this.attempts = [];
     var taskindex = 0;
@@ -54,7 +53,7 @@ class TaskTimeLine{
     timeline.setGroups(this.groups);
     var that = this;
     timeline.on('select', function (properties) {
-      console.log(properties);
+
       that.taskClicked(properties.items[0]);
     });
 
@@ -66,16 +65,22 @@ class TaskTimeLine{
     tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
     this.amountOftasks = tasks.length;
     var index = 0;
+    var taskid;
     for(index = 0; index < tasks.length; index++){
-      var taskid = tasks[index].id
-      this.server.getTaskAttempts(this.jobid, tasks[index].id, function(attempts){
-        that.handleAttempts(attempts, taskid);
-      });
+       taskid = tasks[index].id;
+
+       this.getTaskAttempts(this.jobid, taskid);
     }
   }
 
+  getTaskAttempts(jobid, taskid){
+    var that = this;
+    this.server.getTaskAttempts(this.jobid, taskid, function(attempts){
+      that.handleAttempts(attempts, taskid);
+    });
+  }
+
   handleAttempts(attempts, taskid){
-    console.log("taskid " + taskid);
     attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
     var index = 0;
     for(index = 0; index < attempts.length ; index++){
@@ -103,6 +108,9 @@ class TaskTimeLine{
     var that = this;
     var attempt = this.attempts[taskIndex];
     if(attempt){
+      if(attempt.state.localeCompare("SUCCEEDED") == 0){
+        this.controller.setActiveTask(attempt.taskid);
+      }
       document.getElementById("taskInfoJson").innerHTML = JSON.stringify(attempt,undefined,2);
       /*
       this.server.getTaskCounters(this.jobid, task["id"], function(counters){
@@ -114,6 +122,7 @@ class TaskTimeLine{
       });
       */
     }else{
+      this.controller.setActiveTask(null);
       document.getElementById("taskInfoJson").innerHTML = "No task selected";
       document.getElementById("taskAttemptsJson").innerHTML = "No task selected";
       document.getElementById("taskCountersJson").innerHTML = "No task selected";
