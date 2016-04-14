@@ -106,6 +106,7 @@ class Controller{
     this.nodeTask = new NodeTask(document.getElementById("nodeTask"), server);
     this.replicationView = new ReplicationView(document.getElementById("ReplicationView"), server);
     this.spillingView = new SpillingView(document.getElementById("SpillingView"), server);
+    this.timeDivisionTask = new TimeDivisionTask(document.getElementById("TimeDivisionTask"), server);
     this.setupSettings();
   }
 
@@ -131,11 +132,14 @@ class Controller{
     this.replicationView.update();
     this.spillingView.setJobID(jobid);
     this.spillingView.update();
+    this.timeDivisionTask.setJobID(jobid);
+    this.timeDivisionTask.update();
   }
 
   setActiveTask(taskid){
     this.spillingView.setTask(taskid);
     this.replicationView.setTask(taskid);
+    this.timeDivisionTask.setTask(taskid);
   }
 
 

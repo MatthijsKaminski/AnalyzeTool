@@ -5,10 +5,12 @@ class TaskTimeLine{
     this.element = element;
     this.server = server;
     this.controller = controller;
+    this.stat = new Stat();
   }
 
   setJobID(jobid){
     this.jobid = jobid;
+    this.stat.clearDataPoints();
   }
 
   createTimeLine(){
@@ -49,14 +51,18 @@ class TaskTimeLine{
     }
     var visdataset = new vis.DataSet(this.dataset);
     var options = {};
-    var timeline = new vis.Timeline(this.element, visdataset, options);
-    timeline.setGroups(this.groups);
+    this.timeline = new vis.Timeline(this.element, visdataset, options);
+    this.timeline.setGroups(this.groups);
     var that = this;
-    timeline.on('select', function (properties) {
+    this.timeline.on('select', function (properties) {
 
       that.taskClicked(properties.items[0]);
     });
 
+    console.log("Quantiles " + this.stat.getQuantiles());
+    console.log("interval " + this.stat.getOutliersInterval());
+    console.log("mean " + this.stat.getMean());
+    console.log("std " + this.stat.getStandardDeviation());
   }
 
   getAllTaskAttempts(tasks){
@@ -94,6 +100,7 @@ class TaskTimeLine{
 
   handleAttempt(attempt, taskid){
     attempt.taskid = taskid;
+    this.doStatsForAttempt(attempt);
     var node = this.nodes[attempt.nodeHttpAddress];
     if( node === undefined ){
       node = {
@@ -102,6 +109,10 @@ class TaskTimeLine{
       this.nodes[attempt.nodeHttpAddress] = node;
     }
     node.attempts.push(attempt);
+  }
+
+  doStatsForAttempt(attempt){
+    this.stat.addDataPoint(attempt["elapsedTime"]);
   }
 
   taskClicked(taskIndex){
@@ -164,6 +175,24 @@ class TaskTimeLine{
                 className: classNameValue,
                 title: titleValue};
     this.dataset.push(elem);
+    if(this.stat.isOutlier(taskAttempt["elapsedTime"])){
+      console.log("test");
+      this.createButtonOutlier(taskIndex);
+    }
+  }
+
+  createButtonOutlier(taskindex){
+    var button = document.createElement("button");
+    button.innerHTML = "outlier " + taskindex;
+    var that = this;
+    button.addEventListener("click" ,function(){
+      console.log("clicked");
+      that.timeline.setSelection(taskindex, {
+        focus: true
+      });
+    });
+    var elem = document.getElementById("outliers");
+    elem.appendChild(button);
   }
 
 

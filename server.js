@@ -77,6 +77,23 @@ class Server{
       }
   }
 
+  getTaskInfo(jobID, taskID, func){
+    if(this.historyserver){
+        this.historyserver.fetchTaskInfo(jobID, taskID, func);
+    }else{
+        ;
+    }
+  }
+
+  getAttemptInfo(jobID, taskID, attemptID, func){
+    if(this.historyserver){
+        this.historyserver.fetchTaskAttemptInfo(jobID, taskID, attemptID, func);
+    }else{
+        ;
+    }
+  }
+
+
   getDatabaseConnection(func){
     if(this.database){
       this.database.useDatabase(function(db){
