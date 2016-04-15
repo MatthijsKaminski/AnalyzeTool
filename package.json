@@ -6,8 +6,12 @@
   "scripts": {
     "start": "electron ."
   },
-  "devDependencies": {
-    "electron-prebuilt": "^0.28.3"
+
+  "Dependencies": {
+    "electron-prebuilt": "^0.28.3",
+    "d3": "3",
+    "mongodb" : "~2.0"
+
   },
   "author": {
     "name": "Matthijs Kaminski"
