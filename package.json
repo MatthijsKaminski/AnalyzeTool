@@ -7,7 +7,7 @@
     "start": "electron ."
   },
 
-  "Dependencies": {
+  "dependencies": {
     "electron-prebuilt": "^0.28.3",
     "d3": "3",
     "mongodb" : "~2.0"
