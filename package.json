@@ -6,15 +6,17 @@
   "scripts": {
     "start": "electron ."
   },
-
-  "dependencies": {
-    "electron-prebuilt": "^0.28.3",
-    "d3": "3",
-    "mongodb" : "~2.0"
-
-  },
+  "devDependencies": {},
   "author": {
     "name": "Matthijs Kaminski"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "d3": "~3.5.16",
+    "mongodb": "~2.1.18",
+    "c3": "~0.4.11",
+    "plotty": "~0.1.0",
+    "bootstrap-table": "~1.10.1",
+    "jquery": "~2.2.3"
+  }
 }

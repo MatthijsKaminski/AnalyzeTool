@@ -26,15 +26,19 @@
 
 
     <!-- Load d3.js and c3.js -->
-    <script src="c3/c3-0.4.10/d3.v3.min.js" charset="utf-8"></script>
-    <script src="c3/c3-0.4.10/c3.min.js"></script>
+    <script src="js/libraries/c3/c3-0.4.10/d3.v3.min.js" charset="utf-8"></script>
+    <script src="js/libraries/c3/c3-0.4.10/c3.min.js"></script>
 
     <!-- Load c3.css -->
-    <link href="c3/c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
+    <link href="js/libraries/c3/c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
 
     <!-- Load vis -->
-    <script src="vis/dist/vis.js"></script>
-    <link href="vis/dist/vis.css" rel="stylesheet" type="text/css" />
+    <script src="js/libraries/vis/dist/vis.js"></script>
+    <link href="js/libraries/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+
+    <!-- Load bootstraptable -->
+    <link rel="stylesheet" href="node_modules/bootstrap-table/dist/bootstrap-table.min.css">
+
 </head>
 
 <body>
@@ -54,7 +58,7 @@
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav top-nav-elmnt">
                 <li >
-                    <a href="#" onClick="joboverview.refreshjoboverview();" ><i class="fa fa-refresh"></i> </a
+                    <a href="#" onClick="joboverview.refreshjoboverview();" ><i class="fa fa-refresh"></i> </a>
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -75,37 +79,120 @@
         </nav>
 
         <div id="page-wrapper">
+            <div id="noServerSeleted">
+                <div class="row">
+                    <div class="col-md-5 col-md-offset-4">
+                        <h1>Add a new server in the left menu.</h1>
+                    </div>
+                </div>
 
+            </div>
+            <br>
             <div class="container-fluid"  id="serverTabs">
               <div>
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                  <li role="presentation" class="active"><a href="#jobOverviewTab" aria-controls="jobOverviewTab" role="tab" data-toggle="tab">Jobs</a></li>
-                  <li role="presentation" ><a href="#TaskTimelineTab" aria-controls="TaskTimelineTab" role="tab" data-toggle="tab">Task timeline</a></li>
-                  <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+                    <li role="presentation" class="active"><a href="#jobOverviewTab" aria-controls="jobOverviewTab" role="tab" data-toggle="tab">Jobs</a></li>
+                    <li role="presentation" ><a href="#nodesTab" aria-controls="nodesTab" role="tab" data-toggle="tab">Nodes</a></li>
+                    <li role="presentation" ><a href="#TaskTimelineTab" aria-controls="TaskTimelineTab" role="tab" data-toggle="tab">Tasks</a></li>
+                    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
                 </ul>
 
                 <!-- Tab panes -->
-                <div class="tab-content">
+                  <!-- Job tab -->
+                <div class="tab-content container">
                   <div role="tabpanel" class="tab-pane active" id="jobOverviewTab">
-                    <div id="joboverview"></div>
-                    <div id="timeDivision"></div>
-                    <div id="timeData"></div>
-                    <div id="nodeTask"></div>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="TaskTimelineTab">
-                    <div id="TaskTimelineContainer">
+                      <h2>Jobs</h2>
+                    <div id="joboverviewPanel" class="row panel panel-default">
+                        <div id="joboverview"  class="panel-body">
+
+                        </div>
                     </div>
-                    <div id="outliers"></div>
-                    <div id="ReplicationView"></div>
-                    <div id="SpillingView"></div>
-                    <div id="TimeDivisionTask"></div>
-                    <pre id="taskInfoJson">No task selected</pre>
-                    <pre id="taskCountersJson">No task selected</pre>
-                    <pre id="taskAttemptsJson">No task selected</pre>
-                    <pre id="taskAttemptCounters">No task selected</pre>
+                    <div id="jobInfo">
+                      <h2>Time distribution</h2>
+                    <div id="timeDivisionPanel" class="row panel panel-default">
+                        <div  class="panel-body">
+                            <div id="timeDivision"></div>
+                        </div>
+                    </div>
+                      <h2>Time vs Data</h2>
+                    <div id="timeDataPanel" class="row panel panel-default">
+                        <div  class="panel-body">
+                            <div id="timeData"></div>
+                        </div>
+                    </div>
+                    <h2>Task-Node distribution</h2>
+                    <div id="nodeTask" class="row panel panel-default">
+                        <div class="panel-body">
+                            <div  class="col-md-6">
+                                <h3>Maps</h3>
+                                <div id="nodeTaskMaps"></div>
+                            </div>
+                            <div  class="col-md-6">
+                                <h3>Reducers</h3>
+                                <div id="nodeTaskReducers"></div>
+                            </div>
+                        </div>
+                    </div>
                   </div>
+                  </div>
+
+                    <!-- nodes tab -->
+                    <div role="tabpanel" class="tab-pane" id="nodesTab">
+
+                        <div id="nodesContainer">
+                            <h2>Nodes</h2>
+                            <div id="nodesPanel" class="row panel panel-default">
+                                <div  class="panel-body">
+                                    <table id="nodestable" data-toggle="nodestable" data-search="true"
+
+
+                                           data-show-toggle="true"
+                                           data-show-columns="true"
+                                           height="250"
+                                           >
+                                        <thead>
+                                        <tr>
+                                            <th data-field="name">Name</th>
+                                            <th data-field="maps" data-sortable="true">Stars</th>
+                                            <th data-field="reducers">Forks</th>
+                                            <th data-field="succes">Description</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                    <br>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- task tab -->
+                    <div role="tabpanel" class="tab-pane" id="TaskTimelineTab">
+
+                        <div id="taskContainer">
+                            <h2>Task Timeline</h2>
+                            <div id="taskTimelinePanel" class="row panel panel-default">
+                                <div  class="panel-body"><div id="TaskTimelineContainer"></div></div>
+                            </div>
+
+                            <div id="outliers"></div>
+                            <div id="ReplicationView"></div>
+                            <div id="SpillingView"></div>
+                            <div id="TimeDivisionTask"></div>
+                            <pre id="taskInfoJson">No task selected</pre>
+                            <pre id="taskCountersJson">No task selected</pre>
+                            <pre id="taskAttemptsJson">No task selected</pre>
+                            <pre id="taskAttemptCounters">No task selected</pre>
+                        </div>
+
+                  </div>
+                    <!-- settings tab -->
                   <div role="tabpanel" class="tab-pane" id="settings">
                     <input name="use-server-db-switch" type="checkbox" checked="" data-switch-no-init="">
                   </div>
@@ -139,11 +226,11 @@
         <form>
           <div class="form-group">
             <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" placeholder="Name">
+            <input type="text" class="form-control" id="nameInput" placeholder="Name" value="test">
           </div>
           <div class="form-group">
             <label for="historyInput">History server</label>
-            <input type="text" class="form-control" id="historyInput" placeholder="History server">
+            <input type="text" class="form-control" id="historyInput" placeholder="History server" value="localhost:8082">
           </div>
           <div class="form-group">
             <label for="mongodbInput">Mongodb</label>
@@ -173,28 +260,30 @@
 </body>
 
 <!-- jQuery -->
-<script>window.$ = window.jQuery = require('./js/jquery.js');
+<script>window.$ = window.jQuery = require('./js/libraries/jquery.js');
         //$("#sidebar").hover(function(){toggle();});
+
 </script>
 
-<!-- Bootstrap Core JavaScript -->
+<!-- Bootstrap Core JavaScript <script src="js/libraries/jquery.js"></script> -->
 
-<script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap-switch.min.js"></script>
-<script src="js/sidebar.js"></script>
-<script src="./server.js"></script>
-<script src="./timedivision-view.js"></script>
-<script src="./nodetask-view.js"></script>
-<script src="./datatime-view.js"></script>
-<script src="./replication-view.js"></script>
-<script src="./timedivision-task-view.js"></script>
-<script src="./spilling-view.js"></script>
-<script src="./servers.js"></script>
-<script src="./historyserverAPI.js"></script>
-<script src="./database.js"></script>
-<script src="./joboverview.js"></script>
-<script src="./taskstimeline.js"></script>
-<script src="./controller.js"></script>
-<script src="./statlogic.js"></script>
-
+<script src="js/libraries/bootstrap.min.js"></script>
+<script src="js/libraries/bootstrap-switch.min.js"></script>
+<script src="node_modules/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="js/tool/sidebar.js"></script>
+<script src="js/tool/server.js"></script>
+<script src="js/tool/visualizations/timedivision-view.js"></script>
+<script src="js/tool/visualizations/nodetask-view.js"></script>
+<script src="js/tool/visualizations/datatime-view.js"></script>
+<script src="js/tool/visualizations/replication-view.js"></script>
+<script src="js/tool/visualizations/timedivision-task-view.js"></script>
+<script src="js/tool/visualizations/spilling-view.js"></script>
+<script src="js/tool/servers.js"></script>
+<script src="js/tool/historyserverAPI.js"></script>
+<script src="js/tool/database.js"></script>
+<script src="js/tool/joboverview.js"></script>
+<script src="js/tool/visualizations/taskstimeline.js"></script>
+<script src="js/tool/controller.js"></script>
+<script src="js/tool/visualizations/statlogic.js"></script>
+<script src="js/tool/visualizations/nodeoverview.js"></script>
 </html>
