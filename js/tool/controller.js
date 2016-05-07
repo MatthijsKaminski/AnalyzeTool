@@ -22,6 +22,11 @@ class Controller{
     addButton.addEventListener("click", function(){
       $('#addServerModal').modal('toggle');
     });
+
+    var addButtonJumbotron = document.getElementById("addServerJumboTron");
+    addButtonJumbotron.addEventListener("click", function(){
+      $('#addServerModal').modal('toggle');
+    });
   }
 
   initAddSeverModal(){
@@ -115,7 +120,7 @@ class Controller{
     this.timeDivisionTask = new TimeDivisionTask(document.getElementById("TimeDivisionTask"), server);
     this.jobInfo = document.getElementById("jobInfo");
     this.jobInfo.style.display = "none";
-    this.nodeOverview = new NodeOverview(document.getElementById("nodestable"),server);
+    this.nodeController = new NodeController(document.getElementById("nodesContainer"),server);
     this.setupSettings();
   }
 
@@ -152,7 +157,7 @@ class Controller{
     this.spillingView.update();
     this.timeDivisionTask.setJobID(jobid);
     this.timeDivisionTask.update();
-    this.nodeOverview.setJobID(jobid);
+    this.nodeController.setJobID(jobid);
     this.jobInfo.style.display = "block";
   }
 

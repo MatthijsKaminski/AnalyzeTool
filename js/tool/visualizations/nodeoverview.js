@@ -2,10 +2,11 @@
 
 class NodeOverview{
 
-    constructor(element,server){
+    constructor(element,server, nodeController){
         this.element = element;
         this.server = server;
         this.jobid = null;
+        this.nodeController = nodeController;
         this.nodesArray = [];
     }
 

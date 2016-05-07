@@ -81,12 +81,16 @@
         <div id="page-wrapper">
             <br>
             <!-- no server selected -->
-            <div id="noServerSeleted">
-                <div class="row">
-                    <div class="col-md-5 col-md-offset-4">
-                        <h1>Add a new server in the left menu.</h1>
-                    </div>
+            <div id="noServerSeleted" class="col-md-6 col-md-offset-3">
+                <div class="jumbotron" style="background:transparent !important">
+                    <h1 class="display-3">Welcome!</h1>
+                    <p class="lead">To start add your Hadoop JobHistory server in the left menu or click the button below. </p>
+
+                    <p class="lead">
+                        <a id="addServerJumboTron" class="btn btn-primary btn-lg" href="#" role="button">Add server</a>
+                    </p>
                 </div>
+
             </div>
 
             <!-- alert for if connection fails -->
@@ -163,15 +167,32 @@
                                         <thead>
                                         <tr>
                                             <th data-field="name">Name</th>
-                                            <th data-field="maps" data-sortable="true">Stars</th>
-                                            <th data-field="reducers">Forks</th>
-                                            <th data-field="succes">Description</th>
+                                            <th data-field="maps" data-sortable="true">Maps</th>
+                                            <th data-field="reducers">Reducers</th>
+                                            <th data-field="succes">Succesful</th>
                                         </tr>
                                         </thead>
                                     </table>
                                     <br>
 
                                 </div>
+                            </div>
+                            <ul class="nav nav-pills nav-justified">
+                                <li role="presentation" class="active"><a data-toggle="pill" href="#nodeDetails">Details</a></li>
+                                <li role="presentation"><a data-toggle="pill" href="#nodeBoxplots">Boxplots</a></li>
+
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="nodeDetails" class="tab-pane fade in active">
+                                    <h3>HOME</h3>
+                                    <p>Some content.</p>
+                                </div>
+                                <div id="nodeBoxplots" class="tab-pane fade">
+                                    <h3>Menu 1</h3>
+                                    <p>Some content in menu 1.</p>
+                                </div>
+
                             </div>
                         </div>
 
@@ -295,4 +316,5 @@
 <script src="js/tool/visualizations/statlogic.js"></script>
 <script src="js/tool/visualizations/nodeoverview.js"></script>
 <script src="js/tool/errorbox.js"></script>
+<script src="js/tool/nodecontroller.js"></script>
 </html>
