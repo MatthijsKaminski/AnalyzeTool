@@ -8,6 +8,7 @@ class Joboverview{
     this.heads = ["name", "state", "submitTime", "startTime", "finishTime", "mapsCompleted", "reducesCompleted"];
     this.controller = controller;
     this.activeRow = null;
+    
   }
 
   createtable(){
@@ -45,6 +46,7 @@ class Joboverview{
   }
 
   refreshjoboverview(){
+    console.log("refresh");
     this.clearTableData();
     var that = this;
     this.server.getAllJobs(function(jobs){

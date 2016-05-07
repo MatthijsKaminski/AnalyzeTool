@@ -100,6 +100,7 @@ class Controller{
   }
 
   setupTabs(){
+    this.setupRefreshButton();
     this.serverTabs.style.display = "block";
     var server = this.servers.getServer(this.activeIndex);
     this.joboverview = new Joboverview(document.getElementById("joboverview"), server,this);
@@ -116,6 +117,15 @@ class Controller{
     this.jobInfo.style.display = "none";
     this.nodeOverview = new NodeOverview(document.getElementById("nodestable"),server);
     this.setupSettings();
+  }
+
+  setupRefreshButton(){
+    var that = this;
+    document.getElementById("refreshButton").addEventListener("click",
+        function(e){
+          e.preventDefault();
+          that.joboverview.refreshjoboverview()
+        });
   }
 
   setupSettings(){

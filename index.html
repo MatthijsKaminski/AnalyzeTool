@@ -58,7 +58,7 @@
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav top-nav-elmnt">
                 <li >
-                    <a href="#" onClick="joboverview.refreshjoboverview();" ><i class="fa fa-refresh"></i> </a>
+                    <a href="#"  id="refreshButton"  ><i class="fa fa-refresh"></i> </a>
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -79,15 +79,23 @@
         </nav>
 
         <div id="page-wrapper">
+            <br>
+            <!-- no server selected -->
             <div id="noServerSeleted">
                 <div class="row">
                     <div class="col-md-5 col-md-offset-4">
                         <h1>Add a new server in the left menu.</h1>
                     </div>
                 </div>
+            </div>
+
+            <!-- alert for if connection fails -->
+            <div id="alertbox">
 
             </div>
-            <br>
+
+
+            <!-- tabs -->
             <div class="container-fluid"  id="serverTabs">
               <div>
 
@@ -286,4 +294,5 @@
 <script src="js/tool/controller.js"></script>
 <script src="js/tool/visualizations/statlogic.js"></script>
 <script src="js/tool/visualizations/nodeoverview.js"></script>
+<script src="js/tool/errorbox.js"></script>
 </html>

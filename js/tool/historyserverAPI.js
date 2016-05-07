@@ -107,10 +107,31 @@ class HistoryServer {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
         //console.log("ajax responseText " + xhttp.responseText);
         func(xhttp.responseText);
+      }else{
+        if (xhttp.readyState == 4 ) {
+          ErrorBox.showError("could not connect to server");
+
+        }else{
+          console.log(xhttp.readyState);
+          console.log(xhttp.status);
+        }
       }
     };
-    xhttp.open("GET", this.url + path, true);
-    xhttp.setRequestHeader("Accept", "application/json");
-    xhttp.send();
+
+    xhttp.onerror = function (e) {
+      ErrorBox.showError("could not connect to server");
+    }
+
+    xhttp.ontimeout = function (e) {
+      ErrorBox.showError("could not connect to server");
+    }
+    try {
+      xhttp.open("GET", this.url + path, true);
+      xhttp.setRequestHeader("Accept", "application/json");
+      xhttp.send();
+    }catch (e){
+      //alert("could not connect to server");
+      console.log("catched error")
+    }
   }
 }
