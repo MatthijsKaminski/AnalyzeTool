@@ -112,8 +112,7 @@ class HistoryServer {
           ErrorBox.showError("could not connect to server");
 
         }else{
-          console.log(xhttp.readyState);
-          console.log(xhttp.status);
+          //Do nothing
         }
       }
     };

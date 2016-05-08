@@ -24,7 +24,7 @@ class TimeDivision{
   updateView(json){
     this.job = JSON.parse(json, function(k,v){return v;});
     this.job = this.job.job;
-    console.log(this.job);
+    
     var chart = c3.generate({
           bindto: '#' + this.element.id,
           data: {

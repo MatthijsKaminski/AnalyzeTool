@@ -54,31 +54,41 @@ class NodeOverview{
 
     getAllTaskAttempts(tasks){
         this.nodes = {};
-        var that = this;
         tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
         this.amountOftasks = tasks.length;
+        this.taskAttempts = 0;
         var index = 0;
         for(index = 0; index < tasks.length; index++){
-            this.server.getTaskAttempts(this.jobid, tasks[index].id, function(attempts){
-                that.handleAttempts(attempts);
-            });
+            this.getTaskAttempts(tasks[index].id)
         }
     }
 
-    handleAttempts(attempts){
+    getTaskAttempts(taskid){
+        var that = this;
+        this.server.getTaskAttempts(this.jobid, taskid, function(attempts){
+            that.handleAttempts(attempts, taskid);
+        });
+    }
+
+
+    handleAttempts(attempts, taskid){
         attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
-        var index = 0;
-        for(index = 0; index < attempts.length ; index++){
-            this.handleAttempt(attempts[index]);
+        this.taskAttempts += attempts.length;
+        for(var index = 0; index < attempts.length ; index++){
+            this.handleAttempt(attempts[index], taskid);
         }
         this.amountOftasks--;
-        if(this.amountOftasks == 0){
+        if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
+            console.log("update");
             this.createNodeArray();
             this.clearAndLoadTable();
         }
     }
 
-    handleAttempt(attempt){
+
+
+    handleAttempt(attempt, taskid){
+        var that = this;
         var node = this.nodes[attempt.nodeHttpAddress];
         if( node === undefined ){
             node = {
@@ -89,15 +99,45 @@ class NodeOverview{
                 failed:0,
                 startTime: 0,
                 endTime: 0,
-                elapsedTime:0
+                elapsedTime:0,
+                mapTimes: [],
+                reduceTimes: [],
+                shuffleTimes:[],
+                mergeTimes:[],
+                replicationRates:[],
+                spillingAmounts:[]
             };
             this.nodes[attempt.nodeHttpAddress] = node;
 
         }
         this.updateNodeWithAttempt(attempt, node);
+        this.server.getTaskAttemptCounters(this.jobid,taskid,attempt.id, function (counters) {
+            that.updateNodeWithAttemptCounters(attempt, node, counters);
+        })
+
+    }
+
+    updateNodeWithAttemptCounters(attempt, node, counters){
+        counters  = JSON.parse(counters, function(k,v){return v;}).jobTaskAttemptCounters;
+        console.log(counters);
+        if(attempt.state.localeCompare("SUCCEEDED") === 0){
+            if(attempt.type.localeCompare("MAP") === 0){
+                node.replicationRates.push(TaskAttempt.getReplicationRate(counters))
+            }else{
+                
+            }
+        }
+        this.taskAttempts--;
+        if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
+            console.log("update")
+            this.createNodeArray();
+            this.clearAndLoadTable();
+        }
+
     }
 
     updateNodeWithAttempt(attempt, node){
+
         //check succes
         if(attempt.state.localeCompare("SUCCEEDED") === 0){
             node.succes++;
@@ -107,8 +147,12 @@ class NodeOverview{
         //check type
         if(attempt.type.localeCompare("MAP") === 0){
             node.maps++;
+            node.mapTimes.push(attempt.elapsedTime);
         }else{
             node.reducers++;
+            node.mergeTimes.push(attempt.elapsedMergeTime);
+            node.reduceTimes.push(attempt.elapsedReduceTime);
+            node.shuffleTimes.push(attempt.elapsedShuffleTime);
         }
         //add elapsedTime
         node.elapsedTime += attempt.elapsedTime;
@@ -129,7 +173,7 @@ class NodeOverview{
 
     createNodeArray(){
         for(var node in this.nodes){
-            console.log(node);
+
             this.nodesArray.push(this.nodes[node]);
         }
     }

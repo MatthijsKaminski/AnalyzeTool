@@ -58,11 +58,12 @@ class TaskTimeLine{
 
       that.taskClicked(properties.items[0]);
     });
-
+    /*
     console.log("Quantiles " + this.stat.getQuantiles());
     console.log("interval " + this.stat.getOutliersInterval());
     console.log("mean " + this.stat.getMean());
     console.log("std " + this.stat.getStandardDeviation());
+    */
   }
 
   getAllTaskAttempts(tasks){
@@ -176,7 +177,7 @@ class TaskTimeLine{
                 title: titleValue};
     this.dataset.push(elem);
     if(this.stat.isOutlier(taskAttempt["elapsedTime"])){
-      console.log("test");
+      
       this.createButtonOutlier(taskIndex);
     }
   }

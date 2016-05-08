@@ -15,14 +15,13 @@ class Stat{
     var indexQ1 = Math.ceil(0.25 * numberOfDataPoints) - 1;
     var indexQ2 = Math.ceil(0.5  * numberOfDataPoints) - 1;
     var indexQ3 = Math.ceil(0.75 * numberOfDataPoints) - 1;
-    console.log(this.dataPoints);
     return [this.dataPoints[indexQ1], this.dataPoints[indexQ2], this.dataPoints[indexQ3]];
   }
 
   getOutliersInterval(){
     var quantiles = this.getQuantiles();
     var interQuantileRange = quantiles[2] - quantiles[0];
-    console.log(interQuantileRange);
+    
     var leftBoundary  =  quantiles[0] - (1.5 * interQuantileRange);
     var rightBoundary =  quantiles[2] + (1.5 * interQuantileRange);
     this.outliersInterval = [leftBoundary, rightBoundary];

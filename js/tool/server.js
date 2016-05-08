@@ -55,7 +55,7 @@ class Server{
 
   getTaskAttemptCounters(jobID, taskID, attemptID, func){
     if(this.historyserver){
-        this.historyserver.fetchTaskAttemptInfo(jobID, taskID,attemptID, func);
+        this.historyserver.fetchTaskAttemptCounters(jobID, taskID,attemptID, func);
     }else{
         ;
     }
