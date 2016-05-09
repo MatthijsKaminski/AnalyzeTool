@@ -19,6 +19,7 @@
     <!-- Custom CSS -->
     <link href="css/dashboard.css" rel="stylesheet" type="text/css">
     <link href="css/timeline.css" rel="stylesheet" type="text/css">
+    <link href="css/boxplots.css" rel="stylesheet" type="text/css">
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
@@ -170,6 +171,8 @@
                                             <th data-field="maps" data-sortable="true">Maps</th>
                                             <th data-field="reducers">Reducers</th>
                                             <th data-field="succes">Succesful</th>
+                                            <th data-field="failed">Failed</th>
+
                                         </tr>
                                         </thead>
                                     </table>
@@ -189,8 +192,12 @@
                                     <p>Some content.</p>
                                 </div>
                                 <div id="nodeBoxplots" class="tab-pane fade">
-                                    <h3>Menu 1</h3>
-                                    <p>Some content in menu 1.</p>
+                                    <h2>Boxplots</h2>
+                                    <div  class="row panel panel-default">
+                                        <div  class="panel-body">
+                                            <div id="nodeBoxPlotsContainer"></div>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -299,6 +306,7 @@
 <script src="js/libraries/bootstrap.min.js"></script>
 <script src="js/libraries/bootstrap-switch.min.js"></script>
 <script src="node_modules/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="js/libraries/plotly.js-1.10.2/dist/plotly.min.js"></script>
 <script src="js/tool/sidebar.js"></script>
 <script src="js/tool/server.js"></script>
 <script src="js/tool/visualizations/timedivision-view.js"></script>
@@ -318,4 +326,6 @@
 <script src="js/tool/errorbox.js"></script>
 <script src="js/tool/nodecontroller.js"></script>
 <script src="js/tool/taskattempt.js"></script>
+<script src="js/tool/visualizations/nodeBoxPlots.js"></script>
+<script src="js/tool/nodesData.js"></script>
 </html>

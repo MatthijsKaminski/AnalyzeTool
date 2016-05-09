@@ -19,13 +19,16 @@ class Stat{
   }
 
   getOutliersInterval(){
+    return this.outliersInterval;
+  }
+
+  calculateOutliersInterval(){
     var quantiles = this.getQuantiles();
     var interQuantileRange = quantiles[2] - quantiles[0];
-    
+
     var leftBoundary  =  quantiles[0] - (1.5 * interQuantileRange);
     var rightBoundary =  quantiles[2] + (1.5 * interQuantileRange);
     this.outliersInterval = [leftBoundary, rightBoundary];
-    return this.outliersInterval;
   }
 
   isOutlier(dataPoint){
@@ -54,6 +57,10 @@ class Stat{
     }
     sum /= (this.dataPoints.length - 1);
     return Math.sqrt(sum);
+  }
+
+  getDataPoints(){
+    return this.dataPoints;
   }
 
   clearDataPoints(){

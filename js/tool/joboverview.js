@@ -109,12 +109,12 @@ class Joboverview{
     $(this.activeRow).parent().addClass("active");
     this.controller.setActiveJob(jobid);
 
-    // this.server.getJobInfo(jobid, function(json){
-    //   that.showJobInfo(json);
-    // });
-    // this.server.getJobCounters(jobid, function(json){
-    //   that.showJobCounters(json);
-    // });
+    this.server.getJobInfo(jobid, function(json){
+      that.showJobInfo(json);
+    });
+    this.server.getJobCounters(jobid, function(json){
+      that.showJobCounters(json);
+    });
 
 
   }
@@ -132,7 +132,7 @@ class Joboverview{
 
 
 }
-console.log("joboverview loaded");
+
 /*
 var joboverview = new Joboverview(document.getElementById("jobcontainer"), new Server("localhost:8082",null));
 joboverview.createtable();
