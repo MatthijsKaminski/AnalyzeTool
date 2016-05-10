@@ -37,6 +37,11 @@ class TaskAttempt{
         return reduceOutputRecords;
     }
 
+    static getReduceKeysFromTaskAttempt(counters){
+        var keys = TaskAttempt.getTaskCounter(counters,"taskAttemptCounterGroup", "org.apache.hadoop.mapreduce.TaskCounter", "REDUCE_INPUT_GROUPS" ).value;
+        return keys;
+    }
+
     static getTaskCounter(taskCounter, counterGroupsName, counterGroupName, counterName) {
         var counterGroups = taskCounter[counterGroupsName];
         for (var groupIndex = 0; groupIndex < counterGroups.length; groupIndex++) {

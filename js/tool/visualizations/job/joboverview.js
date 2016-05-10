@@ -46,7 +46,6 @@ class Joboverview{
   }
 
   refreshjoboverview(){
-    console.log("refresh");
     this.clearTableData();
     var that = this;
     this.server.getAllJobs(function(jobs){
@@ -108,13 +107,13 @@ class Joboverview{
     this.activeRow = row;
     $(this.activeRow).parent().addClass("active");
     this.controller.setActiveJob(jobid);
-
-    this.server.getJobInfo(jobid, function(json){
-      that.showJobInfo(json);
-    });
-    this.server.getJobCounters(jobid, function(json){
-      that.showJobCounters(json);
-    });
+    //
+    // this.server.getJobInfo(jobid, function(json){
+    //   that.showJobInfo(json);
+    // });
+    // this.server.getJobCounters(jobid, function(json){
+    //   that.showJobCounters(json);
+    // });
 
 
   }

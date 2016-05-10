@@ -40,7 +40,6 @@ class NodeBoxPlot{
 
 
     updateBoxplot(){
-        console.log( this.data);
         var that = this;
         var dataArray = [];
         var trace1 = {
@@ -52,24 +51,25 @@ class NodeBoxPlot{
 
         dataArray.push(trace1);
 
-        /*
+
         if(this.node !== undefined){
             var trace2 = {
-                x: [this.node[this.dataName]],
+                x: [that.node[that.dataName]],
                 type: 'box',
                 name: 'Selected node'
             };
             dataArray.push(trace2);
         }
-        */
+
         var layout = {
-            title: that.title
+            title: that.title,
+            xaxis: {
+                zeroline: false
+            }
 
         };
 
         Plotly.newPlot(this.container.id, dataArray, layout);
-
-        console.log(this.container.getElementsByClassName("svg-container"));
         var element = this.container.getElementsByClassName("svg-container");
         if(element){
 

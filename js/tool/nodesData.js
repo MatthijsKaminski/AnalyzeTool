@@ -76,12 +76,17 @@ class NodesData{
                 totalMapOutputs:0,
                 reduceInputs:[],
                 totalReduceInputs:0,
+                totalTime:0,
+                load:0,
                 reduceOutputs:[],
                 totalReduceOutputs:0,
                 replicationRates:[],
                 totalReplication:0,
                 spillingAmounts:[],
-                totalSpilling:0
+                totalSpilling:0,
+                uniqueReduceKeys: [],
+                totalUniqueReduceKeys:0,
+
             };
             this.nodes[attempt.nodeHttpAddress] = node;
 
@@ -95,7 +100,6 @@ class NodesData{
 
     updateNodeWithAttemptCounters(attempt, node, counters){
         counters  = JSON.parse(counters, function(k,v){return v;}).jobTaskAttemptCounters;
-        console.log(counters);
         if(attempt.state.localeCompare("SUCCEEDED") === 0){
             if(attempt.type.localeCompare("MAP") === 0){
                 var replicationRate = TaskAttempt.getReplicationRateFromTaskAttempt(counters)
@@ -117,6 +121,9 @@ class NodesData{
                 var reduceOutput = TaskAttempt.getReduceOutputsFromTaskAttempt(counters);
                 node.reduceOutputs.push(reduceOutput);
                 node.totalReduceOutputs += reduceOutput;
+                var amountOfKeys = TaskAttempt.getReduceKeysFromTaskAttempt(counters);
+                node.uniqueReduceKeys.push(amountOfKeys);
+                node.totalUniqueReduceKeys+=amountOfKeys;
             }
         }
         this.taskAttempts--;
@@ -200,7 +207,7 @@ class NodesData{
 
     runStats(){
         for(var index = 0; index < this.stats.length; index++){
-            this.stats[index].calculateOutliersInterval();
+            this.stats[index].calcStats();
         }
 
     }
@@ -210,13 +217,18 @@ class NodesData{
             var node = this.nodes[node];
             for(var index = 0; index < this.statNames.length ; index++){
                 var name = this.statNames[index];
-                node[(name + "Outlier")] = this[name].isOutlier(node[name]);
+                node[(name + "Label")] = this[name].label(node[name]);
             }
 
         }
     }
     
     calcAvgForNode(node){
+
+        var totalTime = (node.endTime - node.startTime);
+        node.totalTime = totalTime;
+        var load = node.elapsedTime / totalTime;
+        node.load = load;
         if(node.maps != 0){ node.avgMapTime = node.avgMapTime / node.maps;}
            
         if(node.reducers != 0) {

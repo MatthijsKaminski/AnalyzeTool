@@ -35,6 +35,7 @@ class NodeOverview{
             $table.on('click-row.bs.table', function (e, row, $element) {
                 $('.success').removeClass('success');
                 $($element).addClass('success');
+                that.selectedNode(row);
             });
 
         });
@@ -45,6 +46,11 @@ class NodeOverview{
 
     }
 
+
+    selectedNode(node){
+        this.nodeController.selectNode(node);
+    }
+    
 
 
 

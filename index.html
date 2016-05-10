@@ -159,8 +159,6 @@
                             <div id="nodesPanel" class="row panel panel-default">
                                 <div  class="panel-body">
                                     <table id="nodestable" data-toggle="nodestable" data-search="true"
-
-
                                            data-show-toggle="true"
                                            data-show-columns="true"
                                            height="250"
@@ -188,8 +186,22 @@
 
                             <div class="tab-content">
                                 <div id="nodeDetails" class="tab-pane fade in active">
-                                    <h3>HOME</h3>
-                                    <p>Some content.</p>
+                                    <h2>Node diagnoses</h2>
+                                    <div  class="row panel panel-default">
+                                        <div  class="panel-body">
+                                            <div id="nodeDiagnosisContainer"></div>
+                                        </div>
+                                    </div>
+                                    <h2>Average time distribution</h2>
+                                    <div  class="row panel panel-default">
+                                        <div  class="panel-body">
+                                            <div id="nodeTimeContainer"></div>
+                                        </div>
+                                    </div>
+
+                                    <div id="nodeHistContainer">
+
+                                    </div>
                                 </div>
                                 <div id="nodeBoxplots" class="tab-pane fade">
                                     <h2>Boxplots</h2>
@@ -308,24 +320,27 @@
 <script src="node_modules/bootstrap-table/src/bootstrap-table.js"></script>
 <script src="js/libraries/plotly.js-1.10.2/dist/plotly.min.js"></script>
 <script src="js/tool/sidebar.js"></script>
-<script src="js/tool/server.js"></script>
-<script src="js/tool/visualizations/timedivision-view.js"></script>
-<script src="js/tool/visualizations/nodetask-view.js"></script>
-<script src="js/tool/visualizations/datatime-view.js"></script>
-<script src="js/tool/visualizations/replication-view.js"></script>
-<script src="js/tool/visualizations/timedivision-task-view.js"></script>
-<script src="js/tool/visualizations/spilling-view.js"></script>
-<script src="js/tool/servers.js"></script>
-<script src="js/tool/historyserverAPI.js"></script>
-<script src="js/tool/database.js"></script>
-<script src="js/tool/joboverview.js"></script>
-<script src="js/tool/visualizations/taskstimeline.js"></script>
-<script src="js/tool/controller.js"></script>
+<script src="js/tool/server/server.js"></script>
+<script src="js/tool/visualizations/job/timedivision-view.js"></script>
+<script src="js/tool/visualizations/job/nodetask-view.js"></script>
+<script src="js/tool/visualizations/job/datatime-view.js"></script>
+<script src="js/tool/visualizations/tasks/replication-view.js"></script>
+<script src="js/tool/visualizations/tasks/timedivision-task-view.js"></script>
+<script src="js/tool/visualizations/tasks/spilling-view.js"></script>
+<script src="js/tool/server/servers.js"></script>
+<script src="js/tool/server/historyserverAPI.js"></script>
+<script src="js/tool/server/database.js"></script>
+<script src="js/tool/visualizations/job/joboverview.js"></script>
+<script src="js/tool/visualizations/tasks/taskstimeline.js"></script>
+<script src="js/tool/controllers/controller.js"></script>
 <script src="js/tool/visualizations/statlogic.js"></script>
-<script src="js/tool/visualizations/nodeoverview.js"></script>
+<script src="js/tool/visualizations/nodes/nodeoverview.js"></script>
 <script src="js/tool/errorbox.js"></script>
-<script src="js/tool/nodecontroller.js"></script>
+<script src="js/tool/controllers/nodecontroller.js"></script>
 <script src="js/tool/taskattempt.js"></script>
-<script src="js/tool/visualizations/nodeBoxPlots.js"></script>
+<script src="js/tool/visualizations/nodes/nodeBoxPlots.js"></script>
 <script src="js/tool/nodesData.js"></script>
+<script src="js/tool/visualizations/nodes/nodeDiagnosis.js"></script>
+<script src="js/tool/visualizations/nodes/timeDivision-node.js"></script>
+<script src="js/tool/visualizations/binnedHistogram.js"></script>
 </html>
