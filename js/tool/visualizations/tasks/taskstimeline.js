@@ -4,6 +4,7 @@ class TaskTimeLine{
   constructor(element, taskController){
     this.element = element;
     this.taskController = taskController;
+    this.attemptID = undefined;
 
   }
 
@@ -73,8 +74,9 @@ class TaskTimeLine{
 
 
   taskClicked(taskIndex){
-
     var attempt = this.attempts[taskIndex];
+    if(this.attemptID === attempt.id) return;
+    this.attemptID = attempt.id
     if(attempt){
         this.taskController.setActiveAttempt(attempt);
     }else{

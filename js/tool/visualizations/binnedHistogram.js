@@ -24,13 +24,14 @@ class BinnedHistogram{
     }
 
     selectNode(node){
-        if(node !== undefined)
-            this.selectedDataPoint = node[this.label.dataName];
+        if(node !== undefined) {
+            this.selectedDataPoint(node[this.label.dataName]);
+        }
     }
 
     selectTaskAttempt(attempt){
         if(attempt !== undefined && attempt[this.label.dataName] !== undefined ){
-            this.selectedDataPoint = attempt[this.label.dataName] ;
+            this.selectedDataPoint(attempt[this.label.dataName]);
         }
     }
     getDataName(){

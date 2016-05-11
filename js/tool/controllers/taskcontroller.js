@@ -198,6 +198,10 @@ class TaskController{
     setJobID(jobid){
         this.jobid = jobid;
         this.taskAttemptsData.setJobID(jobid);
+        for(var index =0 ; index < this.singleTaskVisualisations.length; index++){
+            var vis = this.singleTaskVisualisations[index];
+            vis.setJobID(jobid);
+        }
 
     }
 
@@ -235,6 +239,8 @@ class TaskController{
             var label = this.histLabels[index];
             this.addVis(new BinnedHistogram(this.getContainer("taskHistContainer"), label.bins, label))
         }
+        
+        this.singleTaskVisualisations.push(new TimeDivisionTask(this.getContainer("TimeDivisionTask"),this.server))
 
         
     }
@@ -253,6 +259,13 @@ class TaskController{
         for(var index =0 ; index < this.visualisations.length; index++){
             var vis = this.visualisations[index];
             vis.selectTaskAttempt(attempt);
+            vis.updateView();
+        }
+
+        for(var index =0 ; index < this.singleTaskVisualisations.length; index++){
+            var vis = this.singleTaskVisualisations[index];
+            vis.selectTaskAttempt(attempt);
+            vis.updateView();
         }
         
     }
