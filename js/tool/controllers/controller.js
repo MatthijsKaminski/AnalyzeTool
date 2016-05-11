@@ -111,16 +111,13 @@ class Controller{
     this.joboverview = new Joboverview(document.getElementById("joboverview"), server,this);
     this.joboverview.createtable();
     this.joboverview.refreshjoboverview();
-    this.tasktimeline = new TaskTimeLine(document.getElementById("TaskTimelineContainer"), server, this);
     this.timeDivision = new TimeDivision(document.getElementById("timeDivision"), server);
     this.dataTime = new DataTime(document.getElementById("timeData"), server);
     this.nodeTask = new NodeTask(document.getElementById("nodeTask"), server);
-    this.replicationView = new ReplicationView(document.getElementById("ReplicationView"), server);
-    this.spillingView = new SpillingView(document.getElementById("SpillingView"), server);
-    this.timeDivisionTask = new TimeDivisionTask(document.getElementById("TimeDivisionTask"), server);
     this.jobInfo = document.getElementById("jobInfo");
     this.jobInfo.style.display = "none";
     this.nodeController = new NodeController(document.getElementById("nodesContainer"),server);
+    this.taskContoller = new TaskController(server);
     this.setupSettings();
   }
 
@@ -143,29 +140,18 @@ class Controller{
   }
 
   setActiveJob(jobid){
-    this.tasktimeline.setJobID(jobid);
-    this.tasktimeline.createTimeLine();
     this.timeDivision.setJobID(jobid);
     this.timeDivision.update();
     this.dataTime.setJobID(jobid);
     this.dataTime.update();
     this.nodeTask.setJobID(jobid);
     this.nodeTask.update();
-    this.replicationView.setJobID(jobid);
-    this.replicationView.update();
-    this.spillingView.setJobID(jobid);
-    this.spillingView.update();
-    this.timeDivisionTask.setJobID(jobid);
-    this.timeDivisionTask.update();
     this.nodeController.setJobID(jobid);
+    this.taskContoller.setJobID(jobid);
     this.jobInfo.style.display = "block";
   }
 
-  setActiveTask(taskid){
-    this.spillingView.setTask(taskid);
-    this.replicationView.setTask(taskid);
-    this.timeDivisionTask.setTask(taskid);
-  }
+  
 
 
 }

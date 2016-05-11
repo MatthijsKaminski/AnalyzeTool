@@ -1,25 +1,25 @@
 "use strict";
 class TaskTimeLine{
 
-  constructor(element, server, controller){
+  constructor(element, taskController){
     this.element = element;
-    this.server = server;
-    this.controller = controller;
-    this.stat = new Stat();
+    this.taskController = taskController;
+
   }
 
-  setJobID(jobid){
-    this.jobid = jobid;
-    this.stat.clearDataPoints();
+  setTaskAttempts(taskAttempts){
+    this.taskAttempts = taskAttempts;
+    this.createTimeLine();
   }
 
   createTimeLine(){
     $(this.element).empty();
     this.dataset = [];
-    var that = this;
-    this.server.getAllTasks(this.jobid, function(tasks){
-      that.getAllTaskAttempts(tasks);
-    })
+    this.nodes = {};
+    for(var attemptID in this.taskAttempts){
+      this.handleAttempt(this.taskAttempts[attemptID]);
+    }
+    this.createTimeLineFromTasks();
   }
 
   createGroups(){
@@ -55,53 +55,12 @@ class TaskTimeLine{
     this.timeline.setGroups(this.groups);
     var that = this;
     this.timeline.on('select', function (properties) {
-
       that.taskClicked(properties.items[0]);
     });
-    /*
-    console.log("Quantiles " + this.stat.getQuantiles());
-    console.log("interval " + this.stat.getOutliersInterval());
-    console.log("mean " + this.stat.getMean());
-    console.log("std " + this.stat.getStandardDeviation());
-    */
+
   }
 
-  getAllTaskAttempts(tasks){
-    this.nodes = {};
-    var that = this;
-    tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
-    this.amountOftasks = tasks.length;
-    var index = 0;
-    var taskid;
-    for(index = 0; index < tasks.length; index++){
-       taskid = tasks[index].id;
-
-       this.getTaskAttempts(this.jobid, taskid);
-    }
-  }
-
-  getTaskAttempts(jobid, taskid){
-    var that = this;
-    this.server.getTaskAttempts(this.jobid, taskid, function(attempts){
-      that.handleAttempts(attempts, taskid);
-    });
-  }
-
-  handleAttempts(attempts, taskid){
-    attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
-    var index = 0;
-    for(index = 0; index < attempts.length ; index++){
-      this.handleAttempt(attempts[index], taskid);
-    }
-    this.amountOftasks--;
-    if(this.amountOftasks == 0){
-      this.createTimeLineFromTasks();
-    }
-  }
-
-  handleAttempt(attempt, taskid){
-    attempt.taskid = taskid;
-    this.doStatsForAttempt(attempt);
+  handleAttempt(attempt){
     var node = this.nodes[attempt.nodeHttpAddress];
     if( node === undefined ){
       node = {
@@ -112,55 +71,16 @@ class TaskTimeLine{
     node.attempts.push(attempt);
   }
 
-  doStatsForAttempt(attempt){
-    this.stat.addDataPoint(attempt["elapsedTime"]);
-  }
 
   taskClicked(taskIndex){
-    var that = this;
+
     var attempt = this.attempts[taskIndex];
     if(attempt){
-      if(attempt.state.localeCompare("SUCCEEDED") == 0){
-        this.controller.setActiveTask(attempt.taskid);
-      }
-      document.getElementById("taskInfoJson").innerHTML = JSON.stringify(attempt,undefined,2);
-      /*
-      this.server.getTaskCounters(this.jobid, task["id"], function(counters){
-        that.showTaskCounters(counters);
-      });
-
-      this.server.getTaskAttempts(this.jobid, task["id"], function(counters){
-        that.showTaskAttempts(counters,task["id"]);
-      });
-      */
+        this.taskController.setActiveAttempt(attempt);
     }else{
-      this.controller.setActiveTask(null);
-      document.getElementById("taskInfoJson").innerHTML = "No task selected";
-      document.getElementById("taskAttemptsJson").innerHTML = "No task selected";
-      document.getElementById("taskCountersJson").innerHTML = "No task selected";
+        this.taskController.setActiveAttempt(undefined);
+
     }
-  }
-
-  showTaskAttempts(counters, taskid){
-    var that = this;
-    var json = JSON.parse(counters, function(k,v){return v;});
-    var index;
-    document.getElementById("taskAttemptsJson").innerHTML = JSON.stringify(json,undefined,2);
-    for(index = 0; index < json.taskAttempts.taskAttempt.length; index++ ){
-      this.server.getTaskAttemptCounters(this.jobid, taskid,json.taskAttempts.taskAttempt[index]['id'], function(counters){
-        that.showTaskAttemptCounters(taskid, counters);
-      });
-    }
-  }
-
-  showTaskAttemptCounters(taskid, counters){
-    var json = JSON.parse(counters, function(k,v){return v;});
-    document.getElementById("taskAttemptCounters").innerHTML = JSON.stringify(json,undefined,2);
-  }
-
-  showTaskCounters(counters){
-    var json = JSON.parse(counters, function(k,v){return v;});
-    document.getElementById("taskCountersJson").innerHTML = JSON.stringify(json,undefined,2);
   }
 
   createElementInDataSetFormTask(taskIndex, groupindex, taskAttempt){
@@ -176,10 +96,7 @@ class TaskTimeLine{
                 className: classNameValue,
                 title: titleValue};
     this.dataset.push(elem);
-    if(this.stat.isOutlier(taskAttempt["elapsedTime"])){
-      
-      this.createButtonOutlier(taskIndex);
-    }
+
   }
 
   createButtonOutlier(taskindex){
@@ -199,8 +116,3 @@ class TaskTimeLine{
 
 }
 
-
-/*
-var timeline = new TaskTimeLine(element, server, "job_1456240498516_0008");
-timeline.createTimeLine();
-*/

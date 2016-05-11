@@ -19,7 +19,7 @@ class NodeBoxPlot{
 
     setNodes(nodes){
         this.nodes = nodes;
-
+        this.selectedDataPoint = undefined;
     }
 
     setData(data){
@@ -32,7 +32,21 @@ class NodeBoxPlot{
 
     selectNode(node){
         this.node = node;
+        if(node !== undefined && node[this.dataName] !== undefined ){
+            this.selectedDataPoint = node[this.dataName] ;
+        }else{
+            this.selectedDataPoint = undefined;
+        }
     }
+
+    selectTaskAttempt(attempt){
+        if(attempt !== undefined && attempt[this.dataName] !== undefined ){
+            this.selectedDataPoint = attempt[this.dataName];
+        }else{
+            this.selectedDataPoint = undefined;
+        }
+    }
+
 
     updateView(){
         this.updateBoxplot();
@@ -52,9 +66,9 @@ class NodeBoxPlot{
         dataArray.push(trace1);
 
 
-        if(this.node !== undefined){
+        if(this.selectedDataPoint !== undefined){
             var trace2 = {
-                x: [that.node[that.dataName]],
+                x: [that.selectedDataPoint],
                 type: 'box',
                 name: 'Selected node'
             };

@@ -5,7 +5,7 @@ class NodeController{
 
 
     constructor(element, server){
-        this.element = element;
+        //this.element = element;
         this.server = server;
         this.visualisations = [];
         this.singleNodeVisualisations = [];

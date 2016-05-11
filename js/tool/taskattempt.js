@@ -43,6 +43,7 @@ class TaskAttempt{
     }
 
     static getTaskCounter(taskCounter, counterGroupsName, counterGroupName, counterName) {
+       
         var counterGroups = taskCounter[counterGroupsName];
         for (var groupIndex = 0; groupIndex < counterGroups.length; groupIndex++) {
             var counterGroup = counterGroups[groupIndex];
@@ -58,6 +59,7 @@ class TaskAttempt{
             }
 
         }
+        console.log("not found: " + "taskcounterid " + taskCounter.id + " "+ counterGroupsName + " " + counterGroupName +" " + counterName);
     }
 
     
