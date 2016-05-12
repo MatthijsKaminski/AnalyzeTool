@@ -5,6 +5,8 @@ class TaskTimeLine{
     this.element = element;
     this.taskController = taskController;
     this.attemptID = undefined;
+    this.min = undefined;
+    this.max = undefined;
 
   }
 
@@ -51,7 +53,10 @@ class TaskTimeLine{
 
     }
     var visdataset = new vis.DataSet(this.dataset);
-    var options = {};
+    var options = {
+      min: (this.min - 1000),
+      max: (this.max + 1000)
+    };
     this.timeline = new vis.Timeline(this.element, visdataset, options);
     this.timeline.setGroups(this.groups);
     var that = this;
@@ -62,6 +67,16 @@ class TaskTimeLine{
   }
 
   handleAttempt(attempt){
+    if(this.max === undefined){
+      this.min = attempt.startTime;
+      this.max = attempt.finishTime;
+
+    }else{
+
+      this.min = Math.min(attempt.startTime, this.min);
+      this.max = Math.max(attempt.finishTime,this.max);
+
+    }
     var node = this.nodes[attempt.nodeHttpAddress];
     if( node === undefined ){
       node = {

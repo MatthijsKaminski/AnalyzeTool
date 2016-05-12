@@ -15,7 +15,7 @@ class TaskController{
         this.statNames = ["mapInputRecords", "mapOutputRecords","mapInputBytes","mapOutputBytes", "combinerEfficiency",
                             "reduceInputRecords", "reduceOutputRecords", "reduceInputBytes", "reduceOutputBytes", "shuffledMaps",
                             "mergedMaps", "failedShuffles", "replicationRate", "unneededSpilledRecords" , "elapsedMapTime",
-                            "elapsedMergeTime", "elapsedReduceTime", "elapsedShuffleTime","uniqueKeys"
+                            "elapsedMergeTime", "elapsedReduceTime", "elapsedShuffleTime","uniqueKeys","timePerMapInput"
                             ];
         
         
@@ -131,6 +131,11 @@ class TaskController{
                         if(taskattempt["combineInputRecords"] !== 0)
                         taskattempt.combinerEfficiency = taskattempt["mapOutputRecords"] / taskattempt["combineInputRecords"];
                     }
+                },{
+                    func: function (taskattempt){
+                        if(taskattempt["mapInputRecords"] !== 0)
+                            taskattempt.timePerMapInput = taskattempt["elapsedMapTime"] /taskattempt["mapInputRecords"] ;
+                    }
                 }
 
             ],
@@ -173,6 +178,7 @@ class TaskController{
             {dataName: "elapsedMergeTime", title: "Merge Times (ms)", x: "Time (ms)" , y: "tasks" , bins: 10},
             {dataName: "mapInputRecords", title: "Map Inputs (records)", x: "Records" , y: "tasks" , bins: 10},
             {dataName: "mapOutputRecords", title: "Map Outputs (records)", x: "Records" , y: "tasks" , bins: 10},
+            {dataName: "timePerMapInput", title: "Time per input record (ms)", x: "Time (ms)" , y: "tasks" , bins: 10},
             {dataName: "mapInputBytes", title: "Map Inputs (bytes)", x: "Bytes" , y: "tasks" , bins: 10},
             {dataName: "mapOutputBytes", title: "Map Outputs (bytes)", x: "Bytes" , y: "tasks" , bins: 10},
             {dataName: "uniqueKeys", title: "Unique keys of Reducer", x: "Keys" , y: "tasks" , bins: 10},

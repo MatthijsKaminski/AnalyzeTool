@@ -278,7 +278,69 @@
                   </div>
                     <!-- settings tab -->
                   <div role="tabpanel" class="tab-pane" id="settings">
-                    <input name="use-server-db-switch" type="checkbox" checked="" data-switch-no-init="">
+                      <h2>Settings</h2>
+                      <div  class="row panel panel-default">
+                          <div  class="panel-body">
+                              <form>
+                                  <div class="form-group">
+                                      <label for="nameInput">Name</label>
+                                      <input type="text" class="form-control" id="nameInput-settings" placeholder="Name" value="">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="historyInput">History server</label>
+                                      <input type="text" class="form-control" id="historyInput-settings" placeholder="History server" value="">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="mongodbInput">Mongodb</label>
+                                      <input type="text" class="form-control" id="mongodbInput-settings" placeholder="Mongodb server" value="">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="mongodbInput">Mongodb</label>
+                                      <input type="text" class="form-control" id="mongodbNameInput-settings" placeholder="Mongodb database name" value="">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="mongodbCollectionInput">Mongodb collection</label>
+                                      <input type="text" class="form-control" id="mongodbCollectionInput-settings" placeholder="Mongodb collecion (existing content will be deleted)" value=" ">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="use-server-db-switch-modal">Use:</label>
+                                      <input id="use-server-db-switch-settings" name="use-server-db-switch-settings" type="checkbox" checked="" data-switch-no-init="">
+                                  </div>
+                              </form>
+                              <div class="modal-footer">
+
+                                  <button id="updateSettings" type="button" class="btn btn-primary">Update</button>
+                              </div>
+
+                          </div>
+                      </div>
+
+                      <h2>Save to database</h2>
+                      <div  class="row panel panel-default">
+                          <div  class="panel-body">
+                              <p>Above settings will be uses as source.</p>
+                              <form>
+                                  <div class="form-group">
+                                      <label for="mongodbInput">Mongodb</label>
+                                      <input type="text" class="form-control" id="mongodbInput-save" placeholder="Mongodb server" value="">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="mongodbInput">Mongodb</label>
+                                      <input type="text" class="form-control" id="mongodbNameInput-save" placeholder="Mongodb database name" value="">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="mongodbCollectionInput">Mongodb collection</label>
+                                      <input type="text" class="form-control" id="mongodbCollectionInput-save" placeholder="Mongodb collecion (existing content will be deleted)" value="">
+                                  </div>
+
+                              </form>
+                              <div class="modal-footer">
+                                  <button id="saveSettings" type="button" class="btn btn-primary">Save</button>
+                              </div>
+
+                          </div>
+                      </div>
+
                   </div>
                 </div>
 
@@ -318,11 +380,15 @@
           </div>
           <div class="form-group">
             <label for="mongodbInput">Mongodb</label>
-            <input type="text" class="form-control" id="mongodbInput" placeholder="Mongodb server">
+            <input type="text" class="form-control" id="mongodbInput" placeholder="Mongodb server" value="matthijskaminski.me:27017">
           </div>
+            <div class="form-group">
+                <label for="mongodbInput">Mongodb</label>
+                <input type="text" class="form-control" id="mongodbNameInput" placeholder="Mongodb database name" value="bp">
+            </div>
           <div class="form-group">
             <label for="mongodbCollectionInput">Mongodb collection</label>
-            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)">
+            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)" value="bptest ">
           </div>
           <div class="form-group">
             <label for="use-server-db-switch-modal">Use:</label>
@@ -337,6 +403,24 @@
     </div>
   </div>
 </div>
+    <!-- Save  Modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="saveModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Saving</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressSave" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                            <span class="sr-only">45% Complete</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 
 
@@ -379,4 +463,9 @@
 <script src="js/tool/visualizations/binnedHistogram.js"></script>
 <script src="js/tool/controllers/taskcontroller.js"></script>
 <script src="js/tool/taskattemptdata.js"></script>
+<script src="js/tool/settings.js"></script>
+<script src="js/tool/progresssaving.js"></script>
+<script>
+    var controller = new Controller();
+</script>
 </html>

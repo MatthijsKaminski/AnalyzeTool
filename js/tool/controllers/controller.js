@@ -5,9 +5,10 @@ class Controller{
     this.servers = new Servers();
     this.initAddServer();
     this.activeElem = null;
-    this.activeIndex = null;
+    this.activeIndex = undefined;
     this.serverTabs = document.getElementById("serverTabs");
     this.serverTabs.style.display = "none";
+    this.settings = new Settings(this);
 
   }
 
@@ -35,16 +36,18 @@ class Controller{
     var that = this;
     addButton.addEventListener("click", function(event){
       event.preventDefault();
-      var useMongodb = true;
+      var useHistory = false;
       if ($('#use-server-db-switch-modal').is(":checked"))
       {
-        useMongodb = false;
+        useHistory = true;
       }
+      
       var name = document.getElementById("nameInput").value;
       var historyserverURL = document.getElementById("historyInput").value;
       var mongodbURL = document.getElementById("mongodbInput").value;
+      var mongodbName = document.getElementById("mongodbNameInput").value;
       var mongodbCollection = document.getElementById("mongodbCollectionInput").value;
-      that.addServer(name,historyserverURL, mongodbURL, mongodbCollection);
+      that.addServer(name,historyserverURL, mongodbURL, mongodbName, mongodbCollection,useHistory);
       $('#addServerModal').modal('hide');
     });
     var options = {
@@ -56,22 +59,29 @@ class Controller{
 
   }
 
-  addServer(name, hist, mongo, collection){
-    var index = this.servers.addServer(hist, mongo, collection);
+  addServer(name, hist, mongo, mongodbName, collection, useHistory){
+    var index = this.servers.addServer(hist, mongo,mongodbName, collection, useHistory);
     console.log("added server index: "+ index);
     var elem = this.createServerLabel(name, index);
     if(this.activeElem === null){
       document.getElementById("noServerSeleted").style.display ="none";
-      this.activeElem = elem;
+      this.activeIndex = 0;
+      this.activeElem = elem[0];
       this.selectServer(null,name,index);
       this.setupTabs();
+      this.settings.setServer(name, hist, mongo, mongodbName, collection, useHistory);
     }
 
   }
 
   createServerLabel(name, index){
     var sidebarul = document.getElementById("sidebar1");
-    var elem = $("<li><a ><i class='fa fa-fw fa-cloud sidebarlogo'></i>"+name+"</a></li>");
+    if(this.activeElem === null){
+      var elem = $("<li class='active' ><a ><i class='fa fa-fw fa-cloud sidebarlogo'></i>"+name+"</a></li>");
+    }else{
+      var elem = $("<li ><a ><i class='fa fa-fw fa-cloud sidebarlogo'></i>"+name+"</a></li>");
+    }
+
     elem.insertBefore($("#addServerButton").parent());
 
     var that = this;
@@ -82,9 +92,12 @@ class Controller{
   }
 
   selectServer(event,name,index){
-    if(index != this.activeIndex){
+
+    if(index !== this.activeIndex){
       if(this.activeElem){
-        if(this.activeElem.nodeName == "I"){
+        if(this.activeElem.nodeName == "LI"){
+          $(this.activeElem).removeClass("active");
+        }else if(this.activeElem.nodeName == "I"){
           $(this.activeElem).parent().parent().removeClass("active");
         }else{
           $(this.activeElem).parent().removeClass("active");
@@ -94,7 +107,6 @@ class Controller{
         this.activeElem = event.target;
       }
       this.activeIndex = index;
-      console.log("clicked " + name + " index: " + index + "src " +   this.activeElem.nodeName);
       if(this.activeElem.nodeName == "I"){
         $(this.activeElem).parent().parent().addClass("active");
       }else{
@@ -150,9 +162,15 @@ class Controller{
     this.taskContoller.setJobID(jobid);
     this.jobInfo.style.display = "block";
   }
+  
+  saveActiveServer(mongo, mongodbName, collection){
+    if(this.activeIndex !== undefined){
+      this.servers.save(this.activeIndex, mongo, mongodbName, collection)
+    }
+  }
 
   
 
 
 }
-var controller = new Controller();
+

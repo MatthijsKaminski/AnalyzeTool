@@ -56,6 +56,7 @@ class Joboverview{
   filltable(jsonjobs){
     this.jobs = JSON.parse(jsonjobs, function(k,v){return v;});
     this.jobs = this.jobs.jobs.job;
+    console.log(this.jobs);
     var index;
     for (index = 0 ; index < this.jobs.length; index++){
       this.addJobRow(this.jobs[index]);
@@ -107,7 +108,7 @@ class Joboverview{
     this.activeRow = row;
     $(this.activeRow).parent().addClass("active");
     this.controller.setActiveJob(jobid);
-    //
+
     // this.server.getJobInfo(jobid, function(json){
     //   that.showJobInfo(json);
     // });

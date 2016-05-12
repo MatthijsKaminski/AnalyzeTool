@@ -43,10 +43,17 @@ class TaskAttemptsData{
         for(var index = 0; index < attempts.length ; index++){
             this.handleAttempt(attempts[index], taskid);
         }
+        if(attempts.length > 1){
+            this.markSpeculativeAttempts(attempts);
+        }
         this.amountOftasks--;
         if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
             this.doStatsAndUpdateController();
         }
+    }
+
+    markSpeculativeAttempts(attempts){
+        
     }
 
 
