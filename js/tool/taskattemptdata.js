@@ -73,6 +73,7 @@ class TaskAttemptsData{
 
     updateAttemptCounters(attempt, counters){
         counters  = JSON.parse(counters, function(k,v){return v;}).jobTaskAttemptCounters;
+        console.log(counters);
         if(attempt.state.localeCompare("SUCCEEDED") === 0){
             if(attempt.type.localeCompare("MAP") === 0){
                 for(var index = 0; index < this.wantedCounters.map.length; index++){

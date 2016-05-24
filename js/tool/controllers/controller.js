@@ -41,6 +41,8 @@ class Controller{
       {
         useHistory = true;
       }
+
+
       
       var name = document.getElementById("nameInput").value;
       var historyserverURL = document.getElementById("historyInput").value;
@@ -56,7 +58,18 @@ class Controller{
       offText: "Mongodb"
     };
     $("[name='use-server-db-switch-modal']").bootstrapSwitch(options);
+    $('#use-server-db-switch-modal').on('switchChange.bootstrapSwitch', function(event, state) {
+      var mongoSettings = document.getElementById("modaldbFieldSet");
+      var histSettings = document.getElementById("modalServerFieldSet");
+      if(state == false){
+        mongoSettings.disabled = false;
+        histSettings.disabled = true;
 
+      }else{
+        mongoSettings.disabled = true;
+        histSettings.disabled = false;
+      }
+    });
   }
 
   addServer(name, hist, mongo, mongodbName, collection, useHistory){

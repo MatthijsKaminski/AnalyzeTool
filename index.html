@@ -1,109 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>Tool</title>
-
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <!-- Bootstrap switch CSS -->
     <link href="css/bootstrap-switch.min.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link href="css/dashboard.css" rel="stylesheet" type="text/css">
     <link href="css/timeline.css" rel="stylesheet" type="text/css">
     <link href="css/boxplots.css" rel="stylesheet" type="text/css">
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-
-
     <!-- Load d3.js and c3.js -->
     <script src="js/libraries/c3/c3-0.4.10/d3.v3.min.js" charset="utf-8"></script>
     <script src="js/libraries/c3/c3-0.4.10/c3.min.js"></script>
-
     <!-- Load c3.css -->
     <link href="js/libraries/c3/c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
-
     <!-- Load vis -->
     <script src="js/libraries/vis/dist/vis.js"></script>
     <link href="js/libraries/vis/dist/vis.css" rel="stylesheet" type="text/css" />
-
     <!-- Load bootstraptable -->
     <link rel="stylesheet" href="node_modules/bootstrap-table/dist/bootstrap-table.min.css">
-
 </head>
-
 <body>
-
-    <div id="wrapper" class= "wrapper-normal">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top navbar-elmnt" role="navigation">
-            <!-- Brand and toggle get grouped for better mobile display -->
-
-         <div class="navbar-header">
-          <a class="navbar-brand" rel="home" href="#">
-            <img style="max-width:65px; margin-top: -10px;" src="img/hadoop-logo.png" alt="Watermark" />
-          </a>
-          <a class="navbar-brand page-scroll" href="index.html"> Hadoop Analyser</a>
+<div id="wrapper" class= "wrapper-normal">
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-elmnt" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" rel="home" href="#">
+                <img style="max-width:65px; margin-top: -10px;" src="img/hadoop-logo.png" alt="Watermark" />
+            </a>
+            <a class="navbar-brand page-scroll" href="index.html"> Hadoop Analyser</a>
         </div>
-            <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav top-nav-elmnt">
-                <li >
-                    <a href="#"  id="refreshButton"  ><i class="fa fa-refresh"></i> </a>
+        <!-- Top Menu Items -->
+        <ul class="nav navbar-right top-nav top-nav-elmnt">
+            <li >
+                <a href="#"  id="refreshButton"  ><i class="fa fa-refresh"></i> </a>
+            </li>
+        </ul>
+        <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+        <div id="sidebar" class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul id = "sidebar1" class="nav navbar-nav side-nav folded">
+                <li onclick="toggle()">
+                    <a href="#" ><i  class="fa fa-fw fa-bars"></i> </a>
+                </li>
+                <li>
+                    <a href="#" id="addServerButton"><i class="fa fa-fw fa-plus sidebarlogo" ></i>Add server</a>
                 </li>
             </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-             <div id="sidebar" class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul id = "sidebar1" class="nav navbar-nav side-nav folded">
-
-                    <li onclick="toggle()">
-                      <a href="#" ><i  class="fa fa-fw fa-bars"></i> </a>
-                    </li>
-
-
-                    <li>
-                        <a href="#" id="addServerButton"><i class="fa fa-fw fa-plus sidebarlogo" ></i>Add server</a>
-                    </li>
-                </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </nav>
+    <div id="page-wrapper">
+        <br>
+        <!-- no server selected -->
+        <div id="noServerSeleted" class="col-md-6 col-md-offset-3">
+            <div class="jumbotron" style="background:transparent !important">
+                <h1 class="display-3">Welcome!</h1>
+                <p class="lead">To start add your Hadoop JobHistory server in the left menu or click the button below. </p>
+                <p class="lead">
+                    <a id="addServerJumboTron" class="btn btn-primary btn-lg" href="#" role="button">Add server</a>
+                </p>
             </div>
-            <!-- /.navbar-collapse -->
-        </nav>
-
-        <div id="page-wrapper">
-            <br>
-            <!-- no server selected -->
-            <div id="noServerSeleted" class="col-md-6 col-md-offset-3">
-                <div class="jumbotron" style="background:transparent !important">
-                    <h1 class="display-3">Welcome!</h1>
-                    <p class="lead">To start add your Hadoop JobHistory server in the left menu or click the button below. </p>
-
-                    <p class="lead">
-                        <a id="addServerJumboTron" class="btn btn-primary btn-lg" href="#" role="button">Add server</a>
-                    </p>
-                </div>
-
-            </div>
-
-            <!-- alert for if connection fails -->
-            <div id="alertbox">
-
-            </div>
-
-
-            <!-- tabs -->
-            <div class="container-fluid"  id="serverTabs">
-              <div>
-
+        </div>
+        <!-- alert for if connection fails -->
+        <div id="alertbox">
+        </div>
+        <!-- tabs -->
+        <div class="container-fluid"  id="serverTabs">
+            <div>
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#jobOverviewTab" aria-controls="jobOverviewTab" role="tab" data-toggle="tab">Jobs</a></li>
@@ -111,49 +83,45 @@
                     <li role="presentation" ><a href="#TaskTimelineTab" aria-controls="TaskTimelineTab" role="tab" data-toggle="tab">Tasks</a></li>
                     <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
                 </ul>
-
                 <!-- Tab panes -->
-                  <!-- Job tab -->
+                <!-- Job tab -->
                 <div class="tab-content container">
-                  <div role="tabpanel" class="tab-pane active" id="jobOverviewTab">
-                      <h2>Jobs</h2>
-                    <div id="joboverviewPanel" class="row panel panel-default">
-                        <div id="joboverview"  class="panel-body">
-
-                        </div>
-                    </div>
-                    <div id="jobInfo">
-                      <h2>Time distribution</h2>
-                    <div id="timeDivisionPanel" class="row panel panel-default">
-                        <div  class="panel-body">
-                            <div id="timeDivision"></div>
-                        </div>
-                    </div>
-                      <h2>Time vs Data</h2>
-                    <div id="timeDataPanel" class="row panel panel-default">
-                        <div  class="panel-body">
-                            <div id="timeData"></div>
-                        </div>
-                    </div>
-                    <h2>Task-Node distribution</h2>
-                    <div id="nodeTask" class="row panel panel-default">
-                        <div class="panel-body">
-                            <div  class="col-md-6">
-                                <h3>Maps</h3>
-                                <div id="nodeTaskMaps"></div>
-                            </div>
-                            <div  class="col-md-6">
-                                <h3>Reducers</h3>
-                                <div id="nodeTaskReducers"></div>
+                    <div role="tabpanel" class="tab-pane active" id="jobOverviewTab">
+                        <h2>Jobs</h2>
+                        <div id="joboverviewPanel" class="row panel panel-default">
+                            <div id="joboverview"  class="panel-body">
                             </div>
                         </div>
+                        <div id="jobInfo">
+                            <h2>Time distribution</h2>
+                            <div id="timeDivisionPanel" class="row panel panel-default">
+                                <div  class="panel-body">
+                                    <div id="timeDivision"></div>
+                                </div>
+                            </div>
+                            <h2>Time vs Data</h2>
+                            <div id="timeDataPanel" class="row panel panel-default">
+                                <div  class="panel-body">
+                                    <div id="timeData"></div>
+                                </div>
+                            </div>
+                            <h2>Task-Node distribution</h2>
+                            <div id="nodeTask" class="row panel panel-default">
+                                <div class="panel-body">
+                                    <div  class="col-md-6">
+                                        <h3>Maps</h3>
+                                        <div id="nodeTaskMaps"></div>
+                                    </div>
+                                    <div  class="col-md-6">
+                                        <h3>Reducers</h3>
+                                        <div id="nodeTaskReducers"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  </div>
-
                     <!-- nodes tab -->
                     <div role="tabpanel" class="tab-pane" id="nodesTab">
-
                         <div id="nodesContainer">
                             <h2>Nodes</h2>
                             <div id="nodesPanel" class="row panel panel-default">
@@ -162,7 +130,7 @@
                                            data-show-toggle="true"
                                            data-show-columns="true"
                                            height="250"
-                                           >
+                                    >
                                         <thead>
                                         <tr>
                                             <th data-field="name">Name</th>
@@ -170,20 +138,16 @@
                                             <th data-field="reducers">Reducers</th>
                                             <th data-field="succes">Succesful</th>
                                             <th data-field="failed">Failed</th>
-
                                         </tr>
                                         </thead>
                                     </table>
                                     <br>
-
                                 </div>
                             </div>
                             <ul class="nav nav-pills nav-justified">
                                 <li role="presentation" class="active"><a data-toggle="pill" href="#nodeDetails">Details</a></li>
                                 <li role="presentation"><a data-toggle="pill" href="#nodeBoxplots">Boxplots</a></li>
-
                             </ul>
-
                             <div class="tab-content">
                                 <div id="nodeDetails" class="tab-pane fade in active">
                                     <h2>Node diagnoses</h2>
@@ -198,9 +162,7 @@
                                             <div id="nodeTimeContainer"></div>
                                         </div>
                                     </div>
-
                                     <div id="nodeHistContainer">
-
                                     </div>
                                 </div>
                                 <div id="nodeBoxplots" class="tab-pane fade">
@@ -211,30 +173,22 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
-
                     </div>
-
-
-
                     <!-- task tab -->
                     <div role="tabpanel" class="tab-pane" id="TaskTimelineTab">
-
                         <div id="taskContainer">
                             <h2>Task Timeline</h2>
                             <div id="taskTimelinePanel" class="row panel panel-default">
-                                <div  class="panel-body"><div id="TaskTimelineContainer"></div></div>
+                                <div  class="panel-body">
+                                    <div id="TaskTimelineContainer"></div>
+                                </div>
                             </div>
-
                             <ul class="nav nav-pills nav-justified">
                                 <li role="presentation" class="active"><a data-toggle="pill" href="#taskDetails">Details</a></li>
                                 <li role="presentation"><a data-toggle="pill" href="#taskBoxplots">Boxplots</a></li>
-
                             </ul>
-
                             <div class="tab-content">
                                 <div id="taskDetails" class="tab-pane fade in active">
                                     <h2>Task diagnoses</h2>
@@ -249,9 +203,7 @@
                                             <div id="TimeDivisionTask"></div>
                                         </div>
                                     </div>
-
                                     <div id="taskHistContainer">
-
                                     </div>
                                 </div>
                                 <div id="taskBoxplots" class="tab-pane fade">
@@ -262,179 +214,162 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-
                             <div id="outliers"></div>
                             <div id="ReplicationView"></div>
                             <div id="SpillingView"></div>
-
                             <pre id="taskInfoJson">No task selected</pre>
                             <pre id="taskCountersJson">No task selected</pre>
                             <pre id="taskAttemptsJson">No task selected</pre>
                             <pre id="taskAttemptCounters">No task selected</pre>
                         </div>
-
-                  </div>
+                    </div>
                     <!-- settings tab -->
-                  <div role="tabpanel" class="tab-pane" id="settings">
-                      <h2>Settings</h2>
-                      <div  class="row panel panel-default">
-                          <div  class="panel-body">
-                              <form>
-                                  <div class="form-group">
-                                      <label for="nameInput">Name</label>
-                                      <input type="text" class="form-control" id="nameInput-settings" placeholder="Name" value="">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="historyInput">History server</label>
-                                      <input type="text" class="form-control" id="historyInput-settings" placeholder="History server" value="">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="mongodbInput">Mongodb</label>
-                                      <input type="text" class="form-control" id="mongodbInput-settings" placeholder="Mongodb server" value="">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="mongodbInput">Mongodb</label>
-                                      <input type="text" class="form-control" id="mongodbNameInput-settings" placeholder="Mongodb database name" value="">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="mongodbCollectionInput">Mongodb collection</label>
-                                      <input type="text" class="form-control" id="mongodbCollectionInput-settings" placeholder="Mongodb collecion (existing content will be deleted)" value=" ">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="use-server-db-switch-modal">Use:</label>
-                                      <input id="use-server-db-switch-settings" name="use-server-db-switch-settings" type="checkbox" checked="" data-switch-no-init="">
-                                  </div>
-                              </form>
-                              <div class="modal-footer">
-
-                                  <button id="updateSettings" type="button" class="btn btn-primary">Update</button>
-                              </div>
-
-                          </div>
-                      </div>
-
-                      <h2>Save to database</h2>
-                      <div  class="row panel panel-default">
-                          <div  class="panel-body">
-                              <p>Above settings will be uses as source.</p>
-                              <form>
-                                  <div class="form-group">
-                                      <label for="mongodbInput">Mongodb</label>
-                                      <input type="text" class="form-control" id="mongodbInput-save" placeholder="Mongodb server" value="">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="mongodbInput">Mongodb</label>
-                                      <input type="text" class="form-control" id="mongodbNameInput-save" placeholder="Mongodb database name" value="">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="mongodbCollectionInput">Mongodb collection</label>
-                                      <input type="text" class="form-control" id="mongodbCollectionInput-save" placeholder="Mongodb collecion (existing content will be deleted)" value="">
-                                  </div>
-
-                              </form>
-                              <div class="modal-footer">
-                                  <button id="saveSettings" type="button" class="btn btn-primary">Save</button>
-                              </div>
-
-                          </div>
-                      </div>
-
-                  </div>
-                </div>
-
-            </div>
-
-
-            </div>
-            <!-- /.container-fluid -->
-
-        </div>
-        <!-- /#page-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
-
-
-
-
-
-<!-- add server Modal -->
-<div class="modal fade" id="addServerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add a new historyserver</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" placeholder="Name" value="test">
-          </div>
-          <div class="form-group">
-            <label for="historyInput">History server</label>
-            <input type="text" class="form-control" id="historyInput" placeholder="History server" value="localhost:8082">
-          </div>
-          <div class="form-group">
-            <label for="mongodbInput">Mongodb</label>
-            <input type="text" class="form-control" id="mongodbInput" placeholder="Mongodb server" value="matthijskaminski.me:27017">
-          </div>
-            <div class="form-group">
-                <label for="mongodbInput">Mongodb</label>
-                <input type="text" class="form-control" id="mongodbNameInput" placeholder="Mongodb database name" value="bp">
-            </div>
-          <div class="form-group">
-            <label for="mongodbCollectionInput">Mongodb collection</label>
-            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)" value="bptest ">
-          </div>
-          <div class="form-group">
-            <label for="use-server-db-switch-modal">Use:</label>
-            <input id="use-server-db-switch-modal" name="use-server-db-switch-modal" type="checkbox" checked="" data-switch-no-init="">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button id="addServerButtonModal" type="button" class="btn btn-primary">Add</button>
-      </div>
-    </div>
-  </div>
-</div>
-    <!-- Save  Modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="saveModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Saving</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressSave" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                            <span class="sr-only">45% Complete</span>
+                    <div role="tabpanel" class="tab-pane" id="settings">
+                        <h2>Settings</h2>
+                        <div  class="row panel panel-default">
+                            <div  class="panel-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="nameInput">Name</label>
+                                        <input type="text" class="form-control" id="nameInput-settings" placeholder="Name" value="">
+                                    </div>
+                                    <fieldset id="settingsServerFieldSet">
+                                        <div class="form-group">
+                                            <label for="historyInput">History server</label>
+                                            <input type="text" class="form-control" id="historyInput-settings" placeholder="History server" value="">
+                                        </div>
+                                    </fieldset>
+                                    <fieldset id="settingsdbFieldSet">
+                                        <div class="form-group">
+                                            <label for="mongodbInput">Mongodb</label>
+                                            <input type="text" class="form-control" id="mongodbInput-settings" placeholder="Mongodb server" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mongodbInput">Mongodb</label>
+                                            <input type="text" class="form-control" id="mongodbNameInput-settings" placeholder="Mongodb database name" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mongodbCollectionInput">Mongodb collection</label>
+                                            <input type="text" class="form-control" id="mongodbCollectionInput-settings" placeholder="Mongodb collecion (existing content will be deleted)" value=" ">
+                                        </div>
+                                    </fieldset>
+                                    <div class="form-group">
+                                        <label for="use-server-db-switch-modal">Use:</label>
+                                        <input id="use-server-db-switch-settings" name="use-server-db-switch-settings" type="checkbox" checked="" data-switch-no-init="">
+                                    </div>
+                                </form>
+                                <div class="modal-footer">
+                                    <button id="updateSettings" type="button" class="btn btn-primary">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                        <h2>Save to database</h2>
+                        <div  class="row panel panel-default">
+                            <div  class="panel-body">
+                                <p>Above settings will be uses as source.</p>
+                                <form>
+                                    <div class="form-group">
+                                        <label for="mongodbInput">Mongodb</label>
+                                        <input type="text" class="form-control" id="mongodbInput-save" placeholder="Mongodb server" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mongodbInput">Mongodb</label>
+                                        <input type="text" class="form-control" id="mongodbNameInput-save" placeholder="Mongodb database name" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mongodbCollectionInput">Mongodb collection</label>
+                                        <input type="text" class="form-control" id="mongodbCollectionInput-save" placeholder="Mongodb collecion (existing content will be deleted)" value="">
+                                    </div>
+                                </form>
+                                <div class="modal-footer">
+                                    <button id="saveSettings" type="button" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
-
-
-
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+<!-- /#wrapper -->
+<!-- add server Modal -->
+<div class="modal fade" id="addServerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add a new historyserver</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="nameInput">Name</label>
+                        <input type="text" class="form-control" id="nameInput" placeholder="Name" value="test">
+                    </div>
+                    <fieldset id="modalServerFieldSet">
+                        <div class="form-group">
+                            <label for="historyInput">History server</label>
+                            <input type="text" class="form-control" id="historyInput" placeholder="History server" value="localhost:8082">
+                        </div>
+                    </fieldset>
+                    <fieldset id="modaldbFieldSet" disabled>
+                        <div class="form-group">
+                            <label for="mongodbInput">Mongodb</label>
+                            <input type="text" class="form-control" id="mongodbInput" placeholder="Mongodb server" value="matthijskaminski.me:27017">
+                        </div>
+                        <div class="form-group">
+                            <label for="mongodbInput">Mongodb</label>
+                            <input type="text" class="form-control" id="mongodbNameInput" placeholder="Mongodb database name" value="bp">
+                        </div>
+                        <div class="form-group">
+                            <label for="mongodbCollectionInput">Mongodb collection</label>
+                            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)" value="bptest ">
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label for="use-server-db-switch-modal">Use:</label>
+                        <input id="use-server-db-switch-modal" name="use-server-db-switch-modal" type="checkbox" checked="" data-switch-no-init="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="addServerButtonModal" type="button" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Save  Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="saveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Saving</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressSave" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                        <span class="sr-only">45% Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 </body>
-
 <!-- jQuery -->
 <script>window.$ = window.jQuery = require('./js/libraries/jquery.js');
-        //$("#sidebar").hover(function(){toggle();});
+//$("#sidebar").hover(function(){toggle();});
 
 </script>
-
 <!-- Bootstrap Core JavaScript <script src="js/libraries/jquery.js"></script> -->
-
 <script src="js/libraries/bootstrap.min.js"></script>
 <script src="js/libraries/bootstrap-switch.min.js"></script>
 <script src="node_modules/bootstrap-table/src/bootstrap-table.js"></script>

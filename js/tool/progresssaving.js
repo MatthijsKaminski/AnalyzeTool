@@ -9,7 +9,11 @@ class SavingProgress{
     }
 
     static hideProgress(){
-        $('#saveModal').modal('hide');
+        SavingProgress.setProgress(99);
+        setTimeout(function () {
+            $('#saveModal').modal('hide');
+        },1000)
+
     }
     
     static increaseProgress(value){

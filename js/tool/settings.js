@@ -13,6 +13,18 @@ class Settings{
             offText: "Mongodb"
         };
         $("[name='use-server-db-switch-settings']").bootstrapSwitch(options);
+        $("[name='use-server-db-switch-settings']").on('switchChange.bootstrapSwitch', function(event, state) {
+            var mongoSettings = document.getElementById("settingsdbFieldSet");
+            var histSettings = document.getElementById("settingsServerFieldSet");
+            if(state == false){
+                mongoSettings.disabled = false;
+                histSettings.disabled = true;
+
+            }else{
+                mongoSettings.disabled = true;
+                histSettings.disabled = false;
+            }
+        });
         this.initUpdateButton();
         this.initSaveButton();
     }
@@ -44,8 +56,8 @@ class Settings{
 
     save(){
         this.controller.saveActiveServer(this.getElement("mongodbInput-save").value,
-        this.getElement("mongodbNameInput-settings").value ,
-        this.getElement("mongodbCollectionInput-settings").value)
+        this.getElement("mongodbNameInput-save").value ,
+        this.getElement("mongodbCollectionInput-save").value)
     }
 
     getElement(id){
@@ -59,5 +71,16 @@ class Settings{
         this.getElement("mongodbNameInput-settings").value = mongodbName;
         this.getElement("mongodbCollectionInput-settings").value = collection;
         $("[name='use-server-db-switch-settings']").bootstrapSwitch('state', useHistory)
+        var mongoSettings = document.getElementById("settingsdbFieldSet");
+        var histSettings = document.getElementById("settingsServerFieldSet");
+        if(useHistory == false){
+            mongoSettings.disabled = false;
+            histSettings.disabled = true;
+
+        }else{
+            mongoSettings.disabled = true;
+            histSettings.disabled = false;
+        }
+
     }
 }

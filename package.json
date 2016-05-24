@@ -1,12 +1,14 @@
 {
-  "name": "electron-prebuilt",
-  "version": "0.36.7",
-  "description": "Install electron (formerly called atom-shell) prebuilt binaries for command-line use using npm",
+  "name": "test",
+  "version": "0.1.0",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "start": "electron ."
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.7"
+  },
   "author": {
     "name": "Matthijs Kaminski"
   },
