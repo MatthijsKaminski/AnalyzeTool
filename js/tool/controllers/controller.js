@@ -46,10 +46,13 @@ class Controller{
       
       var name = document.getElementById("nameInput").value;
       var historyserverURL = document.getElementById("historyInput").value;
+      var webhdfs = document.getElementById("webhdfs").value;
+      var userdir = document.getElementById("userdir").value;
+      var namenode = document.getElementById("namenode").value;
       var mongodbURL = document.getElementById("mongodbInput").value;
       var mongodbName = document.getElementById("mongodbNameInput").value;
       var mongodbCollection = document.getElementById("mongodbCollectionInput").value;
-      that.addServer(name,historyserverURL, mongodbURL, mongodbName, mongodbCollection,useHistory);
+      that.addServer(name,historyserverURL, webhdfs, userdir, namenode, mongodbURL, mongodbName, mongodbCollection,useHistory);
       $('#addServerModal').modal('hide');
     });
     var options = {
@@ -72,8 +75,8 @@ class Controller{
     });
   }
 
-  addServer(name, hist, mongo, mongodbName, collection, useHistory){
-    var index = this.servers.addServer(hist, mongo,mongodbName, collection, useHistory);
+  addServer(name, hist, webhdfs, userdir, namenode, mongo, mongodbName, collection, useHistory){
+    var index = this.servers.addServer(hist,webhdfs, userdir, namenode, mongo,mongodbName, collection, useHistory);
     console.log("added server index: "+ index);
     var elem = this.createServerLabel(name, index);
     if(this.activeElem === null){

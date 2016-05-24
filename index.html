@@ -315,6 +315,18 @@
                             <label for="historyInput">History server</label>
                             <input type="text" class="form-control" id="historyInput" placeholder="History server" value="localhost:8082">
                         </div>
+                        <div class="form-group">
+                            <label for="webhdfs">Webhdfs server</label>
+                            <input type="text" class="form-control" id="webhdfs" placeholder="webhdfs server" value="localhost:9000">
+                        </div>
+                        <div class="form-group">
+                            <label for="userdir">User directory</label>
+                            <input type="text" class="form-control" id="userdir" placeholder="History server" value="user/vsc31475">
+                        </div>
+                        <div class="form-group">
+                            <label for="namenode">namenode address + port</label>
+                            <input type="text" class="form-control" id="namenode" placeholder="History server" value="namenode:9000">
+                        </div>
                     </fieldset>
                     <fieldset id="modaldbFieldSet" disabled>
                         <div class="form-group">
@@ -400,6 +412,7 @@
 <script src="js/tool/taskattemptdata.js"></script>
 <script src="js/tool/settings.js"></script>
 <script src="js/tool/progresssaving.js"></script>
+<script src="js/tool/server/webhdfsAPI.js"></script>
 <script>
     var controller = new Controller();
 </script>

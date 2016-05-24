@@ -34,6 +34,11 @@ class HistoryServer {
     this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/" + jobID, func);
   }
 
+
+  fetchJobConfig(jobID, func){
+    this.doAjaxRequest("/ws/v1/history/mapreduce/jobs/" + jobID + "/conf", func);
+  }
+
   /**
   * FETCH ATTEMPTS OF A SPECIFIC JOB
   **/

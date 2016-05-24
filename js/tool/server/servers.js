@@ -4,8 +4,8 @@ class Servers{
   constructor(){
     this.servers = [];
   }
-  addServer(historyserver, database,mongodbName, collectionname, useHistory){
-    var server = new Server(historyserver, database,mongodbName, collectionname,useHistory);
+  addServer(historyserver, webhdfs, userdir, namenode, database,mongodbName, collectionname, useHistory){
+    var server = new Server(historyserver,webhdfs, userdir, namenode, database,mongodbName, collectionname,useHistory);
     this.servers.push(server);
     return this.servers.length-1;
   }
