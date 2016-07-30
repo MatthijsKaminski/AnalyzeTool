@@ -2,8 +2,6 @@
 
 class NodeController{
 
-
-
     constructor(element, server){
         //this.element = element;
         this.server = server;
@@ -76,7 +74,7 @@ class NodeController{
     initVisualisations(){
         for(var index = 0; index < this.visLabels.length; index++){
             var label = this.visLabels[index];
-            this.addVis(new NodeBoxPlot(this.getContainer("nodeBoxPlotsContainer"), label.title, label.dataName))
+            this.addVis(new NodeBoxPlot(this.getContainer("nodeBoxPlotsContainer"), label.title, label.dataName, false))
         }
         for(var index = 0; index < this.histLabels.length; index++){
             var label = this.histLabels[index];

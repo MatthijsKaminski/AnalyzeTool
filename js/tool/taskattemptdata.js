@@ -21,6 +21,7 @@ class TaskAttemptsData{
 
     getAllTaskAttempts(tasks){
         this.attempts = {};
+        this.attemptGroupsIndex = 0;
         tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
         this.amountOftasks = tasks.length;
         this.taskAttempts = 0;
@@ -53,7 +54,22 @@ class TaskAttemptsData{
     }
 
     markSpeculativeAttempts(attempts){
-        
+        var min = attempts[0].startTime;
+        attempts[0].speculative = false;
+        attempts[0].attemptGroupsIndex = this.attemptGroupsIndex;
+        for(var i = 1; i < attempts.length ; i++){
+            attempts[i].attemptGroupsIndex = this.attemptGroupsIndex
+            if(attempts[i].startTime > min){
+                attempts[i].speculative = true;
+            }else{
+                for(var j = 0; j < i; j++){
+                    attempts[j].speculative = true;
+                }
+                min = attempts[i].startTime;
+                attempts[i].speculative = false;
+            }
+        }
+        this.attemptGroupsIndex++;
     }
 
 

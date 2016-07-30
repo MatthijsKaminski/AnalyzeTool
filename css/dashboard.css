@@ -300,3 +300,6 @@ ul.alert-dropdown {
     vertical-align: middle;
     float: none;
 }
+.servertabs{
+    display: none;
+}

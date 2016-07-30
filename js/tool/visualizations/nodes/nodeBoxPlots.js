@@ -2,11 +2,18 @@
 
 class NodeBoxPlot{
 
-    constructor(element, title, dataName){
+    constructor(element, title, dataName, tasks){
         this.element = element;
         this.node = undefined;
         this.title = title;
         this.dataName = dataName;
+        if(tasks){
+            this.name = "Tasks";
+            this.selected = "Selected Task"
+        }else{
+            this.name = "Nodes";
+            this.selected = "Selected Node"
+        }
         this.createDivForBoxPlot();
     }
 
@@ -59,7 +66,7 @@ class NodeBoxPlot{
         var trace1 = {
             x: that.data,
             type: 'box',
-            name: 'Nodes',
+            name: that.name,
             boxmean: true
         };
 
@@ -70,7 +77,7 @@ class NodeBoxPlot{
             var trace2 = {
                 x: [that.selectedDataPoint],
                 type: 'box',
-                name: 'Selected node'
+                name: that.selected
             };
             dataArray.push(trace2);
         }

@@ -239,7 +239,7 @@ class TaskController{
 
         for(var index = 0; index < this.boxLabels.length; index++){
             var label = this.boxLabels[index];
-            this.addVis(new NodeBoxPlot(this.getContainer("taskBoxPlotsContainer"), label.title, label.dataName))
+            this.addVis(new NodeBoxPlot(this.getContainer("taskBoxPlotsContainer"), label.title, label.dataName, true))
         }
         for(var index = 0; index < this.histLabels.length; index++){
             var label = this.histLabels[index];

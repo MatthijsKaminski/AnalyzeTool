@@ -5,6 +5,10 @@ class HistoryServer {
     this.url = this.correctURL(url);
   }
 
+  update(url){
+    this.url = this.correctURL(url);
+  }
+
   correctURL(url){
     if(!url.startsWith("http://")){
       url = "http://" + url;

@@ -1,11 +1,56 @@
 .vis-item.map {
   color: white;
   background-color: red;
-  border-color: darkred;
+  border-color: #8b0000;
+}
+
+.vis-item {
+  border-color: orange;
+  background-color: yellow;
+  height: 0.5rem;
+}
+.vis-item.mapspeculative {
+  color: white;
+  background-color: pink;
+  border-color: pink;
 }
 
 .vis-item.reduce {
   color: white;
   background-color: blue;
   border-color: darkblue;
+}
+
+.vis-item.reducespeculative {
+  color: white;
+  background-color: lightblue;
+  border-color: lightblue;
+}
+
+.vis-item.mapfailed {
+  color: white;
+  background-color: grey;
+  border-color: darkred;
+}
+
+.vis-item.reducefailed {
+  color: white;
+  background-color: grey;
+  border-color: darkblue;
+}
+
+.vis-item.mapfailedspeculative {
+  color: white;
+  background-color: grey;
+  border-color: darkred;
+}
+
+.vis-item.reducefailedspeculative {
+  color: white;
+  background-color: grey;
+  border-color: darkblue;
+}
+
+.normalize{
+  margin-top: 1rem;
 }

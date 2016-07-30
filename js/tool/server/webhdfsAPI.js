@@ -6,6 +6,12 @@ class Webhdfs{
         this.namenode = namenode;
     }
 
+    update(server, userDirectory, namenode){
+        this.url = this.correctURL(server);
+        this.userDirectory = userDirectory;
+        this.namenode = namenode;
+    }
+
     correctURL(url){
         if(!url.startsWith("http://")){
             url = "http://" + url;

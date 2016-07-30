@@ -85,9 +85,13 @@ class Controller{
       this.activeElem = elem[0];
       this.selectServer(null,name,index);
       this.setupTabs();
-      this.settings.setServer(name, hist, mongo, mongodbName, collection, useHistory);
+      this.settings.setServer(name, hist,webhdfs, userdir, namenode, mongo, mongodbName, collection, useHistory);
     }
 
+  }
+  
+  updateActiveServer(name, hist, webhdfs, userdir, namenode, mongo, mongodbName, collection, useHistory){
+    this.servers.updateServer(this.activeIndex, hist, webhdfs, userdir, namenode, mongo, mongodbName, collection, useHistory);
   }
 
   createServerLabel(name, index){

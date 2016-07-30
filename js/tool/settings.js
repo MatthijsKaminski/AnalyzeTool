@@ -51,7 +51,21 @@ class Settings{
     }
 
     update(){
-
+        var useHistory = false;
+        if ($('#use-server-db-switch-settings').is(":checked"))
+        {
+            useHistory = true;
+        }
+        this.controller.updateActiveServer(this.getElement("nameInput-settings").value,
+        this.getElement("historyInput-settings").value ,
+        this.getElement("webhdfs-settings").value ,
+        this.getElement("userdir-settings").value ,
+        this.getElement("namenode-settings").value ,
+        this.getElement("mongodbInput-settings").value ,
+        this.getElement("mongodbNameInput-settings").value ,
+        this.getElement("mongodbCollectionInput-settings").value,
+            useHistory)
+        SuccessBox.showSuccess("updated settings");
     }
 
     save(){
@@ -64,9 +78,12 @@ class Settings{
         return document.getElementById(id);
     }
 
-    setServer(name, hist, mongo, mongodbName, collection, useHistory){
+    setServer(name, hist, webhdfs, userdir, namenode, mongo, mongodbName, collection, useHistory){
         this.getElement("nameInput-settings").value = name;
         this.getElement("historyInput-settings").value = hist;
+        this.getElement("webhdfs-settings").value = webhdfs;
+        this.getElement("userdir-settings").value = userdir;
+        this.getElement("namenode-settings").value = namenode;
         this.getElement("mongodbInput-settings").value = mongo;
         this.getElement("mongodbNameInput-settings").value = mongodbName;
         this.getElement("mongodbCollectionInput-settings").value = collection;

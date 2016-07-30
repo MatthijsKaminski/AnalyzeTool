@@ -18,5 +18,10 @@ class Servers{
     this.servers[index].save(mongo, mongodbName, collection);
   }
 
+  updateServer(index, historyserver, webhdfs, userdir, namenode, database,mongodbName, collectionname, useHistory){
+    this.servers[index].update(historyserver, webhdfs, userdir, namenode, database,mongodbName, collectionname, useHistory);
+
+  }
+
 
 }

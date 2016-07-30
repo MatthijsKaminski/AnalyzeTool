@@ -92,7 +92,7 @@ class BinnedHistogram{
         var binIndex = 1;
         var bin = this.min + this.binsize;
         while (dataIndex < this.data.length){
-            while(this.data[dataIndex] < bin){
+            while(this.data[dataIndex] <= bin){
                 this.binArray[binIndex]++;
                 dataIndex++;
             }
@@ -155,7 +155,7 @@ class BinnedHistogram{
                     categories: this.cats,
                     label:{
                         text: this.label.x,
-                        position: 'outer-middle'
+                        position: 'outer-center'
                     }
                 }
             },

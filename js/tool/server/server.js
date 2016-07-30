@@ -21,6 +21,15 @@ class Server{
     // })
   }
 
+  update(hist, webhdfs, userdir, namenode, db, dataBaseName, collection, useHistory){
+    this.useHistory = useHistory;
+    this.historyserver.update(hist);
+    this.webhdfs.update(webhdfs,userdir,namenode);
+    this.database.update(db,dataBaseName);
+    this.collection = collection;
+
+  }
+
   getSeverInfo(func){
     if(this.useHistory){
       this.historyserver.fetchServerInfo(func);

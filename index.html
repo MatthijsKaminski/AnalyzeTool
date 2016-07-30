@@ -73,8 +73,11 @@
         <!-- alert for if connection fails -->
         <div id="alertbox">
         </div>
+        <div id="succesbox">
+
+        </div>
         <!-- tabs -->
-        <div class="container-fluid"  id="serverTabs">
+        <div class="container-fluid servertabs"  id="serverTabs" >
             <div>
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
@@ -238,6 +241,18 @@
                                         <div class="form-group">
                                             <label for="historyInput">History server</label>
                                             <input type="text" class="form-control" id="historyInput-settings" placeholder="History server" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="webhdfs-settings">Webhdfs server</label>
+                                            <input type="text" class="form-control" id="webhdfs-settings" placeholder="webhdfs server" value="localhost:9000">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="userdir-settings">User directory</label>
+                                            <input type="text" class="form-control" id="userdir-settings" placeholder="History server" value="user/vsc31475">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="namenode-settings">namenode address + port</label>
+                                            <input type="text" class="form-control" id="namenode-settings" placeholder="History server" value="namenode:9000">
                                         </div>
                                     </fieldset>
                                     <fieldset id="settingsdbFieldSet">
@@ -413,6 +428,7 @@
 <script src="js/tool/settings.js"></script>
 <script src="js/tool/progresssaving.js"></script>
 <script src="js/tool/server/webhdfsAPI.js"></script>
+<script src="js/tool/succesBox.js"></script>
 <script>
     var controller = new Controller();
 </script>

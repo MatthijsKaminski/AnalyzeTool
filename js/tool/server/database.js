@@ -7,6 +7,10 @@ class Database{
     this.MongoClient = mongodb.MongoClient;
   }
 
+  update(url, databaseName){
+    this.url = "mongodb://" + url + "/"+ databaseName;
+  }
+
   useDatabase(func){
     var url = this.url
     this.MongoClient.connect(url, function (err, db) {
