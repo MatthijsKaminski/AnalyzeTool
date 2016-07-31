@@ -86,7 +86,7 @@ class TaskAttemptsData{
         });
         if(attempt.state.localeCompare("SUCCEEDED") === 0) {
             this.server.getTaskAttemptStatCounters(this.jobid, taskid, attempt.id, function (statCounters) {
-                console.log(statCounters);
+                //console.log(statCounters);
             })
         }
 

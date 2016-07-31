@@ -10,6 +10,8 @@ class Stat{
   }
 
   calcStats(){
+    this.calculateMean();
+    this.calculateStandardDeviation();
     this.calculateQuantiles();
     this.calculateOutliersInterval();
   }
@@ -53,6 +55,15 @@ class Stat{
   }
 
   label(datapoint){
+    // console.log("__________");
+    // console.log(datapoint);
+    // console.log(this.outliersInterval[0] + " | " + this.quantiles[0] + " | " + this.quantiles[1] + " | " + + this.quantiles[2] + " | " + + this.outliersInterval[1] + " | ")
+    // console.log(this.getStandardDeviation());
+
+    if(this.getStandardDeviation() == 0){
+      
+      return -1;
+    }
     if(datapoint < this.outliersInterval[0]){
       return 0;
     }else if(datapoint < this.quantiles[0]){
@@ -69,25 +80,37 @@ class Stat{
   }
 
   calculateMean(){
-    var sum = 0;
-    for(var index = 0; index < this.dataPoints.length ; index++){
+    let sum = 0;
+    for(let index = 0; index < this.dataPoints.length ; index++){
       sum += this.dataPoints[index];
     }
-    this.mean = sum/this.dataPoints.length;
+    if(this.dataPoints.length != 1){
+      this.mean = sum/this.dataPoints.length;
+    }else{
+      this.mean = sum;
+    }
+
   }
 
   getMean(){
     return this.mean;
   }
 
-  getStandardDeviation(){
-    var mean = this.getMean();
-    var sum = 0;
-    for(var index = 0; index < this.dataPoints.length ; index++){
+  calculateStandardDeviation(){
+    let mean =  this.getMean();
+    let sum = 0;
+    for(let index = 0; index < this.dataPoints.length ; index++){
       sum += Math.pow((this.dataPoints[index] - mean),2);
     }
-    sum /= (this.dataPoints.length - 1);
-    return Math.sqrt(sum);
+    if(this.dataPoints.length != 1){
+      sum /= (this.dataPoints.length - 1);
+    }
+
+    this.svd = Math.sqrt(sum);
+  }
+
+  getStandardDeviation(){
+    return this.svd;
   }
 
   getDataPoints(){

@@ -195,8 +195,8 @@ class NodesData{
     }
     
     populateStats(){
-        for(var node in this.nodes){
-            var node = this.nodes[node];
+        for(let nodeName in this.nodes){
+            var node = this.nodes[nodeName];
             this.calcAvgForNode(node);
             for(var index = 0; index < this.statNames.length; index++){
                 var name = this.statNames[index];
@@ -213,10 +213,11 @@ class NodesData{
     }
 
     labelOutliers(){
-        for(var node in this.nodes){
-            var node = this.nodes[node];
+        for(let nodeName in this.nodes){
+            let node = this.nodes[nodeName];
             for(var index = 0; index < this.statNames.length ; index++){
                 var name = this.statNames[index];
+                console.log(name);
                 node[(name + "Label")] = this[name].label(node[name]);
             }
 

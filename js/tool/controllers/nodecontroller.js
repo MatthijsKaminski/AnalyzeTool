@@ -31,7 +31,7 @@ class NodeController{
             {dataName: "totalSpilling", title: "Spilling (records)",better: "lower"},
             {dataName: "totalReplication", title: "Replication",better: "lower"},
             {dataName: "elapsedTime", title: "Sum of task times (ms)",better: "lower"},
-            {dataName: "load", title: "Load (ms / ms)",better: "higher"}
+            {dataName: "load", title: "Load (ms / ms)", better: "higher"}
             
         ];
 
@@ -81,7 +81,7 @@ class NodeController{
             this.addVis(new BinnedHistogram(this.getContainer("nodeHistContainer"), label.bins, label))
         }
         this.addSingleVis(new TimeDivisionNode(this.getContainer("nodeTimeContainer"),this.server));
-        this.addSingleVis(new NodeDiagnosis(this.getContainer("nodeDiagnosisContainer"),this));
+        this.nodeDiagnoses = new NodeDiagnosis(this.getContainer("nodeDiagnosisContainer"),this);
     }
 
 
@@ -125,6 +125,8 @@ class NodeController{
         this.nodes = nodes;
         this.nodeOverview.setNodes(nodes);
         this.nodeOverview.updateView();
+        this.nodeDiagnoses.setNodes(nodes);
+        this.nodeDiagnoses.updateView();
         for(var index =0 ; index < this.visualisations.length; index++){
             var vis = this.visualisations[index];
             vis.setData(this.nodesData.getStatDataPoints(vis.getDataName()));

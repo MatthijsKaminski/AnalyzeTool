@@ -149,25 +149,25 @@ class TaskController{
             all:[]
         }
         this.boxLabels = [
-            {dataName: "elapsedMapTime", title: "Map Times (ms)", better: "lower"},
-            {dataName: "elapsedReduceTime", title: "Reduce Times (ms)",better: "lower"},
-            {dataName: "elapsedShuffleTime", title: "Shuffle Times (ms)",better: "lower"},
-            {dataName: "elapsedMergeTime", title: "Merge Times (ms)",better: "lower"},
-            {dataName: "mapInputRecords", title: "Map Inputs (records)",better: "lower"},
-            {dataName: "mapOutputRecords", title: "Map Outputs (records)",better: "lower"},
-            {dataName: "mapInputBytes", title: "Map Inputs (bytes)",better: "lower"},
-            {dataName: "mapOutputBytes", title: "Map Outputs (bytes)",better: "lower"},
-            {dataName: "uniqueKeys", title: "Unique keys of Reducer",better: "lower"},
-            {dataName: "reduceInputRecords", title: "Reduce Inputs (records)",better: "lower"},
-            {dataName: "reduceOutputRecords", title: "Reduce Outputs (records)",better: "lower"},
-            {dataName: "reduceInputBytes", title: "Reduce Inputs (bytes)",better: "lower"},
-            {dataName: "reduceOutputBytes", title: "Reduce Inputs (bytes)",better: "lower"},
-            {dataName: "combinerEfficiency", title: "Combiner Efficiency (%)",better: "higher"},
-            {dataName: "shuffledMaps", title: "Shuffled Maps to reducer",better: "higher"},
-            {dataName: "mergedMaps", title: "Merged Maps at reducer",better: "higher"},
-            {dataName: "failedShuffles", title: "Failed Shuffles to reducer",better: "higher"},
-            {dataName: "replicationRate", title: "Replication Rate",better: "higher"},
-            {dataName: "unneededSpilledRecords", title: "Unneeded Spilled Records",better: "higher"}
+            {dataName: "elapsedMapTime", title: "Map Times (ms)", better: "lower", type: "map"},
+            {dataName: "elapsedReduceTime", title: "Reduce Times (ms)", better: "lower", type: "reduce"},
+            {dataName: "elapsedShuffleTime", title: "Shuffle Times (ms)", better: "lower", type: "reduce"},
+            {dataName: "elapsedMergeTime", title: "Merge Times (ms)", better: "lower", type: "reduce"},
+            {dataName: "mapInputRecords", title: "Map Inputs (records)", better: "lower", type: "map"},
+            {dataName: "mapOutputRecords", title: "Map Outputs (records)", better: "lower", type: "map"},
+            {dataName: "mapInputBytes", title: "Map Inputs (bytes)", better: "lower", type: "map"},
+            {dataName: "mapOutputBytes", title: "Map Outputs (bytes)", better: "lower", type: "map"},
+            {dataName: "uniqueKeys", title: "Unique keys of Reducer", better: "lower", type: "reduce"},
+            {dataName: "reduceInputRecords", title: "Reduce Inputs (records)", better: "lower", type: "reduce"},
+            {dataName: "reduceOutputRecords", title: "Reduce Outputs (records)", better: "lower", type: "reduce"},
+            {dataName: "reduceInputBytes", title: "Reduce Inputs (bytes)", better: "lower", type: "reduce"},
+            {dataName: "reduceOutputBytes", title: "Reduce Inputs (bytes)", better: "lower", type: "reduce"},
+            {dataName: "combinerEfficiency", title: "Combiner Efficiency (%)", better: "higher", type: "map"},
+            {dataName: "shuffledMaps", title: "Shuffled Maps to reducer", better: "higher", type: "reduce"},
+            {dataName: "mergedMaps", title: "Merged Maps at reducer", better: "higher", type: "reduce"},
+            {dataName: "failedShuffles", title: "Failed Shuffles to reducer", better: "higher", type: "reduce"},
+            {dataName: "replicationRate", title: "Replication Rate", better: "higher", type: "map"},
+            {dataName: "unneededSpilledRecords", title: "Unneeded Spilled Records", better: "higher", type: "both"}
 
         ];
 
@@ -198,7 +198,7 @@ class TaskController{
     }
 
     getVisLabels(){
-        return this.visLabels;
+        return this.boxLabels;
     }
 
     setJobID(jobid){
@@ -245,7 +245,8 @@ class TaskController{
             var label = this.histLabels[index];
             this.addVis(new BinnedHistogram(this.getContainer("taskHistContainer"), label.bins, label))
         }
-        
+
+        this.diagnoses = new TasksDiagnosis(this.getContainer("TaskDiagnosesContainer"),this);
         this.singleTaskVisualisations.push(new TimeDivisionTask(this.getContainer("TimeDivisionTask"),this.server))
 
         
@@ -257,6 +258,8 @@ class TaskController{
             vis.setData(this.taskAttemptsData.getStatDataPoints(vis.getDataName()));
             vis.updateView();
         }
+        this.diagnoses.setTaskAttempts(attempts);
+        this.diagnoses.updateView();
         this.timeline.setTaskAttempts(attempts);
     }
 

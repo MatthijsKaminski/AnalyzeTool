@@ -6,6 +6,7 @@ class NodeDiagnosis{
         this.nodeController = nodeController;
         this.init();
         this.node =undefined;
+        this.nodes = undefined;
     }
     
     init() {
@@ -16,6 +17,9 @@ class NodeDiagnosis{
 
     }
 
+    setNodes(nodes){
+        this.nodes = nodes;
+    }
 
     selectNode(node){
         this.node = node;
@@ -26,35 +30,77 @@ class NodeDiagnosis{
     }
 
     updateView(){
-        if(this.node !== undefined) {
+        if(this.nodes !== undefined) {
             this.element.innerHTML = "";
             this.table = document.createElement("table");
-            this.table.className = "table-bordered";
+            this.table.className = "table-bordered heatmap";
             this.element.appendChild(this.table);
-            this.tableHead = document.createElement("thead");
-            this.table.appendChild(this.tableHead);
-            this.tableHead.innerHTML = "<tr><th>Spec</th><th>status</th></tr>";
-            this.tableBody = document.createElement("tbody");
-            this.table.appendChild(this.tableBody);
-            this.fillTableBody();
+            this.createTableHead(this.table);
+            // this.tableHead = document.createElement("thead");
+            // this.table.appendChild(this.tableHead);
+            // this.tableHead.innerHTML = "<tr><th>Spec</th><th>status</th></tr>";
+            let tableBody = document.createElement("tbody");
+            this.table.appendChild(tableBody);
+            this.fillTableBody(tableBody);
         }
     }
 
-    fillTableBody(){
-        for(var index = 0; index < this.labels.length; index++){
-            var label = this.labels[index];
-            var tr = document.createElement("tr");
+    createTableHead(table){
+        let tableHead = document.createElement("thead");
+        table.appendChild(tableHead);
+        let row = "<tr><th>Node</th>";
+        for(let index = 0; index < this.labels.length; index++){
+            let label = this.labels[index];
 
-            tr.innerHTML = "<td>"+ label.dataName +"</td>" + "<td style='background-color:" + this.getColorForLabel(label)
-                +" ;'>"+"</td>";
-            this.tableBody.appendChild(tr);
+            row += "<th>" + label.title + "</th>";
         }
+        row+="</tr>";
+
+        tableHead.innerHTML = row;
+
     }
 
-    getColorForLabel(label){
-        var index = this.node[(label.dataName + "Label")];
+    fillTableBody(tableBody){
+        console.log(this.nodes);
+        for(let nodeName in this.nodes){
+
+            let tr = document.createElement("tr");
+            let row = "<td>" + nodeName + "</td>";
+            let node = this.nodes[nodeName];
+            console.log(node);
+            for(let index2 = 0; index2 < this.labels.length; index2++){
+                let label = this.labels[index2];
+                row +="<td class='col-md-2' style='background-color:" + this.getColorForLabel(label,node)+" ;'>"+"</td>";
+            }
+            tr.innerHTML = row;
+            tableBody.appendChild(tr);
+
+        }
+        // for(var index = 0; index < this.labels.length; index++){
+        //     var label = this.labels[index];
+        //     var tr = document.createElement("tr");
+        //
+        //     tr.innerHTML = "<td>"+ label.dataName +"</td>" + "<td style='background-color:" + this.getColorForLabel(label)
+        //         +" ;'>"+"</td>";
+        //     this.tableBody.appendChild(tr);
+        // }
+    }
+
+    fillTableBodyWithNodes(){
+
+    }
+
+
+    getColorForLabel(label, node){
+        let index = node[(label.dataName + "Label")];
         if(label.better.localeCompare("lower") === 0){
+            if(index == -1){
+                index = 0;
+            }
            return this.colorsReverse[index];
+        }
+        if(index == -1){
+            index = 5;
         }
         return this.colors[index];
     }

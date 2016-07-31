@@ -17,10 +17,10 @@ class Joboverview{
     this.element.appendChild(this.table);
     this.jobInfo = document.createElement("pre");
     this.jobCounters = document.createElement("pre");
-    this.jobInfo.innerHTML = "No job selected";
-    this.jobCounters.innerHTML = "No job selected";
-    this.element.appendChild(this.jobInfo);
-    this.element.appendChild(this.jobCounters);
+    // this.jobInfo.innerHTML = "No job selected";
+    // this.jobCounters.innerHTML = "No job selected";
+    // this.element.appendChild(this.jobInfo);
+    // this.element.appendChild(this.jobCounters);
     this.createtablehead();
 
   }

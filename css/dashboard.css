@@ -303,3 +303,7 @@ ul.alert-dropdown {
 .servertabs{
     display: none;
 }
+
+.heatmap{
+    word-wrap: break-word;
+}
