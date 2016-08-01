@@ -159,13 +159,16 @@ class TaskTimeLine{
   createElementInDataSetFormTask(taskIndex, groupindex, taskAttempt){
     let classNameValue = "map";
     let startTime =  taskAttempt.startTime;
+    let endTime = taskAttempt.finishTime;
     if(this.normalize){
       startTime = this.min;
+      endTime = this.min + taskAttempt.elapsedTime;
     }
     if(taskAttempt["type"] == "REDUCE"){
       classNameValue = "reduce";
       if(this.normalize) {
         startTime = this.reducemin;
+        endTime = startTime + taskAttempt.elapsedTime;
       }
     }
     if(taskAttempt["state"] == "FAILED" || taskAttempt["state"] == "KILLED"){
@@ -178,7 +181,7 @@ class TaskTimeLine{
     let elem = {id: taskIndex,
                 group: groupindex,
                 start: startTime,
-                end: taskAttempt["finishTime"],
+                end: endTime,
                 className: classNameValue,
                 title: titleValue};
     this.dataset.push(elem);

@@ -71,12 +71,16 @@ class TasksDiagnosis{
     }
 
     fillTableBody(mapTable, reduceTable){
-        console.log(this.tasks);
+
 
         for(let attemptname in this.tasks){
             let task = this.tasks[attemptname];
             let type = "reduce";
             let table = reduceTable;
+            if(attemptname.localeCompare("attempt_1469261839293_0001_m_000000_0") == 0){
+                console.log("yep");
+            }
+
             if(task.type.localeCompare("MAP") == 0){
                 type="map";
                 table = mapTable;
@@ -108,6 +112,13 @@ class TasksDiagnosis{
 
     getColorForLabel(label, task){
         let index = task[(label.dataName + "Label")];
+        if(label.dataName.localeCompare("MAPPING_MEAN") == 0){
+            console.log("_______")
+            console.log(label);
+            console.log(index);
+            console.log(task["MAPPING_MEAN"]);
+
+        }
         if(label.better.localeCompare("lower") === 0){
             if(index == -1){
                 index = 0;

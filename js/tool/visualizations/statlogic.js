@@ -55,24 +55,27 @@ class Stat{
   }
 
   label(datapoint){
-    // console.log("__________");
-    // console.log(datapoint);
-    // console.log(this.outliersInterval[0] + " | " + this.quantiles[0] + " | " + this.quantiles[1] + " | " + + this.quantiles[2] + " | " + + this.outliersInterval[1] + " | ")
-    // console.log(this.getStandardDeviation());
 
+    if(datapoint == 75){
+      console.log(this.dataPoints);
+      console.log("__________");
+      console.log(datapoint);
+      console.log(this.outliersInterval[0] + " | " + this.quantiles[0] + " | " + this.quantiles[1] + " | " + + this.quantiles[2] + " | " + + this.outliersInterval[1] + " | ")
+      // console.log(this.getStandardDeviation());
+    }
     if(this.getStandardDeviation() == 0){
       
       return -1;
     }
-    if(datapoint < this.outliersInterval[0]){
+    if(datapoint <= this.outliersInterval[0]){
       return 0;
-    }else if(datapoint < this.quantiles[0]){
+    }else if(datapoint <= this.quantiles[0]){
       return 1;
-    }else if(datapoint < this.quantiles[1]){
+    }else if(datapoint <= this.quantiles[1]){
       return 2;
-    }else if(datapoint < this.quantiles[2]){
+    }else if(datapoint <= this.quantiles[2]){
       return 3;
-    }else if(datapoint < this.outliersInterval[1]){
+    }else if(datapoint <= this.outliersInterval[1]){
       return 4;
     }else {
       return 5;

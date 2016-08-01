@@ -79,6 +79,8 @@ class TaskAttemptsData{
         this.attempts[attempt.id] = attempt;
         if(attempt.type.localeCompare("MAP") === 0){
             attempt.elapsedMapTime = attempt.elapsedTime;
+        }else{
+            attempt.elapsedReduceTotalTime = attempt.elapsedTime;
         }
 
         this.server.getTaskAttemptCounters(this.jobid,taskid,attempt.id, function (counters) {
@@ -86,9 +88,40 @@ class TaskAttemptsData{
         });
         if(attempt.state.localeCompare("SUCCEEDED") === 0) {
             this.server.getTaskAttemptStatCounters(this.jobid, taskid, attempt.id, function (statCounters) {
-                //console.log(statCounters);
+                that.updateAttemptWithComplexCounters(attempt, statCounters);
             })
+        }else{
+            this.taskAttempts--;
         }
+
+    }
+
+    updateAttemptWithComplexCounters(attempt, counters){
+        counters  = JSON.parse(counters, function(k,v){return v;});
+        let keys = counters.stats[0];
+        let mean = counters.stats[1]["MEAN"];
+
+        let variance = counters.stats[1]["var"];
+        if(variance != 0){
+            console.log(attempt);
+        }
+        if(attempt.type.localeCompare("MAP") === 0){
+            attempt["MOST_EXPENSIVE_RECORDS"] = keys["MOST_EXPENSIVE_RECORDS"];
+            attempt["MAPPING_MEAN"] = mean;
+            attempt["MAPPING_VARIANCE"] = variance;
+            
+        }else {
+            attempt["MOST_EXPENSIVE_KEYS"] = keys["MOST_EXPENSIVE_KEYS"];
+            attempt["REDUCE_MEAN"] = mean;
+            attempt["REDUCE_VARIANCE"] = variance;
+        }
+
+        this.taskAttempts--;
+        console.log("remaining taskAttempts " + this.taskAttempts);
+        if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
+            this.doStatsAndUpdateController();
+        }
+      
 
     }
 
@@ -134,10 +167,7 @@ class TaskAttemptsData{
 
 
         }
-        this.taskAttempts--;
-        if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
-            this.doStatsAndUpdateController();
-        }
+
 
     }
 

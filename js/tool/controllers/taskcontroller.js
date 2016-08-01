@@ -15,7 +15,8 @@ class TaskController{
         this.statNames = ["mapInputRecords", "mapOutputRecords","mapInputBytes","mapOutputBytes", "combinerEfficiency",
                             "reduceInputRecords", "reduceOutputRecords", "reduceInputBytes", "reduceOutputBytes", "shuffledMaps",
                             "mergedMaps", "failedShuffles", "replicationRate", "unneededSpilledRecords" , "elapsedMapTime",
-                            "elapsedMergeTime", "elapsedReduceTime", "elapsedShuffleTime","uniqueKeys","timePerMapInput"
+                            "elapsedMergeTime", "elapsedReduceTime", "elapsedShuffleTime","uniqueKeys","timePerMapInput", "MAPPING_MEAN", "MAPPING_VARIANCE",
+                            "REDUCE_MEAN","REDUCE_VARIANCE", "elapsedReduceTotalTime"
                             ];
         
         
@@ -149,7 +150,9 @@ class TaskController{
             all:[]
         }
         this.boxLabels = [
+
             {dataName: "elapsedMapTime", title: "Map Times (ms)", better: "lower", type: "map"},
+            {dataName: "elapsedReduceTotalTime", title: "Total reduce Times (ms)", better: "lower", type: "reduce"},
             {dataName: "elapsedReduceTime", title: "Reduce Times (ms)", better: "lower", type: "reduce"},
             {dataName: "elapsedShuffleTime", title: "Shuffle Times (ms)", better: "lower", type: "reduce"},
             {dataName: "elapsedMergeTime", title: "Merge Times (ms)", better: "lower", type: "reduce"},
@@ -167,7 +170,13 @@ class TaskController{
             {dataName: "mergedMaps", title: "Merged Maps at reducer", better: "higher", type: "reduce"},
             {dataName: "failedShuffles", title: "Failed Shuffles to reducer", better: "higher", type: "reduce"},
             {dataName: "replicationRate", title: "Replication Rate", better: "higher", type: "map"},
-            {dataName: "unneededSpilledRecords", title: "Unneeded Spilled Records", better: "higher", type: "both"}
+            {dataName: "unneededSpilledRecords", title: "Unneeded Spilled Records", better: "lower", type: "both"},
+            {dataName: "MAPPING_MEAN", title: "Mapping time per record mean", better: "lower", type: "map"},
+            {dataName: "MAPPING_VARIANCE", title: "Mapping time per record variance", better: "lower", type: "map"},
+            {dataName: "REDUCE_MEAN", title: "Reduce time per record mean", better: "lower", type: "reduce"},
+            {dataName: "REDUCE_VARIANCE", title: "Reduce time per record variance", better: "lower", type: "reduce"}
+
+
 
         ];
 

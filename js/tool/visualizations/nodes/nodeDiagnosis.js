@@ -61,13 +61,13 @@ class NodeDiagnosis{
     }
 
     fillTableBody(tableBody){
-        console.log(this.nodes);
+        
         for(let nodeName in this.nodes){
 
             let tr = document.createElement("tr");
             let row = "<td>" + nodeName + "</td>";
             let node = this.nodes[nodeName];
-            console.log(node);
+            
             for(let index2 = 0; index2 < this.labels.length; index2++){
                 let label = this.labels[index2];
                 row +="<td class='col-md-2' style='background-color:" + this.getColorForLabel(label,node)+" ;'>"+"</td>";
