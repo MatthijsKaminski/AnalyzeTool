@@ -72,9 +72,25 @@ class NodeController{
     
     
     initVisualisations(){
+        let x  = '<div class="row"> <div class="col-md-6">'+ '</div><div class="col-md-6">'+'</div> </div>';
+        let y = 0;
+        let row = document.createElement("div");
+        row.className = "row";
         for(var index = 0; index < this.visLabels.length; index++){
+            let box = document.createElement("div");
+            box.className = "col-md-6";
             var label = this.visLabels[index];
-            this.addVis(new NodeBoxPlot(this.getContainer("nodeBoxPlotsContainer"), label.title, label.dataName, false))
+            this.addVis(new NodeBoxPlot(box, label.title, label.dataName, false));
+            row.appendChild(box);
+            y++;
+            if(y == 2){
+                this.getContainer("nodeBoxPlotsContainer").appendChild(row);
+                row = document.createElement("div");
+                row.className = "row";
+                y= 0;
+            }
+
+
         }
         for(var index = 0; index < this.histLabels.length; index++){
             var label = this.histLabels[index];

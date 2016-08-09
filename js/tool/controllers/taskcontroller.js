@@ -1,8 +1,9 @@
 "use strict"
 
 class TaskController{
-    constructor(server){
+    constructor(server, diagnostics){
         this.server = server;
+        this.diagnosticstab = diagnostics;
         this.visualisations = [];
         this.singleTaskVisualisations = [];
         this.initVisualisationLabels();
@@ -245,19 +246,34 @@ class TaskController{
         this.timeline = new TaskTimeLine(this.getContainer("TaskTimelineContainer"), this);
     }
     initVisualisations(){
-
+        let y = 0;
+        let row = document.createElement("div");
+        row.className = "row";
         for(var index = 0; index < this.boxLabels.length; index++){
+            let box = document.createElement("div");
+            box.className = "col-md-6";
             var label = this.boxLabels[index];
-            this.addVis(new NodeBoxPlot(this.getContainer("taskBoxPlotsContainer"), label.title, label.dataName, true))
+            this.addVis(new NodeBoxPlot(box, label.title, label.dataName, true));
+            row.appendChild(box);
+            y++;
+            if(y == 2){
+                this.getContainer("taskBoxPlotsContainer").appendChild(row);
+                row = document.createElement("div");
+                row.className = "row";
+                y= 0;
+            }
         }
+
         for(var index = 0; index < this.histLabels.length; index++){
+
             var label = this.histLabels[index];
-            this.addVis(new BinnedHistogram(this.getContainer("taskHistContainer"), label.bins, label))
+            this.addVis(new BinnedHistogram(this.getContainer("taskHistContainer"), label.bins, label));
+
         }
 
-        this.diagnoses = new TasksDiagnosis(this.getContainer("TaskDiagnosesContainer"),this);
+        this.heatmap = new TasksHeatmap(this.getContainer("TaskDiagnosesContainer"),this);
         this.singleTaskVisualisations.push(new TimeDivisionTask(this.getContainer("TimeDivisionTask"),this.server))
-
+        this.diagnostics = new TaskDiagnostics(this.diagnosticstab);
         
     }
 
@@ -267,8 +283,9 @@ class TaskController{
             vis.setData(this.taskAttemptsData.getStatDataPoints(vis.getDataName()));
             vis.updateView();
         }
-        this.diagnoses.setTaskAttempts(attempts);
-        this.diagnoses.updateView();
+        this.heatmap.setTaskAttempts(attempts);
+        this.heatmap.updateView();
+        this.diagnostics.setTaskAttempts(attempts)
         this.timeline.setTaskAttempts(attempts);
     }
 

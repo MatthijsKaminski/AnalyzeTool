@@ -6,7 +6,7 @@ class JobDiagnostics{
     }
 
     updateView(jobInfoJson,jobCountersJson) {
-
+        this.diagnostics.clearJobs();
         this.job = JSON.parse(jobInfoJson, function (k, v) {
             return v;
         });
@@ -22,14 +22,18 @@ class JobDiagnostics{
     checkCombiner(){
         let combinerInput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_INPUT_RECORDS")["mapCounterValue"];
         if(combinerInput == 0){
-            this.createReport("Optional usage of combiner", "warning", "The job doesn't use a combiner.")
+            return this.createReport("Optional usage of combiner", "warning", "The job doesn't use a combiner.");
         }
-        let combinerOuput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_OUTPUT_RECORDS")["mapCounterValue"];
-        let percentage = (1.0 - (combinerOuput * 1.0)/combinerInput).toFixed(2) * 100;
+        let combinerOutput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_OUTPUT_RECORDS")["mapCounterValue"];
+        console.log("combiner input " + combinerInput + " " + combinerOutput);
+        let percentage = (1.0 - (combinerOutput * 1.0)/combinerInput).toFixed(4) * 100;
         let test = percentage < 0.3;
         console.log(test)
-        if(true){
+        if(test){
             return this.createReport("Inefficient usage of combiner", "warning", "The jobs combiner reduces the output with " + percentage+
+                "% which may not result in performance improvements.")
+        }else{
+            return this.createReport("Inefficient usage of combiner", "success", "The jobs combiner reduces the output with " + percentage+
                 "% which may not result in performance improvements.")
         }
     }
@@ -42,15 +46,15 @@ class JobDiagnostics{
     }
 
     checkSpillAndReport(title, type){
-        let outputrecords = 0
+        let outputrecords = 0;
         if(type.localeCompare("mapCounterValue") == 0) {
             outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_RECORDS")[type];
         }else{
             outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "REDUCE_OUTPUT_RECORDS")[type];
         }
         let spilledrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","SPILLED_RECORDS")[type];
-        let spilled= spilledrecords-  outputrecords;
-        if(true){
+        let spilled= spilledrecords -  outputrecords;
+        if(spilled != 0){
             let description = "During the job " + spilled + " records are spilled.";
             if(type.localeCompare("mapCounterValue") == 0){
                 let bytes = this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","FILE_BYTES_READ")[type];
@@ -61,24 +65,18 @@ class JobDiagnostics{
                 description += " Hint: use mapreduce.task.io.sort.mb and mapreduce.map.sort.spill.percent settings to resolve this issue.";
             }
             this.createReport(title,"danger",description);
+        }else{
+            this.createReport(title,"success", "no spilling during this job.")
         }
     }
 
     createReport(title, type, description){
         let element = document.createElement("div");
-        element.innerHTML = '<div class="panel '+this.getPanelType(type)+ '"> <div class="panel-heading">'+ title +'</div> <div class="panel-body">'+description+ '</div> </div>';
+        element.innerHTML = '<div class="panel '+this.diagnostics.getPanelType(type)+ '"> <div class="panel-heading">'+ title +'</div> <div class="panel-body">'+description+ '</div> </div>';
         this.diagnostics.addJobDiagnostic(element);
     }
 
-    getPanelType(type){
-        if(type.localeCompare("danger")== 0){
-            return "panel-danger"
-        }
-        if(type.localeCompare("warning") == 0){
-            return "panel-warning"
-        }
-        return "panel-default";
-    }
+
 
 
 

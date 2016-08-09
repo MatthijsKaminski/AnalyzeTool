@@ -86,7 +86,10 @@ class NodeBoxPlot{
             title: that.title,
             xaxis: {
                 zeroline: false
-            }
+            },
+            autosize: false,
+            width: 500,
+            height: 500,
 
         };
 

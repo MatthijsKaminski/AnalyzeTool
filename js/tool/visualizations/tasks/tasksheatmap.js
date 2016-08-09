@@ -1,6 +1,6 @@
 "use strict";
 
-class TasksDiagnosis{
+class TasksHeatmap{
     constructor(element, taskController){
         this.element = element;
         this.taskController = taskController;

@@ -143,7 +143,7 @@ class Controller{
     var server = this.servers.getServer(this.activeIndex);
     this.jobcontroller = new JobController(server,this, this.diagnostics);
     this.nodeController = new NodeController(document.getElementById("nodesContainer"),server);
-    this.taskContoller = new TaskController(server);
+    this.taskContoller = new TaskController(server, this.diagnostics);
     this.setupSettings();
   }
 

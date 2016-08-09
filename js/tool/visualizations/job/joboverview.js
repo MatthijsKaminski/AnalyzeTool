@@ -60,7 +60,11 @@ class Joboverview{
   filltable(jsonjobs){
     this.jobs = JSON.parse(jsonjobs, function(k,v){return v;});
     this.jobs = this.jobs.jobs.job;
+    if(this.jobs.length == 0){
+      console.log("length 0");
+    }
     console.log(this.jobs);
+    
     var index;
     for (index = 0 ; index < this.jobs.length; index++){
       this.addJobRow(this.jobs[index]);

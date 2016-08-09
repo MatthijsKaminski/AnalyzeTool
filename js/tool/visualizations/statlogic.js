@@ -19,7 +19,7 @@ class Stat{
   calculateQuantiles(){
     this.dataPoints = this.dataPoints.sort(function(a, b){return a-b});
     var numberOfDataPoints = this.dataPoints.length;
-    var indexQ1 = Math.ceil(0.25 * numberOfDataPoints) - 1;
+    var indexQ1 = Math.ceil (0.25 * numberOfDataPoints) - 1;
     var indexQ2 = Math.ceil(0.5  * numberOfDataPoints) - 1;
     var indexQ3 = Math.ceil(0.75 * numberOfDataPoints) - 1;
     this.quantiles = [this.dataPoints[indexQ1], this.dataPoints[indexQ2], this.dataPoints[indexQ3]];
@@ -89,10 +89,11 @@ class Stat{
       sum += this.dataPoints[index];
     }
     if(this.dataPoints.length != 1){
-      this.mean = sum/this.dataPoints.length;
+      this.mean = sum * 1.0 /this.dataPoints.length;
     }else{
       this.mean = sum;
     }
+
 
   }
 

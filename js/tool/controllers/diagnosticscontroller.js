@@ -2,7 +2,7 @@
 class DiagnosisController {
 
     constructor() {
-        this.tasksContainer = this.getElement("taskDiagnosisContainer");
+        this.tasksContainer = this.getElement("tasksDiagnosisContainer");
         this.jobContainer = this.getElement("jobDiagnosisContainer");
 
     }
@@ -24,10 +24,25 @@ class DiagnosisController {
     clearTasks(){
         this.tasksContainer.innerHTML = "";
     }
-    addTaskDiagnostic(element){
-        this.tasksContainer.appendChild(element);
+    addTaskDiagnostic(report){
+        console.log(report);
+        console.log(this.tasksContainer);
+        this.tasksContainer.appendChild(report);
     }
 
+
+    getPanelType(type){
+        if(type.localeCompare("danger")== 0){
+            return "panel-danger"
+        }
+        if(type.localeCompare("warning") == 0){
+            return "panel-warning"
+        }
+        if(type.localeCompare("success") ==0){
+            return "panel-success";
+        }
+        return "panel-default";
+    }
 
 
 
