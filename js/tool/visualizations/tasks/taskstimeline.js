@@ -75,11 +75,11 @@ class TaskTimeLine{
     this.dataset = [];
     this.specgroups = {};
     var taskindex = 0;
-    for(var node in this.nodes){
-      var nodeObj = this.nodes[node];
-      var nodeAttemptsIndex = 0;
+    for(let node in this.nodes){
+      let nodeObj = this.nodes[node];
+      let nodeAttemptsIndex = 0;
       for(nodeAttemptsIndex = 0; nodeAttemptsIndex < nodeObj.attempts.length ; nodeAttemptsIndex++){
-        var attempt = nodeObj.attempts[nodeAttemptsIndex]
+        let attempt = nodeObj.attempts[nodeAttemptsIndex]
         if(attempt.attemptGroupsIndex !== undefined){
           if(this.groups[attempt.attemptGroupsIndex] == undefined) {
             this.groups[attempt.attemptGroupsIndex] = [taskindex];

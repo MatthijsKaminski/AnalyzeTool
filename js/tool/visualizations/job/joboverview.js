@@ -53,6 +53,10 @@ class Joboverview{
     })
   }
 
+  update(jobs){
+    this.filltable(jobs);
+  }
+
   filltable(jsonjobs){
     this.jobs = JSON.parse(jsonjobs, function(k,v){return v;});
     this.jobs = this.jobs.jobs.job;

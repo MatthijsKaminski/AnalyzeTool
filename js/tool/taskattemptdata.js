@@ -25,7 +25,7 @@ class TaskAttemptsData{
         tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
         this.amountOftasks = tasks.length;
         this.taskAttempts = 0;
-        for(var index = 0; index < tasks.length; index++){
+        for(let index = 0; index < tasks.length; index++){
             this.getTaskAttempts(tasks[index].id)
         }
     }
@@ -41,7 +41,8 @@ class TaskAttemptsData{
     handleAttempts(attempts, taskid){
         attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
         this.taskAttempts += attempts.length;
-        for(var index = 0; index < attempts.length ; index++){
+        this.taskAttempts += attempts.length;
+        for(let index = 0; index < attempts.length ; index++){
             this.handleAttempt(attempts[index], taskid);
         }
         if(attempts.length > 1){
@@ -54,15 +55,15 @@ class TaskAttemptsData{
     }
 
     markSpeculativeAttempts(attempts){
-        var min = attempts[0].startTime;
+        let min = attempts[0].startTime;
         attempts[0].speculative = false;
         attempts[0].attemptGroupsIndex = this.attemptGroupsIndex;
-        for(var i = 1; i < attempts.length ; i++){
+        for(let i = 1; i < attempts.length ; i++){
             attempts[i].attemptGroupsIndex = this.attemptGroupsIndex
             if(attempts[i].startTime > min){
                 attempts[i].speculative = true;
             }else{
-                for(var j = 0; j < i; j++){
+                for(let j = 0; j < i; j++){
                     attempts[j].speculative = true;
                 }
                 min = attempts[i].startTime;
@@ -75,6 +76,7 @@ class TaskAttemptsData{
 
 
     handleAttempt(attempt, taskid){
+
         var that = this;
         this.attempts[attempt.id] = attempt;
         if(attempt.type.localeCompare("MAP") === 0){
@@ -83,25 +85,27 @@ class TaskAttemptsData{
             attempt.elapsedReduceTotalTime = attempt.elapsedTime;
         }
 
-        this.server.getTaskAttemptCounters(this.jobid,taskid,attempt.id, function (counters) {
-            that.updateAttemptCounters(attempt, counters);
-        });
+
         if(attempt.state.localeCompare("SUCCEEDED") === 0) {
+            this.server.getTaskAttemptCounters(this.jobid,taskid,attempt.id, function (counters) {
+                that.updateAttemptCounters(attempt, counters);
+            });
             this.server.getTaskAttemptStatCounters(this.jobid, taskid, attempt.id, function (statCounters) {
                 that.updateAttemptWithComplexCounters(attempt, statCounters);
             })
         }else{
+            this.taskAttempts--;
             this.taskAttempts--;
         }
 
     }
 
     updateAttemptWithComplexCounters(attempt, counters){
-        counters  = JSON.parse(counters, function(k,v){return v;});
-        let keys = counters.stats[0];
-        let mean = counters.stats[1]["MEAN"];
+        let countersinner  = JSON.parse(counters, function(k,v){return v;});
+        let keys = countersinner.stats[0];
+        let mean = countersinner.stats[1]["MEAN"];
 
-        let variance = counters.stats[1]["var"];
+        let variance = countersinner.stats[1]["var"];
         if(variance != 0){
             console.log(attempt);
         }
@@ -126,45 +130,49 @@ class TaskAttemptsData{
     }
 
     updateAttemptCounters(attempt, counters){
-        counters  = JSON.parse(counters, function(k,v){return v;}).jobTaskAttemptCounters;
+        let countersinner  = JSON.parse(counters, function(k,v){return v;}).jobTaskAttemptCounters;
 
         if(attempt.state.localeCompare("SUCCEEDED") === 0){
             if(attempt.type.localeCompare("MAP") === 0){
-                for(var index = 0; index < this.wantedCounters.map.length; index++){
-                    var counter = this.wantedCounters.map[index];
-                    this.updateAttemptWithCounter(attempt,counters,counter);
+                for(let index = 0; index < this.wantedCounters.map.length; index++){
+                    let counter = this.wantedCounters.map[index];
+                    this.updateAttemptWithCounter(attempt,countersinner,counter);
                 }
-                for(var index = 0; index < this.wantedCounters.all.length; index++){
-                    var counter = this.wantedCounters.all[index];
-                    this.updateAttemptWithCounter(attempt,counters,counter);
+                for(let index = 0; index < this.wantedCounters.all.length; index++){
+                    let counter = this.wantedCounters.all[index];
+                    this.updateAttemptWithCounter(attempt,countersinner,counter);
                 }
-                for(var index = 0; index < this.aggCounters.map.length; index++){
-                    var counter = this.aggCounters.map[index];
+                for(let index = 0; index < this.aggCounters.map.length; index++){
+                    let counter = this.aggCounters.map[index];
                     counter.func(attempt);
                 }
 
             }else{
-                for(var index = 0; index < this.wantedCounters.reduce.length; index++){
-                    var counter = this.wantedCounters.reduce[index];
-                    this.updateAttemptWithCounter(attempt,counters,counter);
+                for(let index = 0; index < this.wantedCounters.reduce.length; index++){
+                    let counter = this.wantedCounters.reduce[index];
+                    this.updateAttemptWithCounter(attempt,countersinner,counter);
                 }
-                for(var index = 0; index < this.wantedCounters.all.length; index++){
-                    var counter = this.wantedCounters.all[index];
-                    this.updateAttemptWithCounter(attempt,counters,counter);
+                for(let index = 0; index < this.wantedCounters.all.length; index++){
+                    let counter = this.wantedCounters.all[index];
+                    this.updateAttemptWithCounter(attempt,countersinner,counter);
                 }
-                for(var index = 0; index < this.aggCounters.reduce.length; index++){
-                    var counter = this.aggCounters.reduce[index];
+                for(let index = 0; index < this.aggCounters.reduce.length; index++){
+                    let counter = this.aggCounters.reduce[index];
                     counter.func(attempt);
                 }
 
             }
 
 
-            for(var index = 0; index < this.aggCounters.all.length; index++){
-                var counter = this.aggCounters.all[index];
+            for(let index = 0; index < this.aggCounters.all.length; index++){
+                let counter = this.aggCounters.all[index];
                 counter.func(attempt);
             }
 
+            this.taskAttempts--;
+            if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
+                this.doStatsAndUpdateController();
+            }
 
         }
 
@@ -188,7 +196,7 @@ class TaskAttemptsData{
     initStats(){
         this.statNames = this.taskController.getStatNames();
         this.stats = [];
-        for(var index = 0; index < this.statNames.length; index++){
+        for(let index = 0; index < this.statNames.length; index++){
             this.createStat(this.statNames[index]);
         }
 
@@ -200,14 +208,17 @@ class TaskAttemptsData{
     }
 
     populateStats(){
-        for(var attemptName in this.attempts){
-            var attempt = this.attempts[attemptName];
+
+        for(let attemptName in this.attempts){
+            let attempt = this.attempts[attemptName];
             if(attempt.state.localeCompare("SUCCEEDED") === 0) {
-                for (var index = 0; index < this.statNames.length; index++) {
-                    var stat = this.statNames[index];
-                    var value = attempt[stat];
+                for (let index = 0; index < this.statNames.length; index++) {
+                    let stat = this.statNames[index];
+                    let value = attempt[stat];
                     if(value !== undefined){
                         this[stat].addDataPoint(value);
+                    }else{
+                        console.log("UNDEFINED")
                     }
 
                 }
@@ -216,17 +227,18 @@ class TaskAttemptsData{
     }
 
     runStats(){
-        for(var index = 0; index < this.stats.length; index++){
+        for(let index = 0; index < this.stats.length; index++){
             this.stats[index].calcStats();
         }
 
     }
 
     labelOutliers(){
-        for(var attemptName in this.attempts){
-            var attempt = this.attempts[attemptName];
-            for(var index = 0; index < this.statNames.length ; index++){
-                var stat = this.statNames[index];
+        console.log("labeling "  + this.attempts.length);
+        for(let attemptName in this.attempts){
+            let attempt = this.attempts[attemptName];
+            for(let index = 0; index < this.statNames.length ; index++){
+                let stat = this.statNames[index];
                 if(attempt[stat] !== undefined){
                     attempt[(stat + "Label")] = this[stat].label(attempt[stat]);
                 }

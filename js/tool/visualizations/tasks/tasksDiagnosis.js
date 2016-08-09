@@ -71,22 +71,25 @@ class TasksDiagnosis{
     }
 
     fillTableBody(mapTable, reduceTable){
-
-
+        let attemptArray = [];
         for(let attemptname in this.tasks){
-            let task = this.tasks[attemptname];
+            attemptArray.push(attemptname);
+        }
+
+        attemptArray = attemptArray.sort();
+       
+        for(let index = 0; index < attemptArray.length ;index++){
+            let task = this.tasks[attemptArray[index]];
+
             let type = "reduce";
             let table = reduceTable;
-            if(attemptname.localeCompare("attempt_1469261839293_0001_m_000000_0") == 0){
-                console.log("yep");
-            }
 
             if(task.type.localeCompare("MAP") == 0){
                 type="map";
                 table = mapTable;
             }
             let tr = document.createElement("tr");
-            let row = "<td>" + attemptname+ "</td>";
+            let row = "<td>" + task.id+ "</td>";
             for(let index2 = 0; index2 < this.labels.length; index2++){
                 let label = this.labels[index2];
                 if(label.type.localeCompare(type) == 0 || label.type.localeCompare("both") == 0){
@@ -98,27 +101,14 @@ class TasksDiagnosis{
             table.appendChild(tr);
 
         }
-        // for(var index = 0; index < this.labels.length; index++){
-        //     var label = this.labels[index];
-        //     var tr = document.createElement("tr");
-        //
-        //     tr.innerHTML = "<td>"+ label.dataName +"</td>" + "<td style='background-color:" + this.getColorForLabel(label)
-        //         +" ;'>"+"</td>";
-        //     this.tableBody.appendChild(tr);
-        // }
+
     }
 
 
 
     getColorForLabel(label, task){
         let index = task[(label.dataName + "Label")];
-        if(label.dataName.localeCompare("MAPPING_MEAN") == 0){
-            console.log("_______")
-            console.log(label);
-            console.log(index);
-            console.log(task["MAPPING_MEAN"]);
 
-        }
         if(label.better.localeCompare("lower") === 0){
             if(index == -1){
                 index = 0;
@@ -128,6 +118,7 @@ class TasksDiagnosis{
         if(index == -1){
             index = 5;
         }
+
         return this.colors[index];
     }
 

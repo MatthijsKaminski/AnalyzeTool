@@ -55,7 +55,8 @@ class Stat{
   }
 
   label(datapoint){
-
+    this.calcStats();
+    
     if(datapoint == 75){
       console.log(this.dataPoints);
       console.log("__________");

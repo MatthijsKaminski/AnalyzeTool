@@ -1,32 +1,16 @@
 "use strict";
 class DataTime{
 
-  constructor(element, server){
+  constructor(element){
     this.element = element;
-    this.server = server;
-    this.jobid = null;
+
   }
 
-  setJobID(jobid){
-    this.jobid = jobid;
-  }
+ 
 
-  update(){
-    if(this.jobid === null){
-      return;
-    }
-    var that = this;
-    this.server.getJobInfo(this.jobid, function(jobInfoJson){
-      that.getJobCounters(jobInfoJson);
-    });
-  }
 
-  getJobCounters(jobInfoJson){
-    var that = this;
-    this.server.getJobCounters(this.jobid, function(jobCountersJson){
-      that.updateView(jobInfoJson,jobCountersJson);
-    });
-  }
+
+
 
   getJobCounter(counterGroupName, counterName){
     var groupIndex = 0;

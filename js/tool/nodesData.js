@@ -22,7 +22,7 @@ class NodesData{
         tasks = JSON.parse(tasks, function(k,v){return v;}).tasks.task;
         this.amountOftasks = tasks.length;
         this.taskAttempts = 0;
-        for(var index = 0; index < tasks.length; index++){
+        for(let index = 0; index < tasks.length; index++){
             this.getTaskAttempts(tasks[index].id)
         }
     }
@@ -38,7 +38,7 @@ class NodesData{
     handleAttempts(attempts, taskid){
         attempts = JSON.parse(attempts, function(k,v){return v;}).taskAttempts.taskAttempt;
         this.taskAttempts += attempts.length;
-        for(var index = 0; index < attempts.length ; index++){
+        for(let index = 0; index < attempts.length ; index++){
             this.handleAttempt(attempts[index], taskid);
         }
         this.amountOftasks--;
@@ -50,8 +50,8 @@ class NodesData{
 
 
     handleAttempt(attempt, taskid){
-        var that = this;
-        var node = this.nodes[attempt.nodeHttpAddress];
+        let that = this;
+        let node = this.nodes[attempt.nodeHttpAddress];
         if( node === undefined ){
             node = {
                 name: attempt.nodeHttpAddress,
@@ -102,26 +102,26 @@ class NodesData{
         counters  = JSON.parse(counters, function(k,v){return v;}).jobTaskAttemptCounters;
         if(attempt.state.localeCompare("SUCCEEDED") === 0){
             if(attempt.type.localeCompare("MAP") === 0){
-                var replicationRate = TaskAttempt.getReplicationRateFromTaskAttempt(counters)
+                let replicationRate = TaskAttempt.getReplicationRateFromTaskAttempt(counters)
                 node.replicationRates.push(replicationRate);
-                var spillingAmount = TaskAttempt.getSpillingRecordsFromTaskAttempt(counters)
+                let spillingAmount = TaskAttempt.getSpillingRecordsFromTaskAttempt(counters)
                 node.spillingAmounts.push(spillingAmount);
                 node.totalSpilling += spillingAmount;
-                var mapInput = TaskAttempt.getMapInputsFromTaskAttempt(counters);
+                let mapInput = TaskAttempt.getMapInputsFromTaskAttempt(counters);
                 node.mapInputs.push(mapInput);
                 node.totalMapInputs += mapInput;
-                var mapOutput = TaskAttempt.getMapOutputRecordsFromTaskAttempt(counters);
+                let mapOutput = TaskAttempt.getMapOutputRecordsFromTaskAttempt(counters);
                 node.mapOutputs.push(mapOutput);
                 node.totalMapOutputs += mapOutput;
 
             }else{
-                var reduceInput = TaskAttempt.getReduceInputsFromTaskAttempt(counters);
+                let reduceInput = TaskAttempt.getReduceInputsFromTaskAttempt(counters);
                 node.reduceInputs.push(reduceInput);
                 node.totalReduceInputs += reduceInput;
-                var reduceOutput = TaskAttempt.getReduceOutputsFromTaskAttempt(counters);
+                let reduceOutput = TaskAttempt.getReduceOutputsFromTaskAttempt(counters);
                 node.reduceOutputs.push(reduceOutput);
                 node.totalReduceOutputs += reduceOutput;
-                var amountOfKeys = TaskAttempt.getReduceKeysFromTaskAttempt(counters);
+                let amountOfKeys = TaskAttempt.getReduceKeysFromTaskAttempt(counters);
                 node.uniqueReduceKeys.push(amountOfKeys);
                 node.totalUniqueReduceKeys+=amountOfKeys;
             }
@@ -183,7 +183,7 @@ class NodesData{
     initStats(){
         this.statNames = this.nodeController.getStatNames();
         this.stats = [];
-        for(var index = 0; index < this.statNames.length; index++){
+        for(let index = 0; index < this.statNames.length; index++){
             this.createStat(this.statNames[index]);
         }
 
@@ -196,17 +196,17 @@ class NodesData{
     
     populateStats(){
         for(let nodeName in this.nodes){
-            var node = this.nodes[nodeName];
+            let node = this.nodes[nodeName];
             this.calcAvgForNode(node);
-            for(var index = 0; index < this.statNames.length; index++){
-                var name = this.statNames[index];
+            for(let index = 0; index < this.statNames.length; index++){
+                let name = this.statNames[index];
                 this[name].addDataPoint(node[name]);
             }
         }
     }
 
     runStats(){
-        for(var index = 0; index < this.stats.length; index++){
+        for(let index = 0; index < this.stats.length; index++){
             this.stats[index].calcStats();
         }
 
@@ -215,8 +215,8 @@ class NodesData{
     labelOutliers(){
         for(let nodeName in this.nodes){
             let node = this.nodes[nodeName];
-            for(var index = 0; index < this.statNames.length ; index++){
-                var name = this.statNames[index];
+            for(let index = 0; index < this.statNames.length ; index++){
+                let name = this.statNames[index];
               
                 node[(name + "Label")] = this[name].label(node[name]);
             }
@@ -226,9 +226,9 @@ class NodesData{
     
     calcAvgForNode(node){
 
-        var totalTime = (node.endTime - node.startTime);
+        let totalTime = (node.endTime - node.startTime);
         node.totalTime = totalTime;
-        var load = node.elapsedTime / totalTime;
+        let load = node.elapsedTime / totalTime;
         node.load = load;
         if(node.maps != 0){ node.avgMapTime = node.avgMapTime / node.maps;}
            

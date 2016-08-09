@@ -307,3 +307,10 @@ ul.alert-dropdown {
 .heatmap{
     word-wrap: break-word;
 }
+
+#diagnoses-reveal{
+    display: none;
+}
+
+
+

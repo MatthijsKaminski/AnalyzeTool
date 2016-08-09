@@ -9,6 +9,7 @@ class Controller{
     this.serverTabs = document.getElementById("serverTabs");
     this.serverTabs.style.display = "none";
     this.settings = new Settings(this);
+    this.diagnostics = new DiagnosisController();
 
   }
 
@@ -140,14 +141,7 @@ class Controller{
     this.setupRefreshButton();
     this.serverTabs.style.display = "block";
     var server = this.servers.getServer(this.activeIndex);
-    this.joboverview = new Joboverview(document.getElementById("joboverview"), server,this);
-    this.joboverview.createtable();
-    this.joboverview.refreshjoboverview();
-    this.timeDivision = new TimeDivision(document.getElementById("timeDivision"), server);
-    this.dataTime = new DataTime(document.getElementById("timeData"), server);
-    this.nodeTask = new NodeTask(document.getElementById("nodeTask"), server);
-    this.jobInfo = document.getElementById("jobInfo");
-    this.jobInfo.style.display = "none";
+    this.jobcontroller = new JobController(server,this, this.diagnostics);
     this.nodeController = new NodeController(document.getElementById("nodesContainer"),server);
     this.taskContoller = new TaskController(server);
     this.setupSettings();
@@ -158,7 +152,7 @@ class Controller{
     document.getElementById("refreshButton").addEventListener("click",
         function(e){
           e.preventDefault();
-          that.joboverview.refreshjoboverview()
+          that.jobcontroller.refreshjoboverview();
         });
   }
 
@@ -172,15 +166,11 @@ class Controller{
   }
 
   setActiveJob(jobid){
-    this.timeDivision.setJobID(jobid);
-    this.timeDivision.update();
-    this.dataTime.setJobID(jobid);
-    this.dataTime.update();
-    this.nodeTask.setJobID(jobid);
-    this.nodeTask.update();
+    this.jobcontroller.setJobID(jobid);
     this.nodeController.setJobID(jobid);
     this.taskContoller.setJobID(jobid);
-    this.jobInfo.style.display = "block";
+
+    this.diagnostics.setJob();
   }
   
   saveActiveServer(mongo, mongodbName, collection){

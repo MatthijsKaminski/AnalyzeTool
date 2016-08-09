@@ -84,6 +84,7 @@
                     <li role="presentation" class="active"><a href="#jobOverviewTab" aria-controls="jobOverviewTab" role="tab" data-toggle="tab">Jobs</a></li>
                     <li role="presentation" ><a href="#nodesTab" aria-controls="nodesTab" role="tab" data-toggle="tab">Nodes</a></li>
                     <li role="presentation" ><a href="#TaskTimelineTab" aria-controls="TaskTimelineTab" role="tab" data-toggle="tab">Tasks</a></li>
+                    <li role="presentation" ><a href="#diagnosis" aria-controls="diagnosis" role="tab" data-toggle="tab">Diagnosis</a></li>
                     <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
                 </ul>
                 <!-- Tab panes -->
@@ -309,8 +310,25 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <div role="tabpanel" class="tab-pane" id="diagnosis">
+                        <div id="diagnoses-reveal">
+                            <h2>Job Diagnoses</h2>
+                            <div  class="row panel panel-default">
+                                <div  class="panel-body" id="jobDiagnosisContainer">
+
+                                </div>
+                            </div>
+                            <h2>Tasks Diagnoses</h2>
+                            <div  class="row panel panel-default">
+                                <div  class="panel-body" id="taskDiagnosisContainer">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div id="diagnoses-no-job">
+                            <h2>No job selected</h2>
+                        </div>
+                    </div>
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -360,7 +378,7 @@
                         </div>
                         <div class="form-group">
                             <label for="mongodbCollectionInput">Mongodb collection</label>
-                            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)" value="bptest ">
+                            <input type="text" class="form-control" id="mongodbCollectionInput" placeholder="Mongodb collecion (existing content will be deleted)" value="mapskew_run_1_7">
                         </div>
                     </fieldset>
                     <div class="form-group">
@@ -409,6 +427,8 @@
 <script src="js/libraries/plotly.js-1.10.2/dist/plotly.min.js"></script>
 <script src="js/tool/sidebar.js"></script>
 <script src="js/tool/server/server.js"></script>
+<script src="js/tool/controllers/jobcontoller.js"></script>
+<script src="js/tool/visualizations/job/jobdiagnostics.js"></script>
 <script src="js/tool/visualizations/job/timedivision-view.js"></script>
 <script src="js/tool/visualizations/job/nodetask-view.js"></script>
 <script src="js/tool/visualizations/job/datatime-view.js"></script>
@@ -432,6 +452,7 @@
 <script src="js/tool/visualizations/binnedHistogram.js"></script>
 <script src="js/tool/controllers/taskcontroller.js"></script>
 <script src="js/tool/taskattemptdata.js"></script>
+<script src="js/tool/controllers/diagnosticscontroller.js"></script>
 <script src="js/tool/settings.js"></script>
 <script src="js/tool/progresssaving.js"></script>
 <script src="js/tool/server/webhdfsAPI.js"></script>
