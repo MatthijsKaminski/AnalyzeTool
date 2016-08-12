@@ -80,7 +80,7 @@ class NodeController{
             let box = document.createElement("div");
             box.className = "col-md-6";
             var label = this.visLabels[index];
-            this.addVis(new NodeBoxPlot(box, label.title, label.dataName, false));
+            this.addVis(new NodeBoxPlot(box, label.title, label.dataName, false, "node"));
             row.appendChild(box);
             y++;
             if(y == 2){
@@ -89,13 +89,16 @@ class NodeController{
                 row.className = "row";
                 y= 0;
             }
-
-
         }
+        if(y == 1){
+            this.getContainer("nodeBoxPlotsContainer").appendChild(row);
+        }
+
         for(var index = 0; index < this.histLabels.length; index++){
             var label = this.histLabels[index];
-            this.addVis(new BinnedHistogram(this.getContainer("nodeHistContainer"), label.bins, label))
+            this.addVis(new BinnedHistogram(this.getContainer("nodeHistContainer"), label.bins, label, "nodes"))
         }
+
         this.addSingleVis(new TimeDivisionNode(this.getContainer("nodeTimeContainer"),this.server));
         this.nodeDiagnoses = new NodeDiagnosis(this.getContainer("nodeDiagnosisContainer"),this);
     }
@@ -143,8 +146,10 @@ class NodeController{
         this.nodeOverview.updateView();
         this.nodeDiagnoses.setNodes(nodes);
         this.nodeDiagnoses.updateView();
-        for(var index =0 ; index < this.visualisations.length; index++){
-            var vis = this.visualisations[index];
+        console.log("nodes vis length " + this.visualisations.length);
+        for(let index =0 ; index < this.visualisations.length; index++){
+           
+            let vis = this.visualisations[index];
             vis.setData(this.nodesData.getStatDataPoints(vis.getDataName()));
             vis.selectNode(undefined);
             vis.updateView();

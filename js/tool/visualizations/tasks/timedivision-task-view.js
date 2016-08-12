@@ -4,9 +4,11 @@ class TimeDivisionTask{
     constructor(element, server){
         this.element = element;
         this.server = server;
+        console.log("task time " + this.element.id);
     }
 
     setJobID(jobid){
+
         var that = this;
         this.jobid = jobid;
         this.taskAttempt = undefined;
@@ -25,6 +27,7 @@ class TimeDivisionTask{
         if(this.jobid === null){
             return;
         }
+
         this.createArrays();
         this.drawChart();
     }
@@ -100,7 +103,7 @@ class TimeDivisionTask{
                 },
                 x:{
                     type: 'category',
-                    categories: ['job average','selected node']
+                    categories: ['job average','selected task']
                 }
             },
             tooltip: {

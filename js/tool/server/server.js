@@ -412,7 +412,7 @@ class Server{
       });
     }else{
       this.getDatabaseConnection(function(dbconn){
-        that.getJobInfoFromDatabase(dbconn, func, jobID);
+        that.getJobConfigFromDatabase(dbconn, func, jobID);
       })
     }
   }

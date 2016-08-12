@@ -2,11 +2,12 @@
 
 class NodeBoxPlot{
 
-    constructor(element, title, dataName, tasks){
+    constructor(element, title, dataName, tasks, type){
         this.element = element;
         this.node = undefined;
         this.title = title;
         this.dataName = dataName;
+        this.type = type;
         if(tasks){
             this.name = "Tasks";
             this.selected = "Selected Task"
@@ -20,7 +21,7 @@ class NodeBoxPlot{
 
     createDivForBoxPlot(){
         this.container = document.createElement("div");
-        this.container.id = (this.dataName + "-container");
+        this.container.id = (this.dataName + "-container-" +this.type);
         this.element.appendChild(this.container);
     }
 
@@ -89,7 +90,7 @@ class NodeBoxPlot{
             },
             autosize: false,
             width: 500,
-            height: 500,
+            height: 250,
 
         };
 

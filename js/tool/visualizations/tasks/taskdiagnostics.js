@@ -84,7 +84,7 @@ class TaskDiagnostics{
 
     calculateZScoreMap(attempt){
         let keys = attempt["MOST_EXPENSIVE_RECORDS"] ;
-        console.log(keys);
+
         let mean = attempt["MAPPING_MEAN"];
         let variance = attempt["MAPPING_VARIANCE"];
         this.calculateZScoreOfElements(keys, mean, Math.sqrt(variance));
@@ -96,7 +96,7 @@ class TaskDiagnostics{
 
     calculateZScoreReduce(attempt){
         let keys = attempt["MOST_EXPENSIVE_KEYS"] ;
-        console.log(keys);
+
         let mean = attempt["REDUCE_MEAN"];
         let variance = attempt["REDUCE_VARIANCE"];
         this.calculateZScoreOfElements(keys, mean, Math.sqrt(variance));
@@ -120,7 +120,7 @@ class TaskDiagnostics{
             let row = document.createElement("tr");
             let o = keys[k];
             let x = "<td>"+o.key+"</td><td>"+o.time+"</td><td align='center'>"+this.getKross(o.top10outlier)+"</td><td align='center'>"+this.getKross(o.globaloutlier)+"</td>";
-            console.log(x);
+            
             row.innerHTML = x;
             tableBody.appendChild(row);
         }

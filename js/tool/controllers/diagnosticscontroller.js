@@ -25,8 +25,6 @@ class DiagnosisController {
         this.tasksContainer.innerHTML = "";
     }
     addTaskDiagnostic(report){
-        console.log(report);
-        console.log(this.tasksContainer);
         this.tasksContainer.appendChild(report);
     }
 

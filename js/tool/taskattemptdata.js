@@ -218,7 +218,7 @@ class TaskAttemptsData{
                     if(value !== undefined){
                         this[stat].addDataPoint(value);
                     }else{
-                        console.log("UNDEFINED")
+                        //console.log("UNDEFINED")
                     }
 
                 }

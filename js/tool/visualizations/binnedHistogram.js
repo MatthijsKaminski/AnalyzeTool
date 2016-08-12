@@ -2,13 +2,14 @@
 
 class BinnedHistogram{
     
-    constructor(element, bins, label){
+    constructor(element, bins, label, type){
         this.element = element;
         this.data = undefined;
         this.dataPoint = undefined;
         this.amountOfBins = bins;
         this.label = label;
         this.selectedBinIndex = undefined;
+        this.type = type;
         this.createContainer();
     }
 
@@ -17,7 +18,7 @@ class BinnedHistogram{
         div.innerHTML = "<h2>"+ this.label.title +"</h2>"+
             "<div  class='row panel panel-default'>" +
                 "<div  class='panel-body'>"+
-                    "<div id='" + (this.label.dataName + "HistContainer")  + "'></div>"+
+                    "<div id='" + (this.label.dataName + "HistContainer" + this.type)  + "'></div>"+
                 "</div>"
             "</div>"
         this.element.appendChild(div);
@@ -39,6 +40,7 @@ class BinnedHistogram{
     }
     
     setData(data){
+        console.log("set data " + this.type);
         this.selectedBinIndex = undefined;
         this.data = data.sort(function(a, b){return a-b});
         this.dataPoint = undefined;
@@ -118,7 +120,7 @@ class BinnedHistogram{
     drawChart(){
         var that = this;
         var chart = c3.generate({
-            bindto: '#' + (this.label.dataName + "HistContainer") ,
+            bindto: '#' + (this.label.dataName + "HistContainer" + this.type) ,
             data: {
                 xs: {
                     'Data': 'x1'

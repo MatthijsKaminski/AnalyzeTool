@@ -40,8 +40,8 @@ class JobController{
         this.jobid = jobid;
         this.getJobInfoAndCounters();
 
-        // this.nodeTask.setJobID(jobid);
-        // this.nodeTask.update();
+        this.nodeTask.setJobID(jobid);
+        this.nodeTask.update();
 
         this.jobInfo.style.display = "block";
     }
@@ -59,12 +59,17 @@ class JobController{
             this.jobinfovis[index].updateView(jobsJSON);
         }
         this.server.getJobCounters(this.jobid, function(jobCountersJson){
-            that.updateWithJobInfoAndCounters(jobsJSON,jobCountersJson);
+            that.server.getJobConfig(that.jobid, function (config) {
+                config = new MapReduceConfig(config);
+                that.updateWithJobInfoAndCounters(jobsJSON,jobCountersJson, config);
+
+            })
+
         });
     }
-    updateWithJobInfoAndCounters(jobsJSON,jobCountersJson){
+    updateWithJobInfoAndCounters(jobsJSON,jobCountersJson, config){
         for(let index = 0; index < this.countersvis.length ; index++){
-            this.countersvis[index].updateView(jobsJSON, jobCountersJson);
+            this.countersvis[index].updateView(jobsJSON, jobCountersJson, config);
         }
 
     }

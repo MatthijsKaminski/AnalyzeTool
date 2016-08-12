@@ -5,8 +5,9 @@ class JobDiagnostics{
         this.diagnostics = diagnostics;
     }
 
-    updateView(jobInfoJson,jobCountersJson) {
+    updateView(jobInfoJson,jobCountersJson, mapreduceconfig) {
         this.diagnostics.clearJobs();
+        this.config = mapreduceconfig;
         this.job = JSON.parse(jobInfoJson, function (k, v) {
             return v;
         });
@@ -14,41 +15,64 @@ class JobDiagnostics{
         this.jobCountersJson = JSON.parse(jobCountersJson, function (k, v) {
             return v;
         }).jobCounters;
-        this.checkForSpilling();
-        this.checkCombiner();
+        let usesCombiner = this.checkCombiner();
+        this.checkForSpilling(usesCombiner);
+        console.log(this.config.getSetting("mapreduce.task.io.sort.mb"));
+        console.log(this.config.getSetting("mapreduce.map.sort.spill.percent"));
+
 
     }
 
     checkCombiner(){
         let combinerInput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_INPUT_RECORDS")["mapCounterValue"];
         if(combinerInput == 0){
-            return this.createReport("Optional usage of combiner", "warning", "The job doesn't use a combiner.");
+            this.createReport("Optional usage of combiner", "warning", "The job doesn't use a combiner.");
+            return false;
         }
         let combinerOutput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_OUTPUT_RECORDS")["mapCounterValue"];
         console.log("combiner input " + combinerInput + " " + combinerOutput);
         let percentage = (1.0 - (combinerOutput * 1.0)/combinerInput).toFixed(4) * 100;
         let test = percentage < 0.3;
-        console.log(test)
+
         if(test){
-            return this.createReport("Inefficient usage of combiner", "warning", "The jobs combiner reduces the output with " + percentage+
+            this.createReport("Inefficient usage of combiner", "warning", "The jobs combiner reduces the output with " + percentage+
                 "% which may not result in performance improvements.")
+            return true;
         }else{
-            return this.createReport("Inefficient usage of combiner", "success", "The jobs combiner reduces the output with " + percentage+
+            this.createReport("Inefficient usage of combiner", "success", "The jobs combiner reduces the output with " + percentage+
                 "% which may not result in performance improvements.")
+            return true;
         }
     }
 
-    checkForSpilling(){
+    checkForSpilling(usesCombiner){
         console.log('checking for spilling');
-        this.checkSpillAndReport("Map spilling", "mapCounterValue");
-        this.checkSpillAndReport("Reduce spilling", "reduceCounterValue");
+        this.checkSpillAndReport("Map spilling", "mapCounterValue", usesCombiner);
+        this.checkSpillAndReport("Reduce spilling", "reduceCounterValue", usesCombiner);
+        this.createSpillSolutions();
 
     }
 
-    checkSpillAndReport(title, type){
+    createSpillSolutions(){
+        let buffersize = this.config.getSetting("mapreduce.task.io.sort.mb");
+        let bufferpercentage = this.config.getSetting("mapreduce.map.sort.spill.percent");
+        let bufferthreshold = bufferpercentage * buffersize;
+        let amountOfMappers = this.job["successfulMapAttempts"];
+        let totalMapoutput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_BYTES")["mapCounterValue"];
+        console.log("amount of mappers " + amountOfMappers + " " + totalMapoutput);
+        let newBufferPercentage = Math.ceil((totalMapoutput / amountOfMappers)/ (buffersize * 1000000)*100);
+        this.createReport("test spiling","danger", "current spill precentage is " + (bufferpercentage*100) +"% to avoid spilling it should be more than " + newBufferPercentage + "%.");
+
+    }
+
+    checkSpillAndReport(title, type, usesCombiner){
         let outputrecords = 0;
         if(type.localeCompare("mapCounterValue") == 0) {
-            outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_RECORDS")[type];
+            if(!usesCombiner) {
+                outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_RECORDS")[type];
+            }else{
+                outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_OUTPUT_RECORDS")[type];
+            }
         }else{
             outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "REDUCE_OUTPUT_RECORDS")[type];
         }
