@@ -332,10 +332,14 @@ class Server{
   saveTaskAttemptStatCounters(db, counters ,taskAttemptID ,taskID, jobID ){
     var that = this;
     if(counters){
-      var tosave = JSON.parse(counters, function(k,v){return v;});
-      tosave.jobid = jobID;
-      tosave.taskid = taskID;
-      this.insertOneToCollection(db,tosave);
+      if(counters.localeCompare("error") !== 0) {
+        var tosave = JSON.parse(counters, function (k, v) {
+          return v;
+        });
+        tosave.jobid = jobID;
+        tosave.taskid = taskID;
+        this.insertOneToCollection(db, tosave);
+      }
     }else{
       this.getTaskAttemptStatCounters(jobID,taskID,taskAttemptID, function(respons){
         that.saveTaskAttemptStatCounters(db, respons, taskAttemptID, taskID, jobID);
@@ -364,8 +368,10 @@ class Server{
     if(db){
       
       var cursor = db.collection(this.collection).find({historyInfo:{$exists: true}});
+      let i =0;
       cursor.each(function(err, doc) {
-        that.cursorFunction(err,doc,func);
+        that.cursorFunction(err,doc,func, i );
+        i++;
         });
     }else{
       this.getDatabaseConnection(function(dbconn){
@@ -497,9 +503,11 @@ class Server{
   getTaskAttemptStatCountersFromDatabase(db, func, taskID, jobID, attemptID){
     var that = this;
     if(db){
+      let i = 0
       var cursor = db.collection(this.collection).find({stats:{$exists: true},'taskAttemptId': attemptID });
       cursor.each(function(err, doc) {
-        that.cursorFunction(err,doc,func);
+        that.cursorFunction(err,doc,func, i);
+        i++;
       });
     }else{
       this.getDatabaseConnection(function(dbconn){
@@ -508,7 +516,7 @@ class Server{
     }
   }
 
-cursorFunction(err,doc,func){
+cursorFunction(err,doc,func, i){
   if(err){console.log("error in call from database for function " + func + " error: " + err);}
   else{
     if (doc != null){
@@ -517,6 +525,9 @@ cursorFunction(err,doc,func){
          func(JSON.stringify(doc));
        }
     } else {
+        if(i == 0){
+          func("error");
+        }
        //console.log("end of cursor database call for " + func);
     }
   }

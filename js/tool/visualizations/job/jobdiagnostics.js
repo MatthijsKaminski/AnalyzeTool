@@ -6,6 +6,7 @@ class JobDiagnostics{
     }
 
     updateView(jobInfoJson,jobCountersJson, mapreduceconfig) {
+
         this.diagnostics.clearJobs();
         this.config = mapreduceconfig;
         this.job = JSON.parse(jobInfoJson, function (k, v) {
@@ -15,6 +16,7 @@ class JobDiagnostics{
         this.jobCountersJson = JSON.parse(jobCountersJson, function (k, v) {
             return v;
         }).jobCounters;
+
         let usesCombiner = this.checkCombiner();
         this.checkForSpilling(usesCombiner);
         console.log(this.config.getSetting("mapreduce.task.io.sort.mb"));
@@ -49,21 +51,54 @@ class JobDiagnostics{
         console.log('checking for spilling');
         this.checkSpillAndReport("Map spilling", "mapCounterValue", usesCombiner);
         this.checkSpillAndReport("Reduce spilling", "reduceCounterValue", usesCombiner);
-        this.createSpillSolutions();
+       
 
     }
 
-    createSpillSolutions(){
+    createSpillSolutions(report){
+
         let buffersize = this.config.getSetting("mapreduce.task.io.sort.mb");
         let bufferpercentage = this.config.getSetting("mapreduce.map.sort.spill.percent");
         let bufferthreshold = bufferpercentage * buffersize;
         let amountOfMappers = this.job["successfulMapAttempts"];
         let totalMapoutput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_BYTES")["mapCounterValue"];
-        console.log("amount of mappers " + amountOfMappers + " " + totalMapoutput);
-        let newBufferPercentage = Math.ceil((totalMapoutput / amountOfMappers)/ (buffersize * 1000000)*100);
-        this.createReport("test spiling","danger", "current spill precentage is " + (bufferpercentage*100) +"% to avoid spilling it should be more than " + newBufferPercentage + "%.");
 
+        //change buffer
+        let newBufferPercentage = Math.ceil((totalMapoutput / amountOfMappers)/ (buffersize * 1000000)*100);
+        let solution1 = this.createRow("<hr><b>Solution change buffer percentage: </b>" + "Current spill precentage is " + (bufferpercentage*100) +"% to avoid spilling it should be more than " + newBufferPercentage + "%. (mapreduce.map.sort.spill.percent)<br>");
+
+
+       // this.createReport("Map spilling solution change buffer percentage","danger", "current spill precentage is " + (bufferpercentage*100) +"% to avoid spilling it should be more than " + newBufferPercentage + "%.");
+        this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_READ")["mapCounterValue"];
+        let newbuffersize = Math.ceil((totalMapoutput / amountOfMappers)/ (bufferpercentage * 1000000));
+        let solution2 = this.createRow("<b>Solution change buffer size: </b>"+ "Current buffersize is " + (buffersize) +"MB to avoid spilling it should be more than " + newbuffersize + "MB with given spilling percentage " + bufferpercentage +". (mapreduce.task.io.sort.mb)<br>");
+        //this.createReport("Map spilling solution change buffer size","danger", "current buffersize is " + (buffersize) +"MB to avoid spilling it should be more than " + newbuffersize + "MB with given spilling percentage " + bufferpercentage);
+        let newmaps = Math.ceil((totalMapoutput / (bufferpercentage * buffersize* 1000000)));
+        let totalMapinput = this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_READ")["mapCounterValue"];
+        let newsplit = Math.ceil((totalMapinput/newmaps)/ 1000000) ;
+        let split = this.config.getSetting("mapred.max.split.size");
+        let blocksize = Math.ceil(this.config.getSetting("dfs.blocksize") / 1000000);
+        //this.createReport("Map spilling solution change split size","danger",  "To avoid spilling the input could be divided among " + newmaps + " maptasks. This can be achieved by changing the splitsize to " + newsplit + " bytes.");
+        let solution3 = this.createRow("<b>Solution change split size: </b>"+"To avoid spilling the input could be divided among " + newmaps + " maptasks. This can be achieved by changing the splitsize to "
+            + newsplit + "MB. Current splitsize is "+split + "MB (mapred.max.split.size). The HDFS blocksize is " + blocksize + "MB (dfs.blocksize).");
+
+        report.appendChild(solution1);
+        report.appendChild(solution2);
+        report.appendChild(solution3);
+        return report;
     }
+
+    createRow(info){
+        let row = document.createElement("div");
+        row.className = "row";
+        let col = document.createElement("div");
+        col.className = "col-md-12";
+        col.innerHTML = info;
+        row.appendChild(col);
+        return row;
+    }
+
+
 
     checkSpillAndReport(title, type, usesCombiner){
         let outputrecords = 0;
@@ -82,8 +117,12 @@ class JobDiagnostics{
             let description = "During the job " + spilled + " records are spilled.";
             if(type.localeCompare("mapCounterValue") == 0){
                 let bytes = this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","FILE_BYTES_READ")[type];
-                description += "This resulted in " + bytes + " bytes needed to be read from local disc.";
-                description += " Hint: use mapreduce.task.io.sort.mb and mapreduce.map.sort.spill.percent settings to resolve this issue.";
+                description += "This resulted in " + bytes + " bytes needed to be read from local disk.";
+                //description += " Hint: use mapreduce.task.io.sort.mb and mapreduce.map.sort.spill.percent settings to resolve this issue.";
+                let div = document.createElement("div");
+                div.appendChild(this.createRow(description));
+                this.createSpillSolutions(div);
+                description = div.outerHTML;
 
             }else{
                 description += " Hint: use mapreduce.task.io.sort.mb and mapreduce.map.sort.spill.percent settings to resolve this issue.";

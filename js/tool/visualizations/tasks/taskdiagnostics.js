@@ -9,13 +9,71 @@ class TaskDiagnostics{
     setTaskAttempts(attempts){
         this.killed = 0;
         this.speculative = 0;
+        this.totalOverall= 0;
+        this.nettoOverall = 0;
+        this.minOverall = Infinity;
+        this.maxOverall  = -Infinity;
+        this.nettoMap = 0;
+        this.nettoReduce = 0;
+        this.totalReduce = 0;
+        this.totalMap = 0;
+        this.minMap = Infinity;
+        this.maxMap  = -Infinity;
+        this.minReduce = Infinity;
+        this.maxReduce = -Infinity;
         this.diagnostics.clearTasks();
         for(let attemptName in attempts){
             this.diagnoseAttempt(attempts[attemptName]);
+            this.updateLoad(attempts[attemptName]);
         }
+        this.createLoadRapport();
         console.log(this.speculative);
         console.log(this.killed);
     }
+
+    createLoadRapport(){
+        let types = ["Overall","Map","Reduce"];
+        let out = " "
+        for(let index in types){
+            let type = types[index];
+            this.calculateLoad(type);
+            out += this.innerLoadRapport(type);
+        }
+
+        this.createReport("Load (ms/ms)", "default", out, undefined, true);
+
+    }
+    innerLoadRapport(type){
+        return "The "+type +" load is " + this["load"+type].toFixed(2) +" (ms/ms)<br>";
+    }
+
+    calculateLoad(type){
+        this["netto"+type] = this["max"+type] - this["min"+type];
+
+        this["load"+type] = this["total"+type] *1.0/ this["netto"+type]
+    }
+
+    updateLoad(attempt){
+        if(attempt.state.localeCompare("SUCCEEDED") == 0){
+            if(attempt.type.localeCompare("MAP") === 0){
+                this.updateLoadAttempt(attempt,"Map");
+            }else{
+                this.updateLoadAttempt(attempt,"Reduce");
+            }
+        }
+    }
+
+    updateLoadAttempt(attempt, type){
+
+        this.minOverall = Math.min(attempt.startTime, this.minOverall);
+        this.maxOverall = Math.max(attempt.startTime + attempt.elapsedTime, this.maxOverall);
+
+        this.totalOverall += attempt.elapsedTime;
+        this["min"+type] = Math.min(attempt.startTime, this["min"+type]);
+        this["max"+type] = Math.max(attempt.startTime + attempt.elapsedTime, this["max"+type]);
+        this["total"+type] += attempt.elapsedTime;
+    }
+
 
     diagnoseAttempt(attempt){
         if(attempt.state.localeCompare("SUCCEEDED") == 0){
@@ -44,7 +102,7 @@ class TaskDiagnostics{
     diagnoseReduceAttempt(attempt){
 
         if(attempt["elapsedReduceTotalTimeLabel"] == 5){
-            console.log(attempt);
+
             let description ="";
             let title ="";
             if(attempt["reduceInputRecordsLabel"] == 5){
@@ -73,13 +131,18 @@ class TaskDiagnostics{
         }
     }
 
-    createReport(title, type, description, table){
+    createReport(title, type, description, table, task){
         let element = document.createElement("div");
         if(table != undefined){
            description = '<div class="row"> <div class="col-md-6">'+description+ '</div><div class="col-md-6">'+table+'</div> </div>';
         }
         element.innerHTML = '<div class="panel '+this.diagnostics.getPanelType(type)+ '"> <div class="panel-heading">'+ title +'</div> <div class="panel-body">'+description+ '</div> </div>';
-        this.diagnostics.addTaskDiagnostic(element);
+        if(task == undefined) {
+            this.diagnostics.addTaskDiagnostic(element);
+        }
+        else{
+            this.diagnostics.addJobDiagnostic(element);
+        }
     }
 
     calculateZScoreMap(attempt){
@@ -153,7 +216,7 @@ class TaskDiagnostics{
         for(let k in elements){
             let object = elements[k];
             let z = this.calculateZscore(object.time, top10mean, top10deviation);
-            console.log(object.time + " score: " + z);
+            //console.log(object.time + " score: " + z);
             object["top10outlier"] = z >= 3.0;
 
         }

@@ -2,9 +2,9 @@
 class MapReduceConfig{
 
     constructor(configJSON){
-        this.config = JSON.parse(configJSON, function(k,v){return v;}).conf;
-        console.log(this.config);
 
+        this.config = JSON.parse(configJSON, function(k,v){return v;}).conf;
+        
     }
 
     getSetting(settingname){

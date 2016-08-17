@@ -84,7 +84,7 @@ class TaskAttemptsData{
         }else{
             attempt.elapsedReduceTotalTime = attempt.elapsedTime;
         }
-
+        console.log(this.taskAttempts);
 
         if(attempt.state.localeCompare("SUCCEEDED") === 0) {
             this.server.getTaskAttemptCounters(this.jobid,taskid,attempt.id, function (counters) {
@@ -101,23 +101,27 @@ class TaskAttemptsData{
     }
 
     updateAttemptWithComplexCounters(attempt, counters){
-        let countersinner  = JSON.parse(counters, function(k,v){return v;});
-        let keys = countersinner.stats[0];
-        let mean = countersinner.stats[1]["MEAN"];
+        if(counters.localeCompare("error") !== 0) {
+            let countersinner = JSON.parse(counters, function (k, v) {
+                return v;
+            });
+            let keys = countersinner.stats[0];
+            let mean = countersinner.stats[1]["MEAN"];
 
-        let variance = countersinner.stats[1]["var"];
-        if(variance != 0){
-            console.log(attempt);
-        }
-        if(attempt.type.localeCompare("MAP") === 0){
-            attempt["MOST_EXPENSIVE_RECORDS"] = keys["MOST_EXPENSIVE_RECORDS"];
-            attempt["MAPPING_MEAN"] = mean;
-            attempt["MAPPING_VARIANCE"] = variance;
-            
-        }else {
-            attempt["MOST_EXPENSIVE_KEYS"] = keys["MOST_EXPENSIVE_KEYS"];
-            attempt["REDUCE_MEAN"] = mean;
-            attempt["REDUCE_VARIANCE"] = variance;
+            let variance = countersinner.stats[1]["var"];
+            if (variance != 0) {
+                console.log(attempt);
+            }
+            if (attempt.type.localeCompare("MAP") === 0) {
+                attempt["MOST_EXPENSIVE_RECORDS"] = keys["MOST_EXPENSIVE_RECORDS"];
+                attempt["MAPPING_MEAN"] = mean;
+                attempt["MAPPING_VARIANCE"] = variance;
+
+            } else {
+                attempt["MOST_EXPENSIVE_KEYS"] = keys["MOST_EXPENSIVE_KEYS"];
+                attempt["REDUCE_MEAN"] = mean;
+                attempt["REDUCE_VARIANCE"] = variance;
+            }
         }
 
         this.taskAttempts--;
@@ -170,6 +174,7 @@ class TaskAttemptsData{
             }
 
             this.taskAttempts--;
+            console.log(this.taskAttempts);
             if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
                 this.doStatsAndUpdateController();
             }

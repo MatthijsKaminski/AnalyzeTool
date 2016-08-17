@@ -35,7 +35,7 @@ class Webhdfs{
             }else{
                 if (xhttp.readyState == 4 ) {
                     ErrorBox.showError("could not connect to hdfs server");
-
+                    //func(undefined);
                 }else{
                     //Do nothing
                 }
@@ -44,10 +44,12 @@ class Webhdfs{
 
         xhttp.onerror = function (e) {
             ErrorBox.showError("could not connect to hdfs server");
+            func("error");
         }
 
         xhttp.ontimeout = function (e) {
             ErrorBox.showError("could not connect to hds server");
+            func("error");
         }
         try {
             xhttp.open("GET", this.url + path, true);
@@ -56,6 +58,7 @@ class Webhdfs{
         }catch (e){
             //alert("could not connect to server");
             console.log("catched error")
+            func("error");
         }
     }
 }
