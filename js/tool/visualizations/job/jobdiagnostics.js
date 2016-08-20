@@ -7,7 +7,7 @@ class JobDiagnostics{
 
     updateView(jobInfoJson,jobCountersJson, mapreduceconfig) {
 
-        this.diagnostics.clearJobs();
+       
         this.config = mapreduceconfig;
         this.job = JSON.parse(jobInfoJson, function (k, v) {
             return v;
@@ -19,20 +19,26 @@ class JobDiagnostics{
 
         let usesCombiner = this.checkCombiner();
         this.checkForSpilling(usesCombiner);
-        console.log(this.config.getSetting("mapreduce.task.io.sort.mb"));
-        console.log(this.config.getSetting("mapreduce.map.sort.spill.percent"));
+        this.showReplicationRates();
+        // console.log(this.config.getSetting("mapreduce.task.io.sort.mb"));
+        // console.log(this.config.getSetting("mapreduce.map.sort.spill.percent"));
 
 
     }
 
     checkCombiner(){
-        let combinerInput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_INPUT_RECORDS")["mapCounterValue"];
+        let combinerInput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_INPUT_RECORDS");
+        if(combinerInput == undefined){
+            this.createReport("Optional usage of combiner", "warning", "The job doesn't use a combiner.");
+            return false;
+        }
+        combinerInput = combinerInput["mapCounterValue"];
         if(combinerInput == 0){
             this.createReport("Optional usage of combiner", "warning", "The job doesn't use a combiner.");
             return false;
         }
         let combinerOutput = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_OUTPUT_RECORDS")["mapCounterValue"];
-        console.log("combiner input " + combinerInput + " " + combinerOutput);
+       // console.log("combiner input " + combinerInput + " " + combinerOutput);
         let percentage = (1.0 - (combinerOutput * 1.0)/combinerInput).toFixed(4) * 100;
         let test = percentage < 0.3;
 
@@ -48,7 +54,7 @@ class JobDiagnostics{
     }
 
     checkForSpilling(usesCombiner){
-        console.log('checking for spilling');
+        //console.log('checking for spilling');
         this.checkSpillAndReport("Map spilling", "mapCounterValue", usesCombiner);
         this.checkSpillAndReport("Reduce spilling", "reduceCounterValue", usesCombiner);
        
@@ -109,11 +115,14 @@ class JobDiagnostics{
                 outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "COMBINE_OUTPUT_RECORDS")[type];
             }
         }else{
+            if(this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "REDUCE_OUTPUT_RECORDS") == undefined){
+                return;
+            }
             outputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "REDUCE_OUTPUT_RECORDS")[type];
         }
         let spilledrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","SPILLED_RECORDS")[type];
         let spilled= spilledrecords -  outputrecords;
-        if(spilled != 0){
+        if(spilled > 0){
             let description = "During the job " + spilled + " records are spilled.";
             if(type.localeCompare("mapCounterValue") == 0){
                 let bytes = this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","FILE_BYTES_READ")[type];
@@ -131,6 +140,30 @@ class JobDiagnostics{
         }else{
             this.createReport(title,"success", "no spilling during this job.")
         }
+    }
+
+
+    showReplicationRates(){
+        if(this.job["mapsTotal"] != 0){
+            let hdfs = "";
+            let mapinputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_INPUT_RECORDS")["mapCounterValue"];
+            let mapoutputrecords = this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter", "MAP_OUTPUT_RECORDS")["mapCounterValue"];
+            let mapinputbytes =  this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_READ")["mapCounterValue"];
+            let mapoutputbytes =  this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_MATERIALIZED_BYTES");
+            if(mapoutputbytes != undefined){
+                mapoutputbytes = mapoutputbytes["mapCounterValue"];
+                hdfs = " Bytes were written to local disk."
+            }else{
+                mapoutputbytes =  this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_WRITTEN")["mapCounterValue"];
+                hdfs = " Bytes were written to HDFS."
+            }
+            let replicationRateRecords = ((mapoutputrecords*1.0) / mapinputrecords).toFixed(2);
+            let replicationRateBytes = ((mapoutputbytes*1.0) / mapinputbytes).toFixed(2);
+
+            this.createReport("Replication rate during map phase", "default", "Records replication rate: " + replicationRateRecords + "<br>Bytes replication rate: " + replicationRateBytes + "." +hdfs );
+
+        }
+
     }
 
     createReport(title, type, description){

@@ -15,9 +15,9 @@ class TaskController{
     initVisualisationLabels(){
         this.statNames = ["mapInputRecords", "mapOutputRecords","mapInputBytes","mapOutputBytes", "combinerEfficiency",
                             "reduceInputRecords", "reduceOutputRecords", "reduceInputBytes", "reduceOutputBytes", "shuffledMaps",
-                            "mergedMaps", "failedShuffles", "replicationRate", "unneededSpilledRecords" , "elapsedMapTime",
+                            "mergedMaps", "failedShuffles", "replicationRate", "unneededMapSpilledRecords" , "unneededReduceSpilledRecords", "elapsedMapTime",
                             "elapsedMergeTime", "elapsedReduceTime", "elapsedShuffleTime","uniqueKeys","timePerMapInput", "MAPPING_MEAN", "MAPPING_VARIANCE",
-                            "REDUCE_MEAN","REDUCE_VARIANCE", "elapsedReduceTotalTime"
+                            "REDUCE_MEAN","REDUCE_VARIANCE", "elapsedReduceTotalTime", "replicationRateBytes"
                             ];
         
         
@@ -53,6 +53,23 @@ class TaskController{
                     countersGroupName: "org.apache.hadoop.mapreduce.TaskCounter",
                     counterName: "COMBINE_INPUT_RECORDS"
                 },
+                {
+                    dataName: "combineOutputRecords",
+                    countersName: "taskAttemptCounterGroup",
+                    countersGroupName: "org.apache.hadoop.mapreduce.TaskCounter",
+                    counterName: "COMBINE_OUTPUT_RECORDS"
+                }
+                ,{
+                    dataName: "mapOutputBytesHDFS",
+                    countersName: "taskAttemptCounterGroup",
+                    countersGroupName: "org.apache.hadoop.mapreduce.FileSystemCounter",
+                    counterName: "HDFS_BYTES_WRITTEN"
+                }, {
+                    dataName: "mapSpilledRecords",
+                    countersName: "taskAttemptCounterGroup",
+                    countersGroupName: "org.apache.hadoop.mapreduce.TaskCounter",
+                    counterName: "SPILLED_RECORDS"
+                }
 
 
             ],
@@ -105,14 +122,15 @@ class TaskController{
                     countersGroupName: "org.apache.hadoop.mapreduce.TaskCounter",
                     counterName: "REDUCE_INPUT_GROUPS"
                 },
-            ],
-            all: [
                 {
-                    dataName: "spilledRecords",
+                    dataName: "reduceSpilledRecords",
                     countersName: "taskAttemptCounterGroup",
                     countersGroupName: "org.apache.hadoop.mapreduce.TaskCounter",
                     counterName: "SPILLED_RECORDS"
                 }
+            ],
+            all: [
+
             ]
         };
 
@@ -120,18 +138,42 @@ class TaskController{
             map:[
                 {
                     func: function (taskattempt){
-                        taskattempt.replicationRate = taskattempt["mapOutputRecords"] / taskattempt["mapInputRecords"];
+                        taskattempt.replicationRate = ((taskattempt["mapOutputRecords"] * 1.0)/ taskattempt["mapInputRecords"]).toFixed(2);
                     }
                 },
                 {
                     func: function (taskattempt){
-                        taskattempt.unneededSpilledRecords = taskattempt["spilledRecords"] - taskattempt["mapOutputRecords"];
+                        if(taskattempt["mapOutputBytes"] == 0 && taskattempt["mapOutputBytesHDFS"] != 0){
+                            taskattempt["mapOutputBytes"] = taskattempt["mapOutputBytesHDFS"];
+                        }
+                        taskattempt.replicationRateBytes = ((taskattempt["mapOutputBytes"] * 1.0)/ taskattempt["mapInputBytes"]).toFixed(2);
+                    }
+                },
+                {
+                    func: function (taskattempt){
+                        if(taskattempt["mapSpilledRecords"] != 0){
+                            if(taskattempt["combineInputRecords"] !== 0){
+                                taskattempt.unneededMapSpilledRecords = taskattempt["mapSpilledRecords"] - taskattempt["combineOutputRecords"];
+                            }else{
+
+                                taskattempt.unneededMapSpilledRecords = taskattempt["mapSpilledRecords"] - taskattempt["mapOutputRecords"];
+                            }
+
+                        }else{
+                            taskattempt.unneededMapSpilledRecords = 0
+                        }
+
                     }
                 },
                 {
                     func: function (taskattempt){
                         if(taskattempt["combineInputRecords"] !== 0)
-                        taskattempt.combinerEfficiency = taskattempt["mapOutputRecords"] / taskattempt["combineInputRecords"];
+                            taskattempt.combinerEfficiency = (1.0 - (taskattempt["combineOutputRecords"] * 1.0 )/ taskattempt["combineInputRecords"]).toFixed(4) *100;
+                    }
+                },{
+                    func: function (taskattempt){
+                        if(taskattempt["mapInputRecords"] !== 0)
+                            taskattempt.timePerMapInput = taskattempt["elapsedMapTime"] /taskattempt["mapInputRecords"] ;
                     }
                 },{
                     func: function (taskattempt){
@@ -144,7 +186,7 @@ class TaskController{
             reduce:[
                 {
                     func: function (taskattempt){
-                        taskattempt.unneededSpilledRecords = taskattempt["spilledRecords"] - taskattempt["reduceOutputRecords"];
+                        taskattempt.unneededReduceSpilledRecords = taskattempt["reduceSpilledRecords"] - taskattempt["reduceOutputRecords"];
                     }
                 },
             ],
@@ -170,12 +212,15 @@ class TaskController{
             {dataName: "shuffledMaps", title: "Shuffled Maps to reducer", better: "higher", type: "reduce"},
             {dataName: "mergedMaps", title: "Merged Maps at reducer", better: "higher", type: "reduce"},
             {dataName: "failedShuffles", title: "Failed Shuffles to reducer", better: "higher", type: "reduce"},
-            {dataName: "replicationRate", title: "Replication Rate", better: "higher", type: "map"},
-            {dataName: "unneededSpilledRecords", title: "Unneeded Spilled Records", better: "lower", type: "both"},
+            {dataName: "replicationRate", title: "Replication Rate (records)", better: "lower", type: "map"},
+            {dataName: "replicationRateBytes", title: "Replication Rate (bytes)", better: "lower", type: "map"},
+            {dataName: "unneededMapSpilledRecords", title: "Unneeded Spilled Records (MAP)", better: "lower", type: "map"},
+            {dataName: "unneededReduceSpilledRecords", title: "Unneeded Spilled Records (REDUCE)", better: "lower", type: "reduce"},
             {dataName: "MAPPING_MEAN", title: "Mapping time per record mean", better: "lower", type: "map"},
             {dataName: "MAPPING_VARIANCE", title: "Mapping time per record variance", better: "lower", type: "map"},
             {dataName: "REDUCE_MEAN", title: "Reduce time per record mean", better: "lower", type: "reduce"},
-            {dataName: "REDUCE_VARIANCE", title: "Reduce time per record variance", better: "lower", type: "reduce"}
+            {dataName: "REDUCE_VARIANCE", title: "Reduce time per record variance", better: "lower", type: "reduce"},
+
 
 
 
@@ -201,7 +246,9 @@ class TaskController{
             {dataName: "mergedMaps", title: "Merged Maps at reducer", x: "Map outputs" , y: "tasks" , bins: 10},
             {dataName: "failedShuffles", title: "Failed Shuffles to reducer", x: "Shuffles" , y: "tasks" , bins: 10},
             {dataName: "replicationRate", title: "Replication Rate", x: "Times" , y: "tasks" , bins: 10},
-            {dataName: "unneededSpilledRecords", title: "Unneeded Spilled Records", x: "Records" , y: "tasks" , bins: 10},
+
+            {dataName: "unneededMapSpilledRecords", title: "Unneeded Spilled Records (MAP)", x: "Records" , y: "tasks" , bins: 10},
+            {dataName: "unneededReduceSpilledRecords", title: "Unneeded Spilled Records (REDUCE)", x: "Records" , y: "tasks" , bins: 10}
 
         ]
 
@@ -262,6 +309,9 @@ class TaskController{
                 row.className = "row";
                 y= 0;
             }
+        }
+        if(y != 0){
+            this.getContainer("taskBoxPlotsContainer").appendChild(row);
         }
 
         for(var index = 0; index < this.histLabels.length; index++){

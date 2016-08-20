@@ -59,7 +59,8 @@ class TaskAttempt{
             }
 
         }
-        console.log("not found: " + "taskcounterid " + taskCounter.id + " "+ counterGroupsName + " " + counterGroupName +" " + counterName);
+        //console.log("not found: " + "taskcounterid " + taskCounter.id + " "+ counterGroupsName + " " + counterGroupName +" " + counterName);
+        return undefined;
     }
 
     

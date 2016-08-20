@@ -32,6 +32,7 @@ class TaskDiagnostics{
     }
 
     createLoadRapport(){
+        console.log("Creating load report");
         let types = ["Overall","Map","Reduce"];
         let out = " "
         for(let index in types){
@@ -39,7 +40,7 @@ class TaskDiagnostics{
             this.calculateLoad(type);
             out += this.innerLoadRapport(type);
         }
-
+        console.log(out);
         this.createReport("Load (ms/ms)", "default", out, undefined, true);
 
     }
@@ -120,7 +121,7 @@ class TaskDiagnostics{
                     this.createReport(title,"danger",description, this.calculateZScoreReduce(attempt));
                 }
             }else{
-                title = "Expensive Input";
+                title = "Expensive Input " + attempt.id;
                 description = "The input of this reducer is expensive. (see table)"
                 if(attempt.uniqueKeys > 1){
                     description += " Hint: try to distribute the input keys among more reducers."

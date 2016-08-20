@@ -40,7 +40,7 @@ class BinnedHistogram{
     }
     
     setData(data){
-        console.log("set data " + this.type);
+        //console.log("set data " + this.type);
         this.selectedBinIndex = undefined;
         this.data = data.sort(function(a, b){return a-b});
         this.dataPoint = undefined;

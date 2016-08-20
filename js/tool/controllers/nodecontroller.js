@@ -146,7 +146,7 @@ class NodeController{
         this.nodeOverview.updateView();
         this.nodeDiagnoses.setNodes(nodes);
         this.nodeDiagnoses.updateView();
-        console.log("nodes vis length " + this.visualisations.length);
+       // console.log("nodes vis length " + this.visualisations.length);
         for(let index =0 ; index < this.visualisations.length; index++){
            
             let vis = this.visualisations[index];

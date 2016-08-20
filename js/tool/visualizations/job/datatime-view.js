@@ -35,32 +35,50 @@ class DataTime{
   }
 
   createDataArray(){
-    return ['Data',
-            this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_READ")["mapCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_MATERIALIZED_BYTES")["mapCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_SHUFFLE_BYTES")["reduceCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_SHUFFLE_BYTES")["reduceCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_SHUFFLE_BYTES")["reduceCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_WRITTEN")["reduceCounterValue"]
+      if(this.job["reducesTotal"] == 0){
+          return ['Data',
+              this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_READ")["mapCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_WRITTEN")["mapCounterValue"],
+             0,0,0,0
           ];
+      }else{
+          return ['Data',
+              this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_READ")["mapCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_MATERIALIZED_BYTES")["mapCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_SHUFFLE_BYTES")["reduceCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_SHUFFLE_BYTES")["reduceCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_SHUFFLE_BYTES")["reduceCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.FileSystemCounter","HDFS_BYTES_WRITTEN")["reduceCounterValue"]
+          ];
+      }
+
 
   }
 
   createRecordArray(){
-    return ['Record',
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_INPUT_RECORDS")["mapCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_INPUT_RECORDS")["reduceCounterValue"],
-            this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_OUTPUT_RECORDS")["reduceCounterValue"]
+      if(this.job["reducesTotal"] == 0){
+          return ['Record',
+              this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_INPUT_RECORDS")["mapCounterValue"],
+              this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
+              0,0,0,0
           ];
+      }else{
+            return ['Record',
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_INPUT_RECORDS")["mapCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_INPUT_RECORDS")["reduceCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_OUTPUT_RECORDS")["reduceCounterValue"]
+                  ];
+      }
   }
 
 
   updateView(jobInfoJson,jobCountersJson){
     this.job = JSON.parse(jobInfoJson, function(k,v){return v;});
     this.job = this.job.job;
+
     this.jobCountersJson = JSON.parse(jobCountersJson, function(k,v){return v;}).jobCounters;
     var mapping = {};
     mapping[1] = "Map start";

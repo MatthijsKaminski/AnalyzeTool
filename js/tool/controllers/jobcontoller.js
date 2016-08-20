@@ -37,6 +37,7 @@ class JobController{
     }
 
     setJobID(jobid){
+        this.diagnostics.clearJobs();
         this.jobid = jobid;
         this.getJobInfoAndCounters();
 

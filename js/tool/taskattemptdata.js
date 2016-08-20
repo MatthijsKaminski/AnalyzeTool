@@ -84,7 +84,7 @@ class TaskAttemptsData{
         }else{
             attempt.elapsedReduceTotalTime = attempt.elapsedTime;
         }
-        console.log(this.taskAttempts);
+       // console.log(this.taskAttempts);
 
         if(attempt.state.localeCompare("SUCCEEDED") === 0) {
             this.server.getTaskAttemptCounters(this.jobid,taskid,attempt.id, function (counters) {
@@ -140,6 +140,7 @@ class TaskAttemptsData{
             if(attempt.type.localeCompare("MAP") === 0){
                 for(let index = 0; index < this.wantedCounters.map.length; index++){
                     let counter = this.wantedCounters.map[index];
+                    //console.log("update with counter" +  counter.counterName);
                     this.updateAttemptWithCounter(attempt,countersinner,counter);
                 }
                 for(let index = 0; index < this.wantedCounters.all.length; index++){
@@ -174,6 +175,7 @@ class TaskAttemptsData{
             }
 
             this.taskAttempts--;
+           
             console.log(this.taskAttempts);
             if(this.amountOftasks == 0 && this.taskAttempts == 0 ){
                 this.doStatsAndUpdateController();
@@ -185,7 +187,13 @@ class TaskAttemptsData{
     }
 
     updateAttemptWithCounter(attempt, counters, counter){
-        attempt[counter.dataName] = TaskAttempt.getTaskCounter(counters, counter.countersName, counter.countersGroupName, counter.counterName).value
+        let counterr = TaskAttempt.getTaskCounter(counters, counter.countersName, counter.countersGroupName, counter.counterName);
+        if (counterr != undefined){
+            attempt[counter.dataName] = counterr.value
+        }else{
+            attempt[counter.dataName] = 0;
+        }
+
     }
 
 
@@ -239,7 +247,7 @@ class TaskAttemptsData{
     }
 
     labelOutliers(){
-        console.log("labeling "  + this.attempts.length);
+       // console.log("labeling "  + this.attempts.length);
         for(let attemptName in this.attempts){
             let attempt = this.attempts[attemptName];
             for(let index = 0; index < this.statNames.length ; index++){
@@ -256,6 +264,7 @@ class TaskAttemptsData{
 
 
     getStatDataPoints(statName){
+        //console.log(statName);
         return this[statName].getDataPoints();
     }
 }
