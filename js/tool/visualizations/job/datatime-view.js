@@ -66,8 +66,8 @@ class DataTime{
             return ['Record',
                     this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_INPUT_RECORDS")["mapCounterValue"],
                     this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
-                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
-                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","MAP_OUTPUT_RECORDS")["mapCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_INPUT_RECORDS")["reduceCounterValue"],
+                    this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_INPUT_RECORDS")["reduceCounterValue"],
                     this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_INPUT_RECORDS")["reduceCounterValue"],
                     this.getJobCounter("org.apache.hadoop.mapreduce.TaskCounter","REDUCE_OUTPUT_RECORDS")["reduceCounterValue"]
                   ];

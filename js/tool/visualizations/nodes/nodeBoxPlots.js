@@ -68,7 +68,8 @@ class NodeBoxPlot{
             x: that.data,
             type: 'box',
             name: that.name,
-            boxmean: true
+            boxmean: true,
+            boxpoints: 'suspectedoutliers'
         };
 
         dataArray.push(trace1);
@@ -79,6 +80,7 @@ class NodeBoxPlot{
                 x: [that.selectedDataPoint],
                 type: 'box',
                 name: that.selected
+
             };
             dataArray.push(trace2);
         }

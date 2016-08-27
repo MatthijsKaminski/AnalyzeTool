@@ -45,7 +45,8 @@ class TaskDiagnostics{
 
     }
     innerLoadRapport(type){
-        return "The "+type +" load is " + this["load"+type].toFixed(2) +" (ms/ms)<br>";
+        return "The "+type +" load is " + this["load"+type].toFixed(2) +" (ms/ms). Netto time: "+ this["netto" +type]
+            +"ms Total Time: "+ this["total" +type]  + "ms <br>";
     }
 
     calculateLoad(type){
@@ -96,7 +97,13 @@ class TaskDiagnostics{
     diagnoseMapAttempt(attempt){
         if(attempt["elapsedMapTimeLabel"] == 5){
 
-            this.calculateZScoreMap(attempt);
+            let table = this.calculateZScoreMap(attempt);
+            let description = "This map attempt is an outlier for map time. Use the table on the left to determine if there are expensive records. " +
+                "<br> Replication rate records: " + attempt.replicationRate + "<br> Replication rate bytes: " + attempt.replicationRateBytes + "<br> " +
+                "Map function duration mean: " + attempt["MAPPING_MEAN"] + "ms <br>" +
+                "Map function duration variation: " + attempt["MAPPING_VARIANCE"] +"ms";
+
+            this.createReport("Map outlier: " + attempt.id, "danger" , description, table);
         }
     }
 
@@ -153,8 +160,7 @@ class TaskDiagnostics{
         let variance = attempt["MAPPING_VARIANCE"];
         this.calculateZScoreOfElements(keys, mean, Math.sqrt(variance));
         let table = this.createTableForKeys(keys);
-        let x = '<div class="row"> <div class="col-md-6">col1</div><div class="col-md-6">'+table+'</div> </div>';
-            this.createReport("Map outlier " + attempt.id, "danger", x );
+        return table;
 
     }
 
@@ -166,8 +172,7 @@ class TaskDiagnostics{
         this.calculateZScoreOfElements(keys, mean, Math.sqrt(variance));
         let table = this.createTableForKeys(keys);
         return table;
-        let x = '<div class="row"> <div class="col-md-6">col1</div><div class="col-md-6">'+table+'</div> </div>';
-        this.createReport("Map outlier " + attempt.id, "danger", x );
+
 
     }
 
@@ -176,7 +181,7 @@ class TaskDiagnostics{
         table.className = "table table-bordered table-sm";
         let tableHead = document.createElement("thead");
         table.appendChild(tableHead);
-        let row = "<tr><th>Key</th><th>Time</th><th>Top-10 outlier</th><th>Global outlier</th></tr>";
+        let row = "<tr><th>Key</th><th>Time (ms)</th><th>Top-10 outlier</th><th>Global outlier</th></tr>";
         tableHead.innerHTML = row;
         let tableBody = document.createElement("tbody");
 
@@ -216,9 +221,11 @@ class TaskDiagnostics{
         // console.log(top10deviation);
         for(let k in elements){
             let object = elements[k];
-            let z = this.calculateZscore(object.time, top10mean, top10deviation);
-            //console.log(object.time + " score: " + z);
-            object["top10outlier"] = z >= 3.0;
+            // let z = this.calculateZscore(object.time, top10mean, top10deviation);
+            // //console.log(object.time + " score: " + z);
+            // object["top10outlier"] = z >= 3.0;
+            let label = stat.label(object.time);
+            object["top10outlier"] = label == 5;
 
         }
 

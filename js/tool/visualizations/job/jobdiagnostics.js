@@ -47,8 +47,8 @@ class JobDiagnostics{
                 "% which may not result in performance improvements.")
             return true;
         }else{
-            this.createReport("Inefficient usage of combiner", "success", "The jobs combiner reduces the output with " + percentage+
-                "% which may not result in performance improvements.")
+            this.createReport("Efficient usage of combiner", "success", "The jobs combiner reduces the output with " + percentage+
+                "%.")
             return true;
         }
     }
@@ -134,7 +134,7 @@ class JobDiagnostics{
                 description = div.outerHTML;
 
             }else{
-                description += " Hint: use mapreduce.task.io.sort.mb and mapreduce.map.sort.spill.percent settings to resolve this issue.";
+                description += "";
             }
             this.createReport(title,"danger",description);
         }else{
