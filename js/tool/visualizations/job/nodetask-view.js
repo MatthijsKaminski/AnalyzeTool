@@ -183,13 +183,13 @@ class  NodeTask{
 
                     //add elapsedTime
                     text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[0].id + "'>";
-                    text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + "elapsedTime" + "</td>";
+                    text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + "Total time" + "</td>";
                     text += "<td class='value'>" + that.nodes[name].elapsedTime + "</td>";
                     text += "</tr>";
                     //add total time
                     var totalTime = (that.nodes[name].endTime - that.nodes[name].startTime);
                     text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[0].id + "'>";
-                    text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + "Total time" + "</td>";
+                    text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + "Netto time" + "</td>";
                     text += "<td class='value'>" + totalTime + "</td>";
                     text += "</tr>";
                     //add load

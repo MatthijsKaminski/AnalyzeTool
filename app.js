@@ -10,6 +10,6 @@ app.on('ready', function(){
     })
     mainwindow.setMenu(null)
     mainwindow.loadURL('file://' + __dirname + '/index.html')
-    mainwindow.openDevTools()
+   // mainwindow.openDevTools()
     
 })
